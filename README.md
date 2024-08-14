@@ -1,3 +1,3 @@
 # ProjectFeladat
 
-Ide mé nemtom mi kéne
+Csapattagok: Pancza Milán, Gál Martin, Hermann Máté
