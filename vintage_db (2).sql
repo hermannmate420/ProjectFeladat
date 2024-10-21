@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Gép: localhost:3306
--- Létrehozás ideje: 2024. Okt 17. 17:06
+-- Létrehozás ideje: 2024. Okt 21. 13:40
 -- Kiszolgáló verziója: 5.7.24
 -- PHP verzió: 8.0.1
 
@@ -22,6 +22,32 @@ SET time_zone = "+00:00";
 --
 CREATE DATABASE IF NOT EXISTS `vintage_db` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
 USE `vintage_db`;
+
+DELIMITER $$
+--
+-- Eljárások
+--
+CREATE DEFINER=`root`@`localhost` PROCEDURE `users_add` (IN `userIN` VARCHAR(100), IN `passwordIN` VARCHAR(255), IN `emailIN` VARCHAR(255), IN `is_adminIN` BOOLEAN, IN `is_deletedIN` BOOLEAN)   BEGIN
+INSERT INTO 
+`users`(`users`.`username`, `users`.`password`, `users`.`email`, `users`.`is_admin`, `users`.`is_deleted`)
+VALUES
+(userIN, passwordIN, emailIN, is_adminIN, is_deletedIN);
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `users_uppdate` (IN `userIdIN` INT(11), IN `userIN` VARCHAR(100), IN `passwordIN` VARCHAR(255), IN `emailIN` VARCHAR(255), IN `isadminIN` BOOLEAN, IN `isdeletedIN` BOOLEAN)   UPDATE `users`
+SET `users`.`username` = userIN,
+	`users`.`password` = passwordIN,
+    `users`.`email` = emailIN,
+    `users`.`is_admin` = isadminIN,
+    `users`.`is_deleted` = isdeletedIN
+WHERE `users`.`user_id` = userIdIN$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `user_delete` (IN `userIN` INT(11))   UPDATE `users` 
+SET `users`.`is_deleted` = 1,
+	`users`.`deleted_at` = CURRENT_TIMESTAMP
+WHERE `users`.`user_id` = userIN$$
+
+DELIMITER ;
 
 -- --------------------------------------------------------
 
@@ -139,17 +165,18 @@ CREATE TABLE `users` (
   `username` varchar(100) NOT NULL,
   `password` varchar(255) NOT NULL,
   `email` varchar(255) NOT NULL,
-  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
   `is_admin` tinyint(1) NOT NULL,
-  `is_deleted` tinyint(1) NOT NULL
+  `is_deleted` tinyint(1) NOT NULL,
+  `deleted_at` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- A tábla adatainak kiíratása `users`
 --
 
-INSERT INTO `users` (`user_id`, `username`, `password`, `email`, `created_at`, `is_admin`, `is_deleted`) VALUES
-(1, 'Admin', 'Admin1234', 'admin@admin.com', '2024-10-17 17:04:26', 1, 0);
+INSERT INTO `users` (`user_id`, `username`, `password`, `email`, `created_at`, `is_admin`, `is_deleted`, `deleted_at`) VALUES
+(1, 'Admin', 'Admin1234', 'admin@admin.com', '2024-10-21 15:02:20', 1, 0, NULL);
 
 --
 -- Indexek a kiírt táblákhoz
@@ -253,7 +280,7 @@ ALTER TABLE `test_feedback`
 -- AUTO_INCREMENT a táblához `users`
 --
 ALTER TABLE `users`
-  MODIFY `user_id` int(8) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `user_id` int(8) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
