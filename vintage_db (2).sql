@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Gép: localhost:3306
--- Létrehozás ideje: 2024. Okt 21. 13:40
+-- Létrehozás ideje: 2024. Okt 22. 09:43
 -- Kiszolgáló verziója: 5.7.24
 -- PHP verzió: 8.0.1
 
@@ -70,7 +70,7 @@ CREATE TABLE `categories` (
 CREATE TABLE `orders` (
   `order_id` int(8) NOT NULL,
   `user_id` int(8) NOT NULL,
-  `order_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `order_date` datetime DEFAULT NULL,
   `total_amount` decimal(10,0) NOT NULL,
   `status` varchar(50) NOT NULL,
   `is_test_order` tinyint(1) NOT NULL
@@ -100,7 +100,7 @@ CREATE TABLE `payments` (
   `payment_id` int(8) NOT NULL,
   `order_id` int(8) NOT NULL,
   `payment_method` varchar(50) NOT NULL,
-  `payment_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `payment_date` datetime DEFAULT NULL,
   `amount` decimal(10,0) NOT NULL,
   `payment_status` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -118,7 +118,7 @@ CREATE TABLE `products` (
   `price` decimal(10,0) NOT NULL,
   `stock_quanty` int(11) NOT NULL,
   `category_id` int(8) NOT NULL,
-  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+  `created_at` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -151,7 +151,7 @@ CREATE TABLE `test_feedback` (
   `is_admin` tinyint(1) NOT NULL,
   `feedback_text` text NOT NULL,
   `rating` int(11) NOT NULL,
-  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+  `created_at` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
