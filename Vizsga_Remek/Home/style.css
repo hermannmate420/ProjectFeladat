@@ -1,0 +1,12 @@
+body{
+    background-color: #BFA082;
+}
+
+.nav {
+    display: inline-block;
+    float: none;
+}
+
+.li {
+    text-align: center;
+}
