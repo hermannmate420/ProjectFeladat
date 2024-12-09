@@ -98,171 +98,152 @@
   </div>
   <!-- /SECTION -->
 
-  <style>
-    .carousel {
-      background-color: lightsalmon;
-      padding: 15px;
-      border-radius: 8px;
-    }
-    .carousel-item img {
-      max-height: 150px;
-      object-fit: cover;
-      border-radius: 8px;
-    }
-    .carousel-inner .row {
-      display: flex;
-      justify-content: space-between;
-    }
-    #legkelendobb {
-      text-align: center;
-      margin: 20px 0;
-    }
-    
-    /* Karusszelek egymás mellé helyezése */
-    .carousel-container {
-      display: flex;
-      justify-content: space-between;
-    }
+
+  <h3 id="legkelendobb">Legkelendőbb tárgyaink:</h3>
+
+  <!-- Karusszelek egymás mellett elrendezve -->
+  <div class="carousel-container">
+    <!-- Bögrék Carousel -->
+    <div id="bogrekCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="5000">
+      <div class="carousel-inner">
+        <div class="carousel-item active">
+          <div class="row">
+            <div class="col">
+              <img src="/img/bogre_egy.jpg" alt="Bögre 1" class="d-block w-100">
+              <div class="carousel-description"><b>RETRO Enjoy Where You <br> Are Now Fém Bögre</b></div>
+            </div>
+          </div>
+        </div>
+        <div class="carousel-item">
+          <div class="row">
+            <div class="col">
+              <img src="/img/bogre_ketto.jpg" alt="Bögre 2" class="d-block w-100">
+              <div class="carousel-description"><b>Zománcozott bögre retro <br> fehér, pöttyös</b></div>
+            </div>
+          </div>
+        </div>
+        <div class="carousel-item">
+          <div class="row">
+            <div class="col">
+              <img src="/img/bogre_harom.jpg" alt="Bögre 3" class="d-block w-100">
+              <div class="carousel-description"><b>Retró bögre <br> Nysa mentőautó</b></div>
+            </div>
+          </div>
+        </div>
+        <div class="carousel-item">
+          <div class="row">
+            <div class="col">
+              <img src="/img/bogre_negy.jpg" alt="Bögre 4" class="d-block w-100">
+              <div class="carousel-description"><b>Kerámia Bögre <br> Retro Design</b></div>
+            </div>
+          </div>
+        </div>
+        <div class="carousel-item">
+          <div class="row">
+            <div class="col">
+              <img src="/img/bogre_ot.jpg" alt="Bögre 5" class="d-block w-100">
+              <div class="carousel-description"><b>Retro stílusú kerámia bögre <br> családi fotóval</b></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   
-    /* Minden carousel-nek az 1. item-et mutatja */
-    .carousel-inner .carousel-item {
-      display: none;
-    }
-    .carousel-inner .carousel-item.active {
-      display: block;
-    }
-  </style>
-  <h3 id="legkelendobb">Legkelendőbb tárgyaink:</h3>  
-
-<!-- Karusszelek egymás mellett elrendezve -->
-<div class="carousel-container">
-  <!-- Bögrék Carousel -->
-  <div id="bogrekCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="5000">
-    <div class="carousel-inner">
-      <div class="carousel-item active">
-        <div class="row">
-          <div class="col"><img src="/img/bogre_egy.jpg" alt="Bögre 1" class="d-block w-100"></div>
+    <!-- Órák Carousel -->
+    <div id="orakCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="5000">
+      <div class="carousel-inner">
+        <div class="carousel-item active">
+          <div class="row">
+            <div class="col">
+              <img src="/img/ora_egy.jpg" alt="Óra 1" class="d-block w-100">
+              <div class="carousel-description"><b>Rádióvezérelt retro óra <br> AMS 5977</b></div>
+            </div>
+          </div>
+        </div>
+        <div class="carousel-item">
+          <div class="row">
+            <div class="col">
+              <img src="/img/ora_ketto.jpg" alt="Óra 2" class="d-block w-100">
+              <div class="carousel-description"><b>Retro asztali óra</b></div>
+            </div>
+          </div>
+        </div>
+        <div class="carousel-item">
+          <div class="row">
+            <div class="col">
+              <img src="/img/ora_harom.jpg" alt="Óra 3" class="d-block w-100">
+              <div class="carousel-description"><b>Clayre & Eef Vintage antikolt <br> szürkészöld asztali fém óra</b></div>
+            </div>
+          </div>
+        </div>
+        <div class="carousel-item">
+          <div class="row">
+            <div class="col">
+              <img src="/img/ora_negy.jpg" alt="Óra 4" class="d-block w-100">
+              <div class="carousel-description"><b>AQ-230A-2A1MQYES <br>Casio Vintage Retro quartz óra, karóra</b></div>
+            </div>
+          </div>
+        </div>
+        <div class="carousel-item">
+          <div class="row">
+            <div class="col">
+              <img src="/img/ora_ot.jpg" alt="Óra 5" class="d-block w-100">
+              <div class="carousel-description"><b>Casio RETRO DATA BANK <br>DBC 32-1A férfi karóra</b></div>
+            </div>
+          </div>
         </div>
       </div>
-      <div class="carousel-item">
-        <div class="row">
-          <div class="col"><img src="/img/bogre_ketto.jpg" alt="Bögre 2" class="d-block w-100"></div>
+    </div>
+  
+    <!-- Lemezjátszók Carousel -->
+    <div id="lemezjatszokCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="5000">
+      <div class="carousel-inner">
+        <div class="carousel-item active">
+          <div class="row">
+            <div class="col">
+              <img src="/img/lemezjatszo_egy.jpg" alt="Lemez 1" class="d-block w-100">
+              <div class="carousel-description"><b>MUSE MT-201 BTG hordozható vintage <br> lemezjátszó, szürke</b></div>
+            </div>
+          </div>
         </div>
-      </div>
-      <div class="carousel-item">
-        <div class="row">
-          <div class="col"><img src="/img/bogre_harom.jpg" alt="Bögre 3" class="d-block w-100"></div>
+        <div class="carousel-item">
+          <div class="row">
+            <div class="col">
+              <img src="/img/lemezjatszo_ketto.jpg" alt="Lemez 2" class="d-block w-100">
+              <div class="carousel-description"><b>Berklee TT Classic, lemezjátszó, szíjhajtás,<br> 33 1/3 és 45 RPM, sztereó hangszórók</b></div>
+            </div>
+          </div>
         </div>
-      </div>
-      <div class="carousel-item">
-        <div class="row">
-          <div class="col"><img src="/img/bogre_negy.jpg" alt="Bögre 4" class="d-block w-100"></div>
+        <div class="carousel-item">
+          <div class="row">
+            <div class="col">
+              <img src="/img/lemezjatszo_harom.jpg" alt="Lemez 3" class="d-block w-100">
+              <div class="carousel-description"><b>RETRO lemezjátszó Soundmaster</b></div>
+            </div>
+          </div>
         </div>
-      </div>
-      <div class="carousel-item">
-        <div class="row">
-          <div class="col"><img src="/img/bogre_ot.jpg" alt="Bögre 5" class="d-block w-100"></div>
+        <div class="carousel-item">
+          <div class="row">
+            <div class="col">
+              <img src="/img/lemezjatszo_negy.jpg" alt="Lemez 4" class="d-block w-100">
+              <div class="carousel-description"><b>Hyundai RTCC513RIP <br> Retro lemezjátszó</b></div>
+            </div>
+          </div>
+        </div>
+        <div class="carousel-item">
+          <div class="row">
+            <div class="col">
+              <img src="/img/lemezjatszo_ot.jpg" alt="Lemez 5" class="d-block w-100">
+              <div class="carousel-description"><b>Auna Jerry Lee Record Collector szett,<br> barna, retró lemezjátszó</b></div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- Órák Carousel -->
-  <div id="orakCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="5000">
-    <div class="carousel-inner">
-      <div class="carousel-item active">
-        <div class="row">
-          <div class="col"><img src="/img/ora_egy.jpg" alt="Óra 1" class="d-block w-100"></div>
-        </div>
-      </div>
-      <div class="carousel-item">
-        <div class="row">
-          <div class="col"><img src="/img/ora_ketto.jpg" alt="Óra 2" class="d-block w-100"></div>
-        </div>
-      </div>
-      <div class="carousel-item">
-        <div class="row">
-          <div class="col"><img src="/img/ora_harom.jpg" alt="Óra 3" class="d-block w-100"></div>
-        </div>
-      </div>
-      <div class="carousel-item">
-        <div class="row">
-          <div class="col"><img src="/img/ora_negy.jpg" alt="Óra 4" class="d-block w-100"></div>
-        </div>
-      </div>
-      <div class="carousel-item">
-        <div class="row">
-          <div class="col"><img src="/img/ora_ot.jpg" alt="Óra 5" class="d-block w-100"></div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Lemezjátszók Carousel -->
-  <div id="lemezjatszokCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="5000">
-    <div class="carousel-inner">
-      <div class="carousel-item active">
-        <div class="row">
-          <div class="col"><img src="/img/lemezjatszo_egy.jpg" alt="Lemez 1" class="d-block w-100"></div>
-        </div>
-      </div>
-      <div class="carousel-item">
-        <div class="row">
-          <div class="col"><img src="/img/lemezjatszo_ketto.jpg" alt="Lemez 2" class="d-block w-100"></div>
-        </div>
-      </div>
-      <div class="carousel-item">
-        <div class="row">
-          <div class="col"><img src="/img/lemezjatszo_harom.jpg" alt="Lemez 3" class="d-block w-100"></div>
-        </div>
-      </div>
-      <div class="carousel-item">
-        <div class="row">
-          <div class="col"><img src="/img/lemezjatszo_negy.jpg" alt="Lemez 4" class="d-block w-100"></div>
-        </div>
-      </div>
-      <div class="carousel-item">
-        <div class="row">
-          <div class="col"><img src="/img/lemezjatszo_ot.jpg" alt="Lemez 5" class="d-block w-100"></div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
 
 
-
-  <h3 id="legkelendobb">Legkelendőbb tárgyaink:</h3>  
-<!-- Carousel -->
-<div id="demo" class="carousel slide" data-bs-ride="carousel">
-  <!-- Indicators/dots -->
-  <div class="carousel-indicators">
-    <button type="button" data-bs-target="#demo" data-bs-slide-to="0" class="active"></button>
-    <button type="button" data-bs-target="#demo" data-bs-slide-to="1"></button>
-    <button type="button" data-bs-target="#demo" data-bs-slide-to="2"></button>
-  </div>
-
-  <!-- The slideshow/carousel -->
-  <div class="carousel-inner">
-    <div class="carousel-item active">
-      <img src="/img/borKabat.jpg" alt="Bőr kabát" class="d-block w-100">
-    </div>
-    <div class="carousel-item">
-      <img src="/img/faliOra.jpg" alt="Falióra" class="d-block w-100">
-    </div>
-    <div class="carousel-item">
-      <img src="/img/faliOra2.jpg" alt="Falióra" class="d-block w-100">
-    </div>
-  </div>
-
-  <!-- Left and right controls/icons -->
-  <button class="carousel-control-prev" type="button" data-bs-target="#demo" data-bs-slide="prev">
-    <span class="carousel-control-prev-icon"></span>
-  </button>
-  <button class="carousel-control-next" type="button" data-bs-target="#demo" data-bs-slide="next">
-    <span class="carousel-control-next-icon"></span>
-  </button>
-</div>
 </body>
 
       <!--FOOTER -->

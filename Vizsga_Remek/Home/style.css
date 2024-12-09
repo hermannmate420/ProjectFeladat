@@ -92,19 +92,64 @@ a:hover, a:focus {
   .shop .shop-body .cta-btn {
     color: black;
     text-transform: uppercase;
-  }  
+  } 
+
+  /*Carousel*/
+  .carousel {
+    background-color: lightsalmon;
+    padding: 60px; /* Padding növelése 1,5x */
+    border-radius: 8px;
+  }
   
-  
-  #legkelendobb{
+  .carousel-item img {
+    max-height: 900px; /* A képek magasságának növelése 1,5x */
+    width: 100%; /* A képek szélessége kitölti a karusszel szélességét */
+    object-fit: cover;
+    border-radius: 8px;
+  }
+/*carousel szövegek*/
+  .carousel-description {
     text-align: center;
+    font-size: 1em;
+    margin-top: 10px;
+    color: #333;
   }
-  #demo{
-    height: 30%;
-    width: 30%;
+  
+  .carousel-inner .row {
     display: flex;
-    justify-content: center;
-    margin: 0 auto;
+    justify-content: space-between;
   }
+  
+  #legkelendobb {
+    text-align: center;
+    margin: 90px 0; /* Tovább növeljük a margót 1,5x */
+    font-size: 2.5em; /* A cím betűméretének növelése 1,5x */
+  }
+
+  /* Karusszelek egymás mellett elrendezve */
+  .carousel-container {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  /* A szélső carousel-eknél alkalmazunk margin-t */
+  #bogrekCarousel {
+    margin-left: 150px;
+    margin-right: 50px; /* A bögre karusszel 50px-el beljebb */
+  }
+
+  #lemezjatszokCarousel {
+    margin-right: 150px;
+    margin-left: 50px; /* A lemezjátszó karusszel 50px-el beljebb */
+  }
+
+  /* Minden carousel-nek az 1. item-et mutatja */
+  .carousel-inner .carousel-item {
+    display: none;
+  }
+  .carousel-inner .carousel-item.active {
+    display: block;
+  } 
 
   #newsletter.section {
     border-top: 2px solid #E4E7ED;
