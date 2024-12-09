@@ -98,6 +98,139 @@
   </div>
   <!-- /SECTION -->
 
+  <style>
+    .carousel {
+      background-color: lightsalmon;
+      padding: 15px;
+      border-radius: 8px;
+    }
+    .carousel-item img {
+      max-height: 150px;
+      object-fit: cover;
+      border-radius: 8px;
+    }
+    .carousel-inner .row {
+      display: flex;
+      justify-content: space-between;
+    }
+    #legkelendobb {
+      text-align: center;
+      margin: 20px 0;
+    }
+    
+    /* Karusszelek egymás mellé helyezése */
+    .carousel-container {
+      display: flex;
+      justify-content: space-between;
+    }
+  
+    /* Minden carousel-nek az 1. item-et mutatja */
+    .carousel-inner .carousel-item {
+      display: none;
+    }
+    .carousel-inner .carousel-item.active {
+      display: block;
+    }
+  </style>
+  <h3 id="legkelendobb">Legkelendőbb tárgyaink:</h3>  
+
+<!-- Karusszelek egymás mellett elrendezve -->
+<div class="carousel-container">
+  <!-- Bögrék Carousel -->
+  <div id="bogrekCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="5000">
+    <div class="carousel-inner">
+      <div class="carousel-item active">
+        <div class="row">
+          <div class="col"><img src="/img/bogre_egy.jpg" alt="Bögre 1" class="d-block w-100"></div>
+        </div>
+      </div>
+      <div class="carousel-item">
+        <div class="row">
+          <div class="col"><img src="/img/bogre_ketto.jpg" alt="Bögre 2" class="d-block w-100"></div>
+        </div>
+      </div>
+      <div class="carousel-item">
+        <div class="row">
+          <div class="col"><img src="/img/bogre_harom.jpg" alt="Bögre 3" class="d-block w-100"></div>
+        </div>
+      </div>
+      <div class="carousel-item">
+        <div class="row">
+          <div class="col"><img src="/img/bogre_negy.jpg" alt="Bögre 4" class="d-block w-100"></div>
+        </div>
+      </div>
+      <div class="carousel-item">
+        <div class="row">
+          <div class="col"><img src="/img/bogre_ot.jpg" alt="Bögre 5" class="d-block w-100"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Órák Carousel -->
+  <div id="orakCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="5000">
+    <div class="carousel-inner">
+      <div class="carousel-item active">
+        <div class="row">
+          <div class="col"><img src="/img/ora_egy.jpg" alt="Óra 1" class="d-block w-100"></div>
+        </div>
+      </div>
+      <div class="carousel-item">
+        <div class="row">
+          <div class="col"><img src="/img/ora_ketto.jpg" alt="Óra 2" class="d-block w-100"></div>
+        </div>
+      </div>
+      <div class="carousel-item">
+        <div class="row">
+          <div class="col"><img src="/img/ora_harom.jpg" alt="Óra 3" class="d-block w-100"></div>
+        </div>
+      </div>
+      <div class="carousel-item">
+        <div class="row">
+          <div class="col"><img src="/img/ora_negy.jpg" alt="Óra 4" class="d-block w-100"></div>
+        </div>
+      </div>
+      <div class="carousel-item">
+        <div class="row">
+          <div class="col"><img src="/img/ora_ot.jpg" alt="Óra 5" class="d-block w-100"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Lemezjátszók Carousel -->
+  <div id="lemezjatszokCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="5000">
+    <div class="carousel-inner">
+      <div class="carousel-item active">
+        <div class="row">
+          <div class="col"><img src="/img/lemezjatszo_egy.jpg" alt="Lemez 1" class="d-block w-100"></div>
+        </div>
+      </div>
+      <div class="carousel-item">
+        <div class="row">
+          <div class="col"><img src="/img/lemezjatszo_ketto.jpg" alt="Lemez 2" class="d-block w-100"></div>
+        </div>
+      </div>
+      <div class="carousel-item">
+        <div class="row">
+          <div class="col"><img src="/img/lemezjatszo_harom.jpg" alt="Lemez 3" class="d-block w-100"></div>
+        </div>
+      </div>
+      <div class="carousel-item">
+        <div class="row">
+          <div class="col"><img src="/img/lemezjatszo_negy.jpg" alt="Lemez 4" class="d-block w-100"></div>
+        </div>
+      </div>
+      <div class="carousel-item">
+        <div class="row">
+          <div class="col"><img src="/img/lemezjatszo_ot.jpg" alt="Lemez 5" class="d-block w-100"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
 
   <h3 id="legkelendobb">Legkelendőbb tárgyaink:</h3>  
 <!-- Carousel -->
@@ -131,6 +264,7 @@
   </button>
 </div>
 </body>
+
       <!--FOOTER -->
       <footer id="footer">
          <!--top footer --> 
@@ -142,21 +276,60 @@
               <div class="col-md-3 col-xs-6 text-align: center">
                 <div class="footer">
                   <h1 class="footer-title">Rólunk</h1>
-                  <p>Magyarország legjobb Retro Vintage webpiaca</p>
-                  <p>Készítők elérhetőségei:</p>
-                  <ul class="footer-links">
+                  <ul>
+                    <li>
+                      <p>Magyarország legjobb Retro Vintage webpiaca</p>
+                    </li>
+                    <li>
+                      <p>Készítők elérhetőségei:</p>
+                    </li>
+                  </ul>
+                  <ul class="footer-links" style="list-style-type:square">
                     <li><a href="#">hermann.mate@simonyiszki.org</a></li>
                     <li><a href="#">gal.martin@simonyiszki.org</a></li>
                     <li><a href="#">pancza.milan@simonyiszki.org</a></li>
                   </ul>
                 </div>
               </div>
+              <div id="newsletter" class="section">
+                <!-- container -->
+                <div class="container">
+                  <!-- row -->
+                  <div class="row">
+                    <div class="col-md-12">
+                      <div class="newsletter">
+                        <p>Feliratkozás a <strong>HÍRLEVÉLRE </strong></p>
+                        <form>
+                          <input class="input" type="email" placeholder="Írd be az Email címed">
+                          <button class="newsletter-btn"><i class="fa fa-envelope"></i> Feliratkozás</button>
+                        </form>
+                        <ul class="newsletter-follow">
+                          <li>
+                            <a href="#"><img src="/img/facebook.png" alt="" srcset="" id="facebook"></a>
+                          </li>
+                          <li>
+                            <a href="#"><img src="/img/instagram.png" alt="" srcset="" id="instagram"></a>
+                          </li>
+                          <li>
+                            <a href="#"><img src="/img/twitter.png" alt="" srcset="" id="twitter"></a>
+                          </li>
+                          <li>
+                            <a href="#"><img src="/img/discord.jpg" alt="" srcset="" id="discord"></a>
+                          </li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- /row -->
+                </div>
+                <!-- /container -->
+              </div>
 
               <div class="clearfix visible-xs"></div>
               <div class="col-md-3 col-xs-6">
                 <div class="footer">
                   <h1 class="footer-title">Információk</h1>
-                  <ul class="footer-links">
+                  <ul class="footer-links" style="list-style-type:circle">
                     <li><a href="#">Kapcsolatfelvétel</a></li>
                     <li><a href="#">Adatvédelem és Biztonság</a></li>
                     <li><a href="#">Rendelések és Visszafizetés</a></li>
@@ -168,7 +341,7 @@
               <div class="col-md-3 col-xs-6">
                 <div class="footer">
                   <h1 class="footer-title">Szolgáltatások</h1>
-                  <ul class="footer-links">
+                  <ul class="footer-links" style="list-style-type:circle">
                     <li><a href="/Profile/index.html">Profile</a></li>
                     <li><a href="/Cart/index.html">Kosár megtekintése</a></li>
                     <li><a href="/Blog/index.html">Blog</a></li>
