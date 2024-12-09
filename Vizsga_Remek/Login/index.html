@@ -1,12 +1,39 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Login</title>
     <link rel="stylesheet" href="login_style.css">
 </head>
+
 <body>
-    
+    <button id="back">&#10229;</button>
+    <div class="container">
+        <div class="cheader" id="Header">
+            <div class="row">
+                <h1 id="titleLogin">Login</h1>
+            </div>
+        </div>
+        <div class="cbody" id="body">
+            <div class="row">
+                <input type="text" placeholder="Username" name="Username" id="userName" tabindex="1">
+            </div>
+            <div class="row">
+                <input type="text" placeholder="Email" name="Email" id="email" tabindex="2">
+            </div>
+            <div class="row">
+                <input type="text" placeholder="Password" name="Password" id="password" tabindex="3">
+            </div>
+            <div class="row">
+                <button id="Login" type="submit" tabindex="4">
+                    Login
+                </button><br>
+                <a id="reg" href="#">Or register</a>
+            </div>
+        </div>
+    </div>
 </body>
+
 </html>
