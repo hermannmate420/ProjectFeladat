@@ -6,6 +6,6 @@ document.querySelectorAll('.carousel').forEach(function(carousel) {
       
       // Lehetőség van a leírás módosítására vagy más változtatásokra
       // Például színt változtatni
-      description.style.color = 'blue';
+      description.style.color = 'black';
     });
   });

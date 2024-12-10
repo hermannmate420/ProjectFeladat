@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="hu">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -37,5 +37,131 @@
         </div>
       </nav>
 </body>
+
+ <!-- Profile Content -->
+ <div class="container mt-5">
+  <div class="text-center">
+    <img id="profilePic" src="/img/default-avatar.jpg" alt="Profilkép" class="rounded-circle mb-3" width="150" height="150">
+    <h2 id="profileName">Kiss János</h2>
+    <p id="profileEmail">janos.kiss@example.com</p>
+    <button id="editButton" class="btn btn-primary">Szerkesztés</button>
+  </div>
+
+  <div class="edit-section form-container mt-4" id="editForm" style="display: none;">
+    <div class="form-group mb-3">
+      <label for="nameInput">Név:</label>
+      <input type="text" id="nameInput" class="form-control" value="Kiss János">
+    </div>
+    <div class="form-group mb-3">
+      <label for="emailInput">Email:</label>
+      <input type="email" id="emailInput" class="form-control" value="janos.kiss@example.com">
+    </div>
+    <div class="form-group mb-3">
+      <label for="profilePicInput">Profilkép:</label>
+      <input type="file" id="profilePicInput" class="form-control" accept="image/*">
+    </div>
+    <button id="saveButton" class="btn btn-success">Mentés</button>
+  </div>
+  <div>
+    <button id="resetButton" class="btn btn-danger mt-3">Alapértelmezett Visszaállítása</button>
+  </div>
+</div>
+
+
+
+<!--FOOTER -->
+<footer id="footer">
+  <!--top footer --> 
+ <div class="section">
+ <!--container--> 
+   <div class="container">
+       <!--row-->
+     <div class="row">
+       <div class="col-md-3 col-xs-6 text-align: center">
+         <div class="footer">
+           <h1 class="footer-title">Rólunk</h1>
+           <ul>
+             <li>
+               <p>Magyarország legjobb Retro Vintage webpiaca</p>
+             </li>
+             <li>
+               <p>Készítők elérhetőségei:</p>
+             </li>
+           </ul>
+           <ul class="footer-links" style="list-style-type:square">
+             <li><a href="#">hermann.mate@simonyiszki.org</a></li>
+             <li><a href="#">gal.martin@simonyiszki.org</a></li>
+             <li><a href="#">pancza.milan@simonyiszki.org</a></li>
+           </ul>
+         </div>
+       </div>
+       <div id="newsletter" class="section">
+         <!-- container -->
+         <div class="container">
+           <!-- row -->
+           <div class="row">
+             <div class="col-md-12">
+               <div class="newsletter">
+                 <p>Feliratkozás a <strong>HÍRLEVÉLRE </strong></p>
+                 <form>
+                   <input class="input" type="email" placeholder="Írd be az Email címed">
+                   <button class="newsletter-btn"><i class="fa fa-envelope"></i> Feliratkozás</button>
+                 </form>
+                 <ul class="newsletter-follow">
+                   <li>
+                     <a href="#"><img src="/img/facebook.png" alt="" srcset="" id="facebook"></a>
+                   </li>
+                   <li>
+                     <a href="#"><img src="/img/instagram.png" alt="" srcset="" id="instagram"></a>
+                   </li>
+                   <li>
+                     <a href="#"><img src="/img/twitter.png" alt="" srcset="" id="twitter"></a>
+                   </li>
+                   <li>
+                     <a href="#"><img src="/img/discord.jpg" alt="" srcset="" id="discord"></a>
+                   </li>
+                 </ul>
+               </div>
+             </div>
+           </div>
+           <!-- /row -->
+         </div>
+         <!-- /container -->
+       </div>
+
+       <div class="clearfix visible-xs"></div>
+       <div class="col-md-3 col-xs-6">
+         <div class="footer">
+           <h1 class="footer-title">Információk</h1>
+           <ul class="footer-links" style="list-style-type:circle">
+             <li><a href="#">Kapcsolatfelvétel</a></li>
+             <li><a href="#">Adatvédelem és Biztonság</a></li>
+             <li><a href="#">Rendelések és Visszafizetés</a></li>
+             <li><a href="#">Álltalános Szerződési Feltételek</a></li>
+           </ul>
+         </div>
+       </div>
+
+       <div class="col-md-3 col-xs-6">
+         <div class="footer">
+           <h1 class="footer-title">Szolgáltatások</h1>
+           <ul class="footer-links" style="list-style-type:circle">
+             <li><a href="/Profile/index.html">Profile</a></li>
+             <li><a href="/Cart/index.html">Kosár megtekintése</a></li>
+             <li><a href="/Blog/index.html">Blog</a></li>
+             <li><a href="#">Segítség</a></li>
+           </ul>
+         </div>
+       </div>
+     </div>
+      <!--/row-->
+   </div>
+    <!--/container--> 
+ </div>
+  <!--/top footer --> 
+</footer>
+<!--/FOOTER -->
+
+<script src="/Profile/profile.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 </html>

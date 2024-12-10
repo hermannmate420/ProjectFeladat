@@ -5,3 +5,233 @@ body{
     margin-left: auto;
     margin-right: auto;
 }
+
+#profilePic {
+    border: 3px solid lightsalmon;
+  }
+
+
+  /* Gombok középre igazítása és stílusa */
+/*button {
+    background-color: lightsalmon;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    text-align: center;
+    margin: 10px auto; /* Középre igazítás */
+    /*display: block; /* Szülőelem közepére helyezi */
+    /*max-width: 200px;
+}*/
+
+button:hover {
+    background-color: #e9967a; /* Hover árnyalat */
+}
+
+/* Szerkesztési űrlap stílusa */
+#editForm {
+    display: none; /* Alapértelmezetten rejtve */
+    margin: 20px auto;
+    text-align: center;
+    padding: 20px;
+    border: 2px solid lightsalmon;
+    border-radius: 10px;
+    max-width: 400px; /* Limitált szélesség */
+    background-color: white; /* Háttérszín */
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Gombok stílusának és pozíciójának megakadályozása */
+#editButton,
+#saveButton {
+    background-color: #4D675A;
+    border: #4D675A;
+    text-align: center; /* Biztos középre igazítás */
+    margin: 20px auto; /* További tér a gombok körül */
+}
+
+/* Reset gomb */
+#resetButton {
+    background-color: #4D675A; /* Reset színe */
+    border: #4D675A;
+    color: white;
+    border-radius: 5px;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    text-align: center;
+    margin: 20px auto;
+    display: block;
+}
+
+#resetButton:hover {
+    background-color: #d9534f; /* Hover árnyalat */
+}
+
+/* Profilkép stílusa */
+#profilePic {
+    border: 3px solid lightsalmon;
+    border-radius: 50%; /* Kerekített kép */
+    width: 150px; /* Fix szélesség és magasság */
+    height: 150px;
+    object-fit: cover; /* Kép arányainak megőrzése */
+    display: block;
+    margin: 20px auto; /* Középre igazítás */
+}
+
+
+/*Footer, Newsletter*/
+  #newsletter.section {
+    border-top: 2px solid #E4E7ED;
+    border-bottom: 3px solid lightsalmon;
+    margin-top: 30px;
+  }
+  
+  .newsletter {
+    text-align: center;
+  }
+  
+  .newsletter p {
+    font-size: 24px;
+  }
+  
+  .newsletter form {
+    position: relative;
+    max-width: 450px;
+    margin: 30px auto;
+  }
+  
+  .newsletter form:after {
+    content: "\f003";
+    font-family: FontAwesome;
+    position: absolute;
+    font-size: 160px;
+    color: #E4E7ED;
+    top: 15px;
+    -webkit-transform: translateY(-50%) rotate(15deg);
+    -ms-transform: translateY(-50%) rotate(15deg);
+    transform: translateY(-50%) rotate(15deg);
+    z-index: -1;
+    left: -90px;
+  }
+  
+  .newsletter form .input {
+    width: calc(100% - 160px);
+    margin-right: -4px;
+    border-radius: 40px 0px 0px 40px;
+  }
+  
+  .newsletter form .newsletter-btn {
+    width: 120px;
+    height: 27px;
+    font-weight: 700;
+    background: lightsalmon;
+    color: #FFF;
+    border: none;
+    border-radius: 0px 40px 40px 0px;
+  }
+  
+  .newsletter .newsletter-follow {
+    text-align: center;
+    height: 50px;
+    
+  }
+  
+  .newsletter .newsletter-follow li {
+    display: inline-block;
+    margin-right: 5px;
+  }
+  
+  .newsletter .newsletter-follow li:last-child {
+    margin-right: 0px;
+  }
+  
+  .newsletter .newsletter-follow li a {
+    position: relative;
+    display: block;
+    width: 40px;
+    height: 40px;
+    text-align: center;
+    line-height: 40px;
+    border: 1px solid #E4E7ED;
+    background-color: #FFF;
+    -webkit-transition: 0.2s all;
+    transition: 0.2s all;
+  }
+  
+  .newsletter .newsletter-follow li a:hover, .newsletter .newsletter-follow li a:focus {
+    background-color: #E4E7ED;
+    color: lightsalmon;
+  }
+
+  #facebook{
+    height: 35px;
+  }
+  #instagram{
+    height: 35px;
+  }
+  #twitter{
+    height: 35px;
+  }
+  #discord{
+    height: 35px;
+  }
+
+  #footer {
+    background: #15161D;
+    color: #B9BABC;
+  }
+  
+  #bottom-footer {
+    background: #1E1F29;
+  }
+  
+  .footer {
+    margin: 30px 0px;
+  }
+  
+  .footer .footer-title {
+    color: #FFF;
+    text-transform: uppercase;
+    font-size: 18px;
+    margin: 0px 0px 30px;
+  }
+  
+  .footer-links li+li {
+    margin-top: 15px;
+  }
+  
+  .footer-links li a {
+    color: #B9BABC;
+  }
+  
+  .footer-links li i {
+    margin-right: 15px;
+    color: lightsalmon;
+    width: 14px;
+    text-align: center;
+  }
+  
+  .footer-links li a:hover {
+    color: lightsalmon;
+  }
+  
+  .copyright {
+    margin-top: 30px;
+    display: block;
+    font-size: 12px;
+  }
+  
+  .footer-payments li {
+    display: inline-block;
+    margin-right: 5px;
+  }
+  
+  .footer-payments li a {
+    color: #15161D;
+    font-size: 36px;
+    display: block;
+  }
+  

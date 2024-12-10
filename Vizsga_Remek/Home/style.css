@@ -18,7 +18,7 @@ a {
 }
 
 a:hover, a:focus {
-    color: #23749E;
+    color: lightsalmon;
     text-decoration: none;
     outline: none;
   }
