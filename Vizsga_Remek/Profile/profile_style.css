@@ -81,8 +81,35 @@ button:hover {
     margin: 20px auto; /* Középre igazítás */
 }
 
+/* Törlés gomb stílusai */
+#deleteButton {
+  background-color: #ff4d4d; /* Vörös szín, hogy figyelmet keltő legyen */
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: not-allowed; /* Alapértelmezetten inaktív */
+  text-align: center;
+  margin: 20px auto;
+  display: block;
+  max-width: 200px;
+}
+
+/* Ha aktiválódik, a gomb működőképes lesz */
+#deleteButton.active {
+  cursor: pointer;
+  background-color: #e60000; /* Élénkebb vörös */
+}
+
+#deleteButton.active:hover {
+  background-color: #cc0000; /* Hover állapot */
+}
+
+
 
 /*Footer, Newsletter*/
+
   #newsletter.section {
     border-top: 2px solid #E4E7ED;
     border-bottom: 3px solid lightsalmon;

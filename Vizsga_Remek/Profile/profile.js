@@ -56,4 +56,16 @@ document.getElementById("resetButton").addEventListener("click", () => {
     localStorage.removeItem("profile");
     loadProfile();
   });
+
+  // Törlés gomb aktiválása
+const deleteButton = document.getElementById('deleteButton');
+
+// Feltételes aktiválás (például felhasználó bejelentkezése után)
+function activateDeleteButton() {
+    deleteButton.classList.add('active');
+    deleteButton.disabled = false;  // Ha szeretnéd, hogy működjön, eltávolíthatod ezt
+}
+
+// Később hívhatod meg az activateDeleteButton() függvényt, ha aktívvá akarod tenni.
+
   
