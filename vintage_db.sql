@@ -2,10 +2,10 @@
 -- version 5.1.2
 -- https://www.phpmyadmin.net/
 --
--- Host: localhost:3306
--- Generation Time: Dec 06, 2024 at 12:14 PM
--- Server version: 5.7.24
--- PHP Version: 8.0.1
+-- Gép: localhost:3306
+-- Létrehozás ideje: 2025. Feb 03. 11:34
+-- Kiszolgáló verziója: 5.7.24
+-- PHP verzió: 8.3.1
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -18,12 +18,14 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `vintage_db`
+-- Adatbázis: `vintage_db`
 --
+CREATE DATABASE IF NOT EXISTS `vintage_db` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
+USE `vintage_db`;
 
 DELIMITER $$
 --
--- Procedures
+-- Eljárások
 --
 CREATE DEFINER=`root`@`localhost` PROCEDURE `addCategories` (IN `nameIN` VARCHAR(100), IN `descIN` VARCHAR(150))   INSERT INTO categories (`categories`.`name`,`categories`.`description`)
 VALUES (nameIN,descIN)$$
@@ -76,7 +78,7 @@ DELIMITER ;
 -- --------------------------------------------------------
 
 --
--- Table structure for table `categories`
+-- Tábla szerkezet ehhez a táblához `categories`
 --
 
 CREATE TABLE `categories` (
@@ -86,7 +88,7 @@ CREATE TABLE `categories` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
--- Dumping data for table `categories`
+-- A tábla adatainak kiíratása `categories`
 --
 
 INSERT INTO `categories` (`category_id`, `name`, `description`) VALUES
@@ -112,7 +114,7 @@ INSERT INTO `categories` (`category_id`, `name`, `description`) VALUES
 -- --------------------------------------------------------
 
 --
--- Table structure for table `orders`
+-- Tábla szerkezet ehhez a táblához `orders`
 --
 
 CREATE TABLE `orders` (
@@ -127,7 +129,7 @@ CREATE TABLE `orders` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `order_items`
+-- Tábla szerkezet ehhez a táblához `order_items`
 --
 
 CREATE TABLE `order_items` (
@@ -141,7 +143,7 @@ CREATE TABLE `order_items` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `payments`
+-- Tábla szerkezet ehhez a táblához `payments`
 --
 
 CREATE TABLE `payments` (
@@ -156,7 +158,7 @@ CREATE TABLE `payments` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `products`
+-- Tábla szerkezet ehhez a táblához `products`
 --
 
 CREATE TABLE `products` (
@@ -170,7 +172,7 @@ CREATE TABLE `products` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
--- Dumping data for table `products`
+-- A tábla adatainak kiíratása `products`
 --
 
 INSERT INTO `products` (`product_id`, `name`, `description`, `price`, `stock_quanty`, `category_id`, `created_at`) VALUES
@@ -230,7 +232,7 @@ INSERT INTO `products` (`product_id`, `name`, `description`, `price`, `stock_qua
 -- --------------------------------------------------------
 
 --
--- Table structure for table `shipping_addresses`
+-- Tábla szerkezet ehhez a táblához `shipping_addresses`
 --
 
 CREATE TABLE `shipping_addresses` (
@@ -247,7 +249,7 @@ CREATE TABLE `shipping_addresses` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `test_feedback`
+-- Tábla szerkezet ehhez a táblához `test_feedback`
 --
 
 CREATE TABLE `test_feedback` (
@@ -263,7 +265,7 @@ CREATE TABLE `test_feedback` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `users`
+-- Tábla szerkezet ehhez a táblához `users`
 --
 
 CREATE TABLE `users` (
@@ -278,112 +280,112 @@ CREATE TABLE `users` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
--- Dumping data for table `users`
+-- A tábla adatainak kiíratása `users`
 --
 
 INSERT INTO `users` (`user_id`, `username`, `password`, `email`, `created_at`, `is_admin`, `is_deleted`, `deleted_at`) VALUES
 (1, 'Admin', 'Admin1234', 'admin@admin.com', '2024-10-21 15:02:20', 1, 0, NULL);
 
 --
--- Indexes for dumped tables
+-- Indexek a kiírt táblákhoz
 --
 
 --
--- Indexes for table `categories`
+-- A tábla indexei `categories`
 --
 ALTER TABLE `categories`
   ADD PRIMARY KEY (`category_id`);
 
 --
--- Indexes for table `orders`
+-- A tábla indexei `orders`
 --
 ALTER TABLE `orders`
   ADD PRIMARY KEY (`order_id`);
 
 --
--- Indexes for table `order_items`
+-- A tábla indexei `order_items`
 --
 ALTER TABLE `order_items`
   ADD PRIMARY KEY (`order_item_id`);
 
 --
--- Indexes for table `payments`
+-- A tábla indexei `payments`
 --
 ALTER TABLE `payments`
   ADD PRIMARY KEY (`payment_id`);
 
 --
--- Indexes for table `products`
+-- A tábla indexei `products`
 --
 ALTER TABLE `products`
   ADD PRIMARY KEY (`product_id`);
 
 --
--- Indexes for table `shipping_addresses`
+-- A tábla indexei `shipping_addresses`
 --
 ALTER TABLE `shipping_addresses`
   ADD PRIMARY KEY (`address_id`);
 
 --
--- Indexes for table `test_feedback`
+-- A tábla indexei `test_feedback`
 --
 ALTER TABLE `test_feedback`
   ADD PRIMARY KEY (`feedback_id`);
 
 --
--- Indexes for table `users`
+-- A tábla indexei `users`
 --
 ALTER TABLE `users`
   ADD PRIMARY KEY (`user_id`);
 
 --
--- AUTO_INCREMENT for dumped tables
+-- A kiírt táblák AUTO_INCREMENT értéke
 --
 
 --
--- AUTO_INCREMENT for table `categories`
+-- AUTO_INCREMENT a táblához `categories`
 --
 ALTER TABLE `categories`
   MODIFY `category_id` int(8) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
--- AUTO_INCREMENT for table `orders`
+-- AUTO_INCREMENT a táblához `orders`
 --
 ALTER TABLE `orders`
   MODIFY `order_id` int(8) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `order_items`
+-- AUTO_INCREMENT a táblához `order_items`
 --
 ALTER TABLE `order_items`
   MODIFY `order_item_id` int(8) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `payments`
+-- AUTO_INCREMENT a táblához `payments`
 --
 ALTER TABLE `payments`
   MODIFY `payment_id` int(8) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `products`
+-- AUTO_INCREMENT a táblához `products`
 --
 ALTER TABLE `products`
   MODIFY `product_id` int(8) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=53;
 
 --
--- AUTO_INCREMENT for table `shipping_addresses`
+-- AUTO_INCREMENT a táblához `shipping_addresses`
 --
 ALTER TABLE `shipping_addresses`
   MODIFY `address_id` int(8) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `test_feedback`
+-- AUTO_INCREMENT a táblához `test_feedback`
 --
 ALTER TABLE `test_feedback`
   MODIFY `feedback_id` int(8) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `users`
+-- AUTO_INCREMENT a táblához `users`
 --
 ALTER TABLE `users`
   MODIFY `user_id` int(8) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
