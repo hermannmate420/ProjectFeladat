@@ -1,0 +1,9 @@
+com\iakk\service\UserService.class
+com\iakk\controller\UserController.class
+config\JWT.class
+com\iakk\exception\ExceptionLogger.class
+com\iakk\project\resources\JavaEE8Resource.class
+config\KeyGenerate.class
+com\iakk\model\User.class
+com\iakk\project\JAXRSConfiguration.class
+com\iakk\model\Products.class
