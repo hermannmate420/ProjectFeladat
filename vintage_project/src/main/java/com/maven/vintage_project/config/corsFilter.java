@@ -4,44 +4,43 @@
  */
 package com.maven.vintage_project.config;
 
+import javax.servlet.*;
+import javax.servlet.annotation.WebFilter;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
-import javax.ws.rs.container.ContainerRequestContext;
-import javax.ws.rs.container.ContainerResponseContext;
-import javax.ws.rs.container.ContainerResponseFilter;
 
-/**
- *
- * @author herma
- */
-public class corsFilter implements ContainerResponseFilter{
-    private static final boolean DEBUG_MODE = false;
-    private static final List<String> ALLOWED_URLS = Arrays.asList(
-            "https://localhost:8088"
-    );
+@WebFilter("/*")  // Az összes kérésre alkalmazni fogjuk
+public class corsFilter implements Filter {
 
     @Override
-    public void filter(ContainerRequestContext requestContext, ContainerResponseContext responseContext) throws IOException {
-        if (DEBUG_MODE) {
-            // Minden kérést átenged
-            responseContext.getHeaders().add("Access-Control-Allow-Origin", "*");
-        } else {
-            // Csak engedélyezett URL-eket enged át
-            String url = requestContext.getHeaderString("Origin");
-            if (url != null && ALLOWED_URLS.contains(url)) {
-                responseContext.getHeaders().add("Access-Control-Allow-Origin", url);
-            }
-        }
-
-        responseContext.getHeaders().add(
-                "Access-Control-Allow-Credentials", "true");
-        responseContext.getHeaders().add(
-                "Access-Control-Allow-Headers",
-                "origin, content-type, accept, authorization, token, x-requested-with, cache-control, Pragma, attachmenturl, Expires");
-        responseContext.getHeaders().add(
-                "Access-Control-Allow-Methods",
-                "GET, POST, PUT, DELETE, OPTIONS, HEAD");
+    public void init(FilterConfig filterConfig) throws ServletException {
+        // Kezdő konfiguráció, ha szükséges
     }
 
+    @Override
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
+            throws IOException, ServletException {
+        HttpServletResponse httpResponse = (HttpServletResponse) response;
+        HttpServletRequest httpRequest = (HttpServletRequest) request;
+
+        // CORS konfiguráció
+        httpResponse.setHeader("Access-Control-Allow-Origin", "*");
+        httpResponse.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+        httpResponse.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization, X-Requested-With");
+
+        // Ha OPTIONS kérés érkezik, válaszoljunk 200 OK státusszal és térjünk vissza
+        if ("OPTIONS".equalsIgnoreCase(httpRequest.getMethod())) {
+            httpResponse.setStatus(HttpServletResponse.SC_OK);
+            return;
+        }
+
+        // Különben folytassuk a kérés továbbítását
+        chain.doFilter(request, response);
+    }
+
+    @Override
+    public void destroy() {
+        // Erőforrások felszabadítása, ha szükséges
+    }
 }
