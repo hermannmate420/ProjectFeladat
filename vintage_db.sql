@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Feb 18, 2025 at 01:57 PM
+-- Generation Time: Mar 04, 2025 at 12:24 PM
 -- Server version: 5.7.24
 -- PHP Version: 8.3.1
 
@@ -49,9 +49,17 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `addProduct` (IN `nameIN` VARCHAR(10
     VALUES (nameIN, descIN, priceIN, quantityIN, categoryId);
 END$$
 
+CREATE DEFINER=`root`@`localhost` PROCEDURE `getAllUser` ()   SELECT * FROM `user`$$
+
 CREATE DEFINER=`root`@`localhost` PROCEDURE `getProductByID` (IN `idIN` INT(8))   SELECT *
 FROM `products` 
 WHERE idIN = `products`.`product_id`$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `getUserById` (IN `idIN` INT(8))   SELECT * FROM `user`
+WHERE `user`.`id` = idIN$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `login` (IN `email` VARCHAR(100), IN `password` VARCHAR(100))   SELECT * FROM `user`
+WHERE `user`.`email` = email AND `user`.`password` = sha1(password)$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `registration` (IN `userIN` VARCHAR(100), IN `firstnameIN` VARCHAR(100), IN `lastnameIN` VARCHAR(100), IN `emailIN` VARCHAR(100), IN `phoneIN` VARCHAR(100), IN `passwordIN` VARCHAR(200))   INSERT INTO `user`(`User`.`username`, `User`.`firstname`, `User`.`lastname`,`user`.`email`, `user`.`phone_number`, `user`.`password`, `user`.`is_admin`, `user`.`is_deleted`) VALUES (userIN, firstnameIN, lastnameIN,emailIN, phoneIN, SHA1(passwordIN),0,0)$$
 
@@ -272,7 +280,7 @@ CREATE TABLE `user` (
   `phone_number` varchar(30) NOT NULL,
   `password` text NOT NULL,
   `is_admin` tinyint(1) NOT NULL,
-  `is_deleted` tinyint(1) NOT NULL,
+  `is_deleted` tinyint(1) NOT NULL DEFAULT '0',
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `deleted_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -282,7 +290,8 @@ CREATE TABLE `user` (
 --
 
 INSERT INTO `user` (`id`, `username`, `firstname`, `lastname`, `email`, `phone_number`, `password`, `is_admin`, `is_deleted`, `created_at`, `deleted_at`) VALUES
-(1, 'hermannmate420', 'Mate', 'Hermann', 'hermate67@gmail.com', '+36074088704', '58b080f4d0240741b9ef583fc1106e9bcabf2042', 1, 0, '2025-02-12 01:01:40', NULL);
+(1, 'hermannmate420', 'Mate', 'Hermann', 'hermate67@gmail.com', '+36074088704', '58b080f4d0240741b9ef583fc1106e9bcabf2042', 1, 0, '2025-02-12 01:01:40', NULL),
+(2, 'Matevagyok', 'Énvagyok', 'Mate', 'hddgamer88@gmail.com', '+367848484848', '664819d8c5343676c9225b5ed00a5cdc6f3a1ff3', 0, 0, '2025-02-25 12:00:00', NULL);
 
 --
 -- Indexes for dumped tables
@@ -386,7 +395,7 @@ ALTER TABLE `test_feedback`
 -- AUTO_INCREMENT for table `user`
 --
 ALTER TABLE `user`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
