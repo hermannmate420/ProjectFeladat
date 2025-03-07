@@ -345,13 +345,13 @@ public User(String username, String firstname, String lastname, String email, St
             spq.registerStoredProcedureParameter("phoneIN", String.class, ParameterMode.IN);
             spq.registerStoredProcedureParameter("passwordIN", String.class, ParameterMode.IN);
             
-            System.out.println("Passing Parameters to Stored Procedure:");
+            /*System.out.println("Passing Parameters to Stored Procedure:");
             System.out.println("Username: " + u.getUsername());
             System.out.println("Firstname: " + u.getFirstname());
             System.out.println("Lastname: " + u.getLastname());
             System.out.println("Email: " + u.getEmail());
             System.out.println("Phone: " + u.getPhoneNumber());
-            System.out.println("Password: " + u.getPassword());
+            System.out.println("Password: " + u.getPassword());*/
 
             spq.setParameter("userIN", u.getUsername());
             spq.setParameter("firstnameIN", u.getFirstname());

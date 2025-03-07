@@ -19,6 +19,17 @@ public class UserService {
     private User layer = new User();
     private static final String EMAIL_REGEX = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,10}$";
     private static final Pattern EMAIL_PATTERN = Pattern.compile(EMAIL_REGEX);
+    private static final String PHONE_REGEX = "^(\\+?[0-9]{1,3})?[ -]?[0-9]{6,14}$";
+    private static final Pattern PHONE_PATTERN = Pattern.compile(PHONE_REGEX);
+
+    
+    //Még nincsen benne semmiben
+    public static boolean isValidPhoneNumber(String phoneNumber) {
+        if (phoneNumber == null || phoneNumber.trim().isEmpty()) {
+            return false;
+        }
+        return PHONE_PATTERN.matcher(phoneNumber.trim()).matches();
+    }
 
     public static boolean isValidEmail(String email) {
         if (email == null || email.isEmpty()) {
