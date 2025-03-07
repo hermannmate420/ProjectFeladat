@@ -12,7 +12,11 @@
                         Profile
                     </a>
                     <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="/profile">Profile</a></li>
+                        @if (navIsAdmin) {
+                            <li><a class="dropdown-item" href="/admin">Admin</a></li>
+                        }@else{
+                            <li><a class="dropdown-item" href="/profile">Profile</a></li>
+                        }
                         <li><a class="dropdown-item" href="/posts">My posts</a></li>
                         <li>
                             <hr class="dropdown-divider">

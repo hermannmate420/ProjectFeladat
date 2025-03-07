@@ -39,7 +39,7 @@ export class LoginComponent implements OnInit {
       await this.loginService.login(email, password);
       alert('Login successful!');
       
-      this.router.navigate([this.loginService.getIsAdmin() ? '/admin' : '/profile']);
+      this.router.navigate([this.loginService.getIsAdmin() ? '/admin' : '/home']);
     } catch (error) {
       console.error('Error logging in: ', error);
       alert('Error logging in: Invalid email or password!');

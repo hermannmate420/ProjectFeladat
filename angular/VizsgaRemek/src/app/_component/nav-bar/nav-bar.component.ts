@@ -11,8 +11,11 @@ import { CommonModule } from '@angular/common';
 })
 export class NavBarComponent {
   isAuthenticated = false;
+  navIsAdmin = false;
 
+  
   constructor(private loginService: LoginService) {
+    this.navIsAdmin = this.loginService.getIsAdmin();
     this.loginService.authenticated$.subscribe(auth => {
       this.isAuthenticated = auth;
     });
