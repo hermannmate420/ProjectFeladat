@@ -162,12 +162,12 @@ public class User implements Serializable {
         this.deletedAt = deletedAt;
     }
     
-    public User(String email, String phoneNumber, String firstname, String lastname, String username, String password) {
-        this.email = email;
-        this.phoneNumber = phoneNumber;
+public User(String username, String firstname, String lastname, String email, String phoneNumber, String password) {
+        this.username = username;
         this.firstname = firstname;
         this.lastname = lastname;
-        this.username = username;
+        this.email = email;
+        this.phoneNumber = phoneNumber;
         this.password = password;
     }
 
@@ -317,8 +317,10 @@ public class User implements Serializable {
                         o[10] == null ? null : formatter.parse(o[10].toString()) //deletedAt
                 );
                 toReturn = u;
+                System.out.println(u);
             }
             
+            System.out.println(toReturn);
             return toReturn;
         } catch (NumberFormatException | ParseException e) {
             System.err.println("Hiba: " + e.getLocalizedMessage());
@@ -339,14 +341,22 @@ public class User implements Serializable {
             spq.registerStoredProcedureParameter("firstnameIN", String.class, ParameterMode.IN);
             spq.registerStoredProcedureParameter("lastnameIN", String.class, ParameterMode.IN);
             spq.registerStoredProcedureParameter("emailIN", String.class, ParameterMode.IN);
-            spq.registerStoredProcedureParameter("phoneNumberIN", String.class, ParameterMode.IN);
+            spq.registerStoredProcedureParameter("phoneIN", String.class, ParameterMode.IN);
             spq.registerStoredProcedureParameter("passwordIN", String.class, ParameterMode.IN);
+            
+            System.out.println("Passing Parameters to Stored Procedure:");
+            System.out.println("Username: " + u.getUsername());
+            System.out.println("Firstname: " + u.getFirstname());
+            System.out.println("Lastname: " + u.getLastname());
+            System.out.println("Email: " + u.getEmail());
+            System.out.println("Phone: " + u.getPhoneNumber());
+            System.out.println("Password: " + u.getPassword());
 
             spq.setParameter("userIN", u.getUsername());
             spq.setParameter("firstnameIN", u.getFirstname());
             spq.setParameter("lastnameIN", u.getLastname());
             spq.setParameter("emailIN", u.getEmail());
-            spq.setParameter("phoneNumberIN", u.getPhoneNumber());
+            spq.setParameter("phoneIN", u.getPhoneNumber());
             spq.setParameter("passwordIN", u.getPassword());
 
             spq.execute();
@@ -427,7 +437,7 @@ public class User implements Serializable {
 
             List<User> toReturn = new ArrayList();
             List<Object[]> resultList = spq.getResultList();
-            SimpleDateFormat formatter = new SimpleDateFormat("YYYY-MM-dd HH:mm:ss");
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             for (Object[] record : resultList) {
                 User u = new User(
                         Integer.valueOf(record[0].toString()), //id
