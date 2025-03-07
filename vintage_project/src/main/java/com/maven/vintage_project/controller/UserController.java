@@ -61,14 +61,21 @@ public class UserController {
     @POST
     @Path("registerUser")
     @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
     public Response registerUser(String bodyString) {
+        System.out.println("Received JSON: " + bodyString);
         JSONObject body;
         try {
             body = new JSONObject(bodyString);
         } catch (JSONException e) {
             return Response.status(Response.Status.BAD_REQUEST)
                        .entity("Invalid JSON format").type(MediaType.APPLICATION_JSON).build();
-    }
+            }
+        
+        System.out.println("Parsed Data:");
+        System.out.println("Username: " + body.optString("username"));
+        System.out.println("Email: " + body.optString("email"));
+        System.out.println("Password: " + body.optString("password"));
         User u = new User(
                 body.getString("username"),
                 body.getString("firstName"),
@@ -77,6 +84,10 @@ public class UserController {
                 body.getString("phoneNumber"),
                 body.getString("password")
         );
+        
+        System.out.println("Mapped User Object:");
+        System.out.println("Username: " + u.getUsername());
+        System.out.println("Email: " + u.getEmail());
 
         JSONObject obj = layer.registerUser(u);
         return Response.status(obj.getInt("statusCode")).entity(obj.toString()).type(MediaType.APPLICATION_JSON).build();
