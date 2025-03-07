@@ -1,0 +1,35 @@
+<app-nav-bar></app-nav-bar>
+<div class="form-container">
+  <div class="checkout-form">
+    <h2>Megrendelés adatai</h2>
+    <form (ngSubmit)="checkout()" class="cart">
+      <!-- Név mező -->
+      <label for="name">Név:</label>
+      <input type="text" id="name" [(ngModel)]="name" name="name" required />
+
+      <!-- Cím mező -->
+      <label for="address">Szállítási cím:</label>
+      <input type="text" id="address" [(ngModel)]="address" name="address" required />
+
+      <!-- Fizetési mód -->
+      <label for="payment">Fizetési mód:</label>
+      <select id="payment" [(ngModel)]="paymentMethod" name="paymentMethod">
+        <option value="credit">Hitelkártya</option>
+        <option value="paypal">PayPal</option>
+      </select>
+
+      <!-- Összeg -->
+      <div>
+        <strong class="amount">Összeg: {{ totalAmount }} Ft</strong>
+      </div>
+
+      <!-- Submit gomb -->
+      <button type="submit" [disabled]="!name || !address">Rendelés véglegesítése</button>
+    </form>
+  </div>
+
+  <div class="product-list">
+    <app-product-list [products]="products"></app-product-list>
+  </div>
+</div>
+<app-footer></app-footer>
