@@ -231,10 +231,11 @@ public class UserService {
             JSONObject user = new JSONObject();
             
             user.put("id", modelResult.getId());
-            user.put("email", modelResult.getEmail());
-            user.put("phone", modelResult.getPhoneNumber());
+            user.put("username", modelResult.getUsername());
             user.put("firstName", modelResult.getFirstname());
             user.put("lastName", modelResult.getLastname());
+            user.put("email", modelResult.getEmail());
+            user.put("phone", modelResult.getPhoneNumber());
             user.put("isAdmin", modelResult.getIsAdmin());
             user.put("isDeleted", modelResult.getIsDeleted());
             user.put("createdAt", modelResult.getCreatedAt());
