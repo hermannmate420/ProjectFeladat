@@ -136,10 +136,11 @@ public class User implements Serializable {
             this.firstname = u.getFirstname();  //2
             this.lastname = u.getLastname(); //3
             this.email = u.getEmail(); //4
-            this.isAdmin = u.getIsAdmin(); //5
-            this.isDeleted = u.getIsDeleted(); //6
-            this.createdAt = u.getCreatedAt(); //7
-            this.deletedAt = u.getDeletedAt(); //8
+            this.phoneNumber = u.getPhoneNumber(); //5
+            this.isAdmin = u.getIsAdmin(); //6
+            this.isDeleted = u.getIsDeleted(); //7
+            this.createdAt = u.getCreatedAt(); //8
+            this.deletedAt = u.getDeletedAt(); //9
         } catch (Exception ex) {
             System.err.println("Hiba: " + ex.getLocalizedMessage());
         } finally {
