@@ -12,8 +12,8 @@ import { FooterComponent } from "../footer/footer.component";
   encapsulation: ViewEncapsulation.None
 })
 export class ProductListComponent {
-  @Input() products: any[] = []; // Bejövő termékek
-  @Input() shippingFee: number = 1000; // Szállítási díj (alapértelmezett 1000 Ft)
+  @Input() products: any[] = []; 
+  @Input() shippingFee: number = 1000; 
 
   // Nettó összeg számítása
   get netTotal(): number {
@@ -22,10 +22,10 @@ export class ProductListComponent {
 
   // Áfa 27% és bruttó összeg számítása
   get grossTotal(): number {
-    return this.netTotal * 1.27; // 27% ÁFA
+    return this.netTotal * 1.27;
   }
 
-  // Teljes összeg (bruttó + szállítási díj)
+  // Teljes összeg
   get totalAmount(): number {
     return this.grossTotal + this.shippingFee;
   }

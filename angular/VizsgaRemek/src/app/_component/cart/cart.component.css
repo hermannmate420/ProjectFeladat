@@ -1,19 +1,19 @@
-/* A form-container közvetlenül az alap flexbox-ot alkalmazza */
+
 .form-container {
     display: flex;
     justify-content: space-between;
-    gap: 20px; /* A két form közötti távolság */
-    align-items: flex-start; /* Középre igazítás, ha szükséges */
-    padding: 20px; /* A form-container körül egy kis térköz */
+    gap: 20px; 
+    align-items: flex-start; 
+    padding: 20px; 
   }
   
   .checkout-form, .product-list {
     background-color: #F4DEBE;
     padding: 20px;
     border-radius: 10px;
-    box-sizing: border-box; /* Fontos, hogy a padding ne növelje a szélességet */
+    box-sizing: border-box; 
     flex: 1;
-    max-width: 48%; /* Azonos szélesség mindkét form számára */
+    max-width: 48%; 
   }
   
   h2 {
@@ -41,38 +41,38 @@
     background-color: #4D675A;
   }
   
-  /* Az input mezők és label-ek alatti elemek egymás alatt jelenjenek meg */
+ 
   .checkout-form label, .checkout-form input, .checkout-form select, .checkout-form button {
-    display: block; /* Az összes input elem és label új sorban jelenik meg */
-    width: 100%; /* Az inputok teljes szélességben jelennek meg */
-    margin-bottom: 15px; /* Kis margó az elemek között */
+    display: block; 
+    width: 100%; 
+    margin-bottom: 15px; 
   }
   
-  /* Az input mezők és selectek 50%-os szélességűek legyenek */
+
   .checkout-form input, .checkout-form select {
-    width: 50%; /* 50%-os szélesség */
-    margin: 0 auto; /* Középre igazítás */
+    width: 50%; 
+    margin: 0 auto; 
   }
   
-  /* Címkék középre igazítása */
+
   label {
     text-align: center;
   }
   
-  /* Az input mezők szövege is középre kerüljön */
+
   input, #payment {
     text-align: center;
   }
   
-  /* Külön div a végösszeghez és egyéb adatokhoz, középre igazítva */
+
   .checkout-form .total-amount {
-    text-align: center; /* Középre igazítás */
+    text-align: center; 
     font-size: 18px;
     font-weight: bold;
     margin-top: 20px;
   }
   
-  /* Végösszeg mezők középre igazítása */
+
   .checkout-form .total-amount div {
     margin-bottom: 10px;
   }
