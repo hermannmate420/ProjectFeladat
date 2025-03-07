@@ -13,9 +13,9 @@ import { ProductListComponent } from "../product-list/product-list.component";
   encapsulation: ViewEncapsulation.None
 })
 export class CartComponent {
-  totalAmount: number = 500;  // Deklaráljuk a teljes összeget, amit a kosárból kaphatsz
-  address: string = '';  // Alapértelmezett üres string
-  paymentMethod: string = 'credit';  // Alapértelmezett érték, például 'credit' vagy 'paypal'
+  totalAmount: number = 500;  
+  address: string = '';  
+  paymentMethod: string = 'credit';  
   name: string = '';
 
   products = [
@@ -25,7 +25,7 @@ export class CartComponent {
   ];
 
   checkout() {
-    // Ellenőrizzük, hogy a cím meg van-e adva
+    
     if (!this.name || !this.address) {
       alert('Kérjük, adja meg a nevet és a szállítási címet!');
       return;

@@ -1,7 +1,7 @@
-/* A product-list és annak elemei egyedi osztályokkal */
+
 .product-list-container {
     padding: 20px;
-    background-color: #F4DEBE; /* A háttérszín */
+    background-color: #F4DEBE; 
 }
 
 .product-list-header {
