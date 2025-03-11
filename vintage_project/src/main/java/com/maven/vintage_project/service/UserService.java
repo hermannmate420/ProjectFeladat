@@ -258,4 +258,25 @@ public class UserService {
         toReturn.put("statusCode", statusCode);
         return toReturn;
     }
+    
+    public JSONObject changePassword(Integer userId, String newPassword, Integer creator){
+        JSONObject toReturn = new JSONObject();
+        String status = "success";
+        int statusCode = 200;
+        
+        if(userId == creator){
+            Boolean modelResult = layer.changePassword(userId, newPassword, creator);
+            if(!modelResult){
+                status = "ModelException";
+                statusCode = 500;
+            }
+        } else{
+            status = "PermissionError";
+            statusCode = 417;
+        }
+        
+        toReturn.put("status", status);
+        toReturn.put("statusCode", statusCode);
+        return toReturn;
+    }
 }

@@ -149,18 +149,18 @@ public class User implements Serializable {
         }
     }
 
-    public User(Integer id, String username, String firstname, String lastname, String email, String phoneNumber, String password, boolean isAdmin, boolean isDeleted, Date createdAt, Date deletedAt) {
-        this.id = id;
-        this.username = username;
-        this.firstname = firstname;
-        this.lastname = lastname;
-        this.email = email;
-        this.phoneNumber = phoneNumber;
-        this.password = password;
-        this.isAdmin = isAdmin;
-        this.isDeleted = isDeleted;
-        this.createdAt = createdAt;
-        this.deletedAt = deletedAt;
+    public User(Integer id, String username, String firstname, String lastname, String email, String phoneNumber, String password, Boolean isAdmin, Boolean isDeleted, Date createdAt, Date deletedAt) {
+        this.id = id; //0
+        this.username = username; //1
+        this.firstname = firstname; //2
+        this.lastname = lastname; //3
+        this.email = email; //4
+        this.phoneNumber = phoneNumber; //5
+        this.password = password; //6
+        this.isAdmin = isAdmin; //7
+        this.isDeleted = isDeleted; //8
+        this.createdAt = createdAt; //9
+        this.deletedAt = deletedAt; //10
     }
     
 public User(String username, String firstname, String lastname, String email, String phoneNumber, String password) {
@@ -378,18 +378,18 @@ public User(String username, String firstname, String lastname, String email, St
         try {
             StoredProcedureQuery spq = em.createStoredProcedureQuery("registerAdmin");
 
-            spq.registerStoredProcedureParameter("usernameIN", String.class, ParameterMode.IN);
+            spq.registerStoredProcedureParameter("userIN", String.class, ParameterMode.IN);
             spq.registerStoredProcedureParameter("firstnameIN", String.class, ParameterMode.IN);
             spq.registerStoredProcedureParameter("lastnameIN", String.class, ParameterMode.IN);
             spq.registerStoredProcedureParameter("emailIN", String.class, ParameterMode.IN);
-            spq.registerStoredProcedureParameter("phoneNumberIN", String.class, ParameterMode.IN);
+            spq.registerStoredProcedureParameter("phoneIN", String.class, ParameterMode.IN);
             spq.registerStoredProcedureParameter("passwordIN", String.class, ParameterMode.IN);
 
             spq.setParameter("userIN", u.getUsername());
+            spq.setParameter("firstnameIN", u.getFirstname());
+            spq.setParameter("lastnameIN", u.getLastname());
             spq.setParameter("emailIN", u.getEmail());
-            spq.setParameter("firstNameIN", u.getFirstname());
-            spq.setParameter("lastNameIN", u.getLastname());
-            spq.setParameter("phoneNumberIN", u.getPhoneNumber());
+            spq.setParameter("phoneIN", u.getPhoneNumber());
             spq.setParameter("passwordIN", u.getPassword());
 
             spq.execute();
@@ -445,13 +445,13 @@ public User(String username, String firstname, String lastname, String email, St
                         record[1].toString(), //username
                         record[2].toString(), //firstname
                         record[3].toString(), //lastname
-                        record[5].toString(), //email
-                        record[6].toString(), //phoneNum
-                        record[4].toString(), //password
-                        Boolean.parseBoolean(record[6].toString()), //isAdmin
-                        Boolean.parseBoolean(record[7].toString()), //isDeleted
-                        formatter.parse(record[8].toString()), //createdAt
-                        record[9] == null ? null : formatter.parse(record[9].toString()) //deletedAt
+                        record[4].toString(), //email
+                        record[5].toString(), //phoneNum
+                        record[6].toString(), //password
+                        Boolean.parseBoolean(record[7].toString()), //isAdmin
+                        Boolean.parseBoolean(record[8].toString()), //isDeleted
+                        formatter.parse(record[9].toString()), //createdAt
+                        record[10] == null ? null : formatter.parse(record[10].toString()) //deletedAt
                 );
 
                 toReturn.add(u);
@@ -468,5 +468,30 @@ public User(String username, String firstname, String lastname, String email, St
         }
     }
     
+    public Boolean changePassword(Integer userId, String newPassword, Integer creator) {
+        EntityManager em = emf.createEntityManager();
+
+        try {
+            StoredProcedureQuery spq = em.createStoredProcedureQuery("changePassword");
+
+            spq.registerStoredProcedureParameter("userIdIN", Integer.class, ParameterMode.IN);
+            spq.registerStoredProcedureParameter("newPasswordIN", String.class, ParameterMode.IN);
+            spq.registerStoredProcedureParameter("creatorIN", Integer.class, ParameterMode.IN);
+
+            spq.setParameter("userIdIN", userId);
+            spq.setParameter("newPasswordIN", newPassword);
+            spq.setParameter("creatorIN", creator);
+
+            spq.execute();
+
+            return true;
+        } catch (Exception e) {
+            System.err.println("Hiba: " + e.getLocalizedMessage());
+            return false;
+        } finally {
+            em.clear();
+            em.close();
+        }
+    }
     
 }

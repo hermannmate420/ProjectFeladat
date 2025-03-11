@@ -152,4 +152,35 @@ public class UserController {
         }
 
     }
+
+    @PUT
+    @Path("changePassword")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response changePassword(@HeaderParam("token") String jwt, String bodyString) {
+        int isValid = JWT.validateJWT(jwt);
+        
+        if (isValid != 1) {
+        return Response.status(isValid == 2 ? 498 : 401).entity(isValid == 2 ? "InvalidToken" : "TokenExpired").build();
+        }
+        
+         JSONObject body;
+        try {
+            body = new JSONObject(bodyString);
+        } catch (Exception e) {
+            return Response.status(400).entity("Invalid JSON format").type(MediaType.APPLICATION_JSON).build();
+        }
+        
+        if (!body.has("userId") || !body.has("newPassword")) {
+            return Response.status(400).entity("Missing userId or newPassword field").type(MediaType.APPLICATION_JSON).build();
+        }
+        
+        Integer userId = body.getInt("userId");
+        String newPassword = body.getString("newPassword");
+        Integer creator = JWT.getUserIdByToken(jwt);
+        
+        JSONObject obj = layer.changePassword(userId, newPassword, creator);
+        return Response.status(obj.getInt("statusCode")).entity(obj.toString()).type(MediaType.APPLICATION_JSON).build();
+    }
 }
+
+
