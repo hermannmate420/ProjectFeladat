@@ -34,7 +34,6 @@
         <img *ngIf="paymentMethod === 'paypal'" src="paypal-icon.png" alt="PayPal" class="payment-images">
         <img *ngIf="paymentMethod === 'cash'" src="cash-on-delivery-icon.png" alt="Cash on Delivery" class="payment-images">
       </div>
-      <p></p>
 
       <!-- Kártya adatok mezők, csak akkor jelennek meg, ha a fizetési mód "credit" -->
       <div *ngIf="paymentMethod === 'credit'" class="credit-fields">
@@ -48,9 +47,10 @@
         <input type="text" id="cvv" [(ngModel)]="cvv" name="cvv" required />
       </div>
 
-
       <!-- Submit gomb -->
-      <button type="submit" [disabled]="!name || !address || !paymentMethod">Rendelés véglegesítése</button>
+      <button type="submit" id="acceptbtn" [disabled]="!isFormValid()">
+        Rendelés véglegesítése
+      </button>
     </form>
   </div>
 

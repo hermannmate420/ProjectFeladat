@@ -30,16 +30,27 @@ export class CartComponent {
   ];
 
   checkout() {
-    if (!this.name || !this.address || !this.paymentMethod) {
-      alert('Kérjük, adja meg a nevet, szállítási címet és a fizetési módot!');
-      return;
-    }
-
-    if (this.paymentMethod === 'credit' && (!this.cardNumber || !this.expiryDate || !this.cvv)) {
-      alert('Kérjük, adja meg a kártyaadatokat!');
+    if (!this.isFormValid()) {
+      alert('Kérjük, töltse ki az összes szükséges mezőt!');
       return;
     }
 
     alert(`Rendelés véglegesítve! Név: ${this.name}, Szállítási cím: ${this.address}, Fizetési mód: ${this.paymentMethod}`);
+  }
+
+  isFormValid(): boolean {
+    // Ha nincs név, cím vagy fizetési mód, akkor nem engedélyezzük a gombot
+    if (!this.name || !this.address || !this.paymentMethod) {
+      return false;
+    }
+
+    // Ha a fizetési mód hitelkártya, akkor ellenőrizzük a kártyaadatokat
+    if (this.paymentMethod === 'credit') {
+      if (!this.cardNumber || !this.expiryDate || !this.cvv) {
+        return false;
+      }
+    }
+
+    return true; // Minden feltétel teljesült, a gomb aktív lehet
   }
 }

@@ -1,109 +1,110 @@
 /* Az oldal háttérszíne */
 body {
-  background-color: #4D675A; /* Weboldal háttérszíne */
+  background-color: #4D675A;
 }
 
 /* A form-container, hogy a boxok egymás mellett jelenjenek meg */
 .form-container {
-  display: flex; /* A boxok egymás mellett lesznek */
-  gap: 20px; /* Távolság a boxok között */
+  display: flex;
+  gap: 20px;
   padding: 20px;
-  background-color: #4D675A; /* Weboldal háttérszíne */
+  background-color: #4D675A;
 }
 
 /* A checkout form és a product list boxok háttérszíne */
 .checkout-form, .product-list {
-  background-color: #BFA082; /* Boxok háttérszíne */
+  background-color: #BFA082;
   padding: 20px;
   border-radius: 10px;
   flex: 1;
   box-sizing: border-box;
-  min-width: 45%; /* Kisebb szélesség, hogy elférjenek egymás mellett */
+  min-width: 45%;
 }
 
 /* A product-list teljes háttérszíne */
 .product-list {
-  background-color: #BFA082; /* Boxok teljes háttérszíne */
+  background-color: #BFA082;
   display: flex;
-  flex-direction: column; /* A termékek egymás alatt */
-  gap: 10px; /* Távolság a termékek között */
+  flex-direction: column;
+  gap: 10px;
   padding: 10px;
   box-sizing: border-box;
   border-radius: 8px;
   overflow-y: auto;
-  max-height: 500px; /* Görgethetővé teszi a listát */
+  max-height: 500px;
 }
 
-/* A termékek megjelenése a product-list-ben */
-.product-item {
-  display: flex;
-  justify-content: space-between; /* Balra és jobbra igazítás */
-  align-items: center;
-  margin-bottom: 10px;
-  padding: 10px;
-  background-color: #BFA082; /* Termékek háttérszíne */
-  border-radius: 8px;
-}
-
-/* A checkout formon belüli elemek elrendezése (inputok egymás alá) */
+/* A checkout formon belüli elemek elrendezése */
 .checkout-form label,
 .checkout-form input,
 .checkout-form select,
 .checkout-form button {
-  display: block; /* Az összes elem egy blokkba kerül */
-  width: 100%; /* Minden elem 100%-os szélességű lesz */
-  margin-bottom: 15px; /* 15px távolság az elemek között */
-  text-align: center; /* Középre igazítás */
+  display: block;
+  width: 100%;
+  margin-bottom: 10px;
+  text-align: center;
 }
 
 /* Speciális stílus az inputokhoz és selectekhez */
 .checkout-form input,
 .checkout-form select {
-  width: 50%; /* Csökkentett szélesség */
-  margin: 0 auto; /* Középre igazítás */
+  width: 50%;
+  margin: 0 auto;
 }
 
 /* Fizetési mód radio gombok vízszintes elrendezése */
 .checkout-form div {
-  display: flex; /* Flexbox használata */
-  gap: 20px; /* Távolság a gombok között */
-  justify-content: center; /* Középre igazítás */
+  display: flex;
+  gap: 20px;
+  justify-content: center;
 }
 
-/* Kártya adat mezők elrendezése (egymás alatt) */
+/* Kártya adat mezők elrendezése */
 .checkout-form .credit-fields {
   display: flex;
-  flex-direction: column; /* Vertikális elrendezés */
-  gap: 15px; /* Távolság a mezők között */
-  align-items: center; /* Középre igazítás */
+  flex-direction: column;
+  gap: 5px;
+  align-items: center;
 }
 
-/* Gombok alap színe és hover állapot */
-button {
-  background-color: #4D675A; /* Gomb háttérszíne */
+/* Gombok alapértelmezett stílusa */
+#acceptbtn {
+  background-color: #4D675A;
   color: white;
   padding: 12px 20px;
   border: none;
   border-radius: 5px;
   cursor: pointer;
   font-size: 18px;
-  margin: 0 auto; /* Középre igazítás */
+  margin: 0 auto;
+  transition: background-color 0.3s ease;
+  width: 50%; /* A gomb mérete az eredeti 50%-ára csökkent */
 }
 
-/* Gombok, amikor az egér fölé kerül (hover) */
-button:hover {
-  background-color: #4D675A; /* Ugyanaz, mint a háttérszín */
+/* Gomb hover állapota */
+#acceptbtn:hover {
+  background-color: #3c5449;
 }
 
-/* Gombok inaktív állapota (disabled) */
-button:disabled {
-  background-color: #cccccc;
+/* Gomb inaktív (kikapcsolt) állapota */
+#acceptbtn:disabled {
+  background-color: grey; /* Szürke szín */
+  color: #ffffff;
   cursor: not-allowed;
+  opacity: 0.7;
 }
+
+/* Fizetési képek méretezése */
 .payment-images {
-  max-width: 50px; /* Kép szélesség maximum 50px */
-  max-height: 50px; /* Kép magasság maximum 50px */
-  width: auto; /* Automatikusan igazodik */
-  height: auto; /* Automatikusan igazodik */
-  margin-right: 10px; /* Távolság a szövegtől */
+  max-width: 50px;
+  max-height: 50px;
+  width: auto;
+  height: auto;
+  margin-right: 10px;
 }
+#cvv{
+  margin-bottom: 15px;
+}
+
+
+

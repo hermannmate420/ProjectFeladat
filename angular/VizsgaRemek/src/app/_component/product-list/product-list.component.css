@@ -28,8 +28,9 @@
     border: none;
     border-radius: 2.5px;
     cursor: pointer;
-    font-size: 10px;
+    font-size: 15px;
     margin-left: 3px;
+    width: 90px;
 }
 
 .product-button:hover {

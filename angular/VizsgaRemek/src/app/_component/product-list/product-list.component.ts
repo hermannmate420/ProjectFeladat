@@ -1,12 +1,10 @@
 import { Component, Input, ViewEncapsulation } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { NavBarComponent } from "../nav-bar/nav-bar.component";
-import { FooterComponent } from "../footer/footer.component";
 
 @Component({
   selector: 'app-product-list',
-  imports: [NavBarComponent, FooterComponent, FormsModule, CommonModule],
+  imports: [FormsModule, CommonModule],
   templateUrl: './product-list.component.html',
   styleUrl: './product-list.component.css',
   encapsulation: ViewEncapsulation.None
