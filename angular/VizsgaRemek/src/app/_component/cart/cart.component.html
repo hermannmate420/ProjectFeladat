@@ -13,19 +13,44 @@
 
       <!-- Fizetési mód -->
       <label for="payment">Fizetési mód:</label>
-      <select id="payment" [(ngModel)]="paymentMethod" name="paymentMethod">
-        <option value="credit">Hitelkártya</option>
-        <option value="paypal">PayPal</option>
-        <option value="cash">Utánvét</option>
-      </select>
-
-      <!-- Összeg -->
       <div>
-        <strong class="amount">Összeg: {{ totalAmount }} Ft</strong>
+        <label>
+          <input type="radio" [(ngModel)]="paymentMethod" name="paymentMethod" value="credit" />
+          Hitelkártya
+        </label>
+        <label>
+          <input type="radio" [(ngModel)]="paymentMethod" name="paymentMethod" value="paypal" />
+          PayPal
+        </label>
+        <label>
+          <input type="radio" [(ngModel)]="paymentMethod" name="paymentMethod" value="cash" />
+          Utánvét
+        </label>
       </div>
 
+      <!-- Kép megjelenítése, ha választottak fizetési módot -->
+      <div *ngIf="paymentMethod">
+        <img *ngIf="paymentMethod === 'credit'" src="credit-card-icon.png" alt="Credit Card" class="payment-images">
+        <img *ngIf="paymentMethod === 'paypal'" src="paypal-icon.png" alt="PayPal" class="payment-images">
+        <img *ngIf="paymentMethod === 'cash'" src="cash-on-delivery-icon.png" alt="Cash on Delivery" class="payment-images">
+      </div>
+      <p></p>
+
+      <!-- Kártya adatok mezők, csak akkor jelennek meg, ha a fizetési mód "credit" -->
+      <div *ngIf="paymentMethod === 'credit'" class="credit-fields">
+        <label for="cardNumber">Kártyaszám:</label>
+        <input type="text" id="cardNumber" [(ngModel)]="cardNumber" name="cardNumber" required />
+
+        <label for="expiryDate">Lejárat:</label>
+        <input type="text" id="expiryDate" [(ngModel)]="expiryDate" name="expiryDate" required />
+
+        <label for="cvv">CVV:</label>
+        <input type="text" id="cvv" [(ngModel)]="cvv" name="cvv" required />
+      </div>
+
+
       <!-- Submit gomb -->
-      <button type="submit" [disabled]="!name || !address">Rendelés véglegesítése</button>
+      <button type="submit" [disabled]="!name || !address || !paymentMethod">Rendelés véglegesítése</button>
     </form>
   </div>
 

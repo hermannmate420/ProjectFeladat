@@ -2,21 +2,26 @@ import { Component, ViewEncapsulation } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { FooterComponent } from '../footer/footer.component';
 import { NavBarComponent } from '../nav-bar/nav-bar.component';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ProductListComponent } from "../product-list/product-list.component";
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-cart',
-  imports: [FormsModule, FooterComponent, NavBarComponent, ProductListComponent],
+  imports: [FormsModule, FooterComponent, NavBarComponent, ProductListComponent, CommonModule],
   templateUrl: './cart.component.html',
-  styleUrl: './cart.component.css',
+  styleUrls: ['./cart.component.css'],
   encapsulation: ViewEncapsulation.None
 })
 export class CartComponent {
   totalAmount: number = 500;  
   address: string = '';  
-  paymentMethod: string = 'credit';  
+  paymentMethod: string = '';  // Fizetési mód
   name: string = '';
+  
+  // Kártya adatok
+  cardNumber: string = '';
+  expiryDate: string = '';
+  cvv: string = '';
 
   products = [
     { name: 'Termék 1', price: 100, quantity: 2 },
@@ -25,13 +30,16 @@ export class CartComponent {
   ];
 
   checkout() {
-    
-    if (!this.name || !this.address) {
-      alert('Kérjük, adja meg a nevet és a szállítási címet!');
+    if (!this.name || !this.address || !this.paymentMethod) {
+      alert('Kérjük, adja meg a nevet, szállítási címet és a fizetési módot!');
+      return;
+    }
+
+    if (this.paymentMethod === 'credit' && (!this.cardNumber || !this.expiryDate || !this.cvv)) {
+      alert('Kérjük, adja meg a kártyaadatokat!');
       return;
     }
 
     alert(`Rendelés véglegesítve! Név: ${this.name}, Szállítási cím: ${this.address}, Fizetési mód: ${this.paymentMethod}`);
   }
 }
-

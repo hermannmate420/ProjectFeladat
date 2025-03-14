@@ -1,79 +1,109 @@
+/* Az oldal háttérszíne */
+body {
+  background-color: #4D675A; /* Weboldal háttérszíne */
+}
 
+/* A form-container, hogy a boxok egymás mellett jelenjenek meg */
 .form-container {
-    display: flex;
-    justify-content: space-between;
-    gap: 20px; 
-    align-items: flex-start; 
-    padding: 20px; 
-  }
-  
-  .checkout-form, .product-list {
-    background-color: #F4DEBE;
-    padding: 20px;
-    border-radius: 10px;
-    box-sizing: border-box; 
-    flex: 1;
-    max-width: 48%; 
-  }
-  
-  h2 {
-    font-size: 24px;
-    margin-bottom: 20px;
-    text-align: center;
-  }
-  
-  button {
-    background-color: #4D675A;
-    color: white;
-    padding: 12px 20px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 18px;
-  }
-  
-  button:disabled {
-    background-color: #cccccc;
-    cursor: not-allowed;
-  }
-  
-  body {
-    background-color: #4D675A;
-  }
-  
- 
-  .checkout-form label, .checkout-form input, .checkout-form select, .checkout-form button {
-    display: block; 
-    width: 100%; 
-    margin-bottom: 15px; 
-  }
-  
+  display: flex; /* A boxok egymás mellett lesznek */
+  gap: 20px; /* Távolság a boxok között */
+  padding: 20px;
+  background-color: #4D675A; /* Weboldal háttérszíne */
+}
 
-  .checkout-form input, .checkout-form select {
-    width: 50%; 
-    margin: 0 auto; 
-  }
-  
+/* A checkout form és a product list boxok háttérszíne */
+.checkout-form, .product-list {
+  background-color: #BFA082; /* Boxok háttérszíne */
+  padding: 20px;
+  border-radius: 10px;
+  flex: 1;
+  box-sizing: border-box;
+  min-width: 45%; /* Kisebb szélesség, hogy elférjenek egymás mellett */
+}
 
-  label {
-    text-align: center;
-  }
-  
+/* A product-list teljes háttérszíne */
+.product-list {
+  background-color: #BFA082; /* Boxok teljes háttérszíne */
+  display: flex;
+  flex-direction: column; /* A termékek egymás alatt */
+  gap: 10px; /* Távolság a termékek között */
+  padding: 10px;
+  box-sizing: border-box;
+  border-radius: 8px;
+  overflow-y: auto;
+  max-height: 500px; /* Görgethetővé teszi a listát */
+}
 
-  input, #payment {
-    text-align: center;
-  }
-  
+/* A termékek megjelenése a product-list-ben */
+.product-item {
+  display: flex;
+  justify-content: space-between; /* Balra és jobbra igazítás */
+  align-items: center;
+  margin-bottom: 10px;
+  padding: 10px;
+  background-color: #BFA082; /* Termékek háttérszíne */
+  border-radius: 8px;
+}
 
-  .checkout-form .total-amount {
-    text-align: center; 
-    font-size: 18px;
-    font-weight: bold;
-    margin-top: 20px;
-  }
-  
+/* A checkout formon belüli elemek elrendezése (inputok egymás alá) */
+.checkout-form label,
+.checkout-form input,
+.checkout-form select,
+.checkout-form button {
+  display: block; /* Az összes elem egy blokkba kerül */
+  width: 100%; /* Minden elem 100%-os szélességű lesz */
+  margin-bottom: 15px; /* 15px távolság az elemek között */
+  text-align: center; /* Középre igazítás */
+}
 
-  .checkout-form .total-amount div {
-    margin-bottom: 10px;
-  }
-  
+/* Speciális stílus az inputokhoz és selectekhez */
+.checkout-form input,
+.checkout-form select {
+  width: 50%; /* Csökkentett szélesség */
+  margin: 0 auto; /* Középre igazítás */
+}
+
+/* Fizetési mód radio gombok vízszintes elrendezése */
+.checkout-form div {
+  display: flex; /* Flexbox használata */
+  gap: 20px; /* Távolság a gombok között */
+  justify-content: center; /* Középre igazítás */
+}
+
+/* Kártya adat mezők elrendezése (egymás alatt) */
+.checkout-form .credit-fields {
+  display: flex;
+  flex-direction: column; /* Vertikális elrendezés */
+  gap: 15px; /* Távolság a mezők között */
+  align-items: center; /* Középre igazítás */
+}
+
+/* Gombok alap színe és hover állapot */
+button {
+  background-color: #4D675A; /* Gomb háttérszíne */
+  color: white;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 18px;
+  margin: 0 auto; /* Középre igazítás */
+}
+
+/* Gombok, amikor az egér fölé kerül (hover) */
+button:hover {
+  background-color: #4D675A; /* Ugyanaz, mint a háttérszín */
+}
+
+/* Gombok inaktív állapota (disabled) */
+button:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+}
+.payment-images {
+  max-width: 50px; /* Kép szélesség maximum 50px */
+  max-height: 50px; /* Kép magasság maximum 50px */
+  width: auto; /* Automatikusan igazodik */
+  height: auto; /* Automatikusan igazodik */
+  margin-right: 10px; /* Távolság a szövegtől */
+}
