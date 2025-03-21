@@ -1,0 +1,145 @@
+CREATE DATABASE product_catalog;
+USE product_catalog;
+
+CREATE TABLE products (
+    product_id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    description TEXT NOT NULL,
+    price DECIMAL(10,2) NOT NULL,
+    stock_quanty INT NOT NULL,
+    category_id INT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+INSERT INTO products (name, description, price, stock_quanty, category_id, created_at) VALUES
+-- Órák (10 db)
+('Cartier óra', 'A világ első Cartier órája', 2250000.00, 2, 1, '2024-12-05 13:54:51'),
+('Antik Fa Fali Óra', 'Klasszikus antik falióra kézi faragással.', 173000.00, 10, 1, '2024-12-05 14:00:42'),
+('Retro Zsebóra', 'Ezüst zsebóra lánccal és gravírozott mintával.', 113000.00, 15, 1, '2024-12-05 14:00:42'),
+('Aranyozott Asztali Óra', 'Elegáns aranyozott óra, viktoriánus stílusban.', 425000.00, 2, 1, '2024-12-05 14:00:42'),
+('Modern Minimalista Falióra', 'Letisztult design, csendes működés.', 29000.00, 20, 1, '2024-12-05 14:00:42'),
+('Digitális LED Falióra', 'Nagy kijelző, éjszakai mód.', 38000.00, 25, 1, '2024-12-05 14:00:42'),
+('Fa Díszített Falióra', 'Rusztikus stílus, tömör fa keret.', 52000.00, 8, 1, '2024-12-05 14:00:42'),
+('Klasszikus Római Számos Óra', 'Elegáns megjelenés, precíz szerkezet.', 95000.00, 6, 1, '2024-12-05 14:00:42'),
+('Vintage Kézzel Festett Falióra', 'Különleges, egyedi díszítés.', 67000.00, 5, 1, '2024-12-05 14:00:42'),
+('Acélkeretes Fali Óra', 'Modern ipari design, kvarc szerkezet.', 78000.00, 7, 1, '2024-12-05 14:00:42'),
+
+-- Bögrék (10 db)
+('Bögre - Macskás design', 'Kerámia bögre macskás mintával.', 4500.00, 30, 2, '2024-12-05 14:00:42'),
+('Vintage Porcelán Bögre', 'Klasszikus mintázat, prémium anyag.', 8900.00, 12, 2, '2024-12-05 14:00:42'),
+('Termo Bögre', 'Hőtartó, fedeles bögre.', 6500.00, 15, 2, '2024-12-05 14:00:42'),
+('Vicces Feliratos Bögre', 'Szórakoztató szöveggel.', 3500.00, 50, 2, '2024-12-05 14:00:42'),
+('Színes Zománcozott Bögre', 'Retro stílusú, könnyű bögre.', 5700.00, 20, 2, '2024-12-05 14:00:42'),
+('Nagyméretű Kávés Bögre', 'Extra nagy kapacitás, kényelmes fogás.', 7500.00, 18, 2, '2024-12-05 14:00:42'),
+('Elegáns Üveg Bögre', 'Minimalista design, hőálló üveg.', 9900.00, 10, 2, '2024-12-05 14:00:42'),
+('Fekete Matt Bögre', 'Modern stílus, strapabíró anyag.', 5200.00, 22, 2, '2024-12-05 14:00:42'),
+('Kerámia Latte Bögre', 'Hosszúkás forma, barista stílus.', 6800.00, 25, 2, '2024-12-05 14:00:42'),
+('Művészi Mintás Bögre', 'Egyedi festés, kézzel készített.', 7200.00, 14, 2, '2024-12-05 14:00:42'),
+
+-- Poszterek (10 db)
+('Star Wars Poszter', 'Hivatalos Star Wars filmplakát.', 12000.00, 10, 3, '2024-12-05 14:00:42'),
+('Marvel Szuperhősök Poszter', 'Képregény rajongóknak.', 11000.00, 8, 3, '2024-12-05 14:00:42'),
+('Vintage Autó Poszter', 'Klasszikus autógyűjtőknek.', 8000.00, 15, 3, '2024-12-05 14:00:42'),
+('Fekete-Fehér Városi Tájkép', 'Minimalista stílusban.', 9500.00, 12, 3, '2024-12-05 14:00:42'),
+('Retro Film Poszter', 'Klasszikus filmek hivatalos posztere.', 13000.00, 9, 3, '2024-12-05 14:00:42'),
+('Természetfotó Poszter', 'Lélegzetelállító tájak képei.', 8900.00, 14, 3, '2024-12-05 14:00:42'),
+('Absztrakt Művészeti Poszter', 'Modern lakásdekoráció.', 12000.00, 11, 3, '2024-12-05 14:00:42'),
+('Zenei Album Borító Poszter', 'Kultikus albumok borítói.', 12500.00, 7, 3, '2024-12-05 14:00:42'),
+('Anime Karakter Poszter', 'Népszerű anime karakterek képe.', 10000.00, 13, 3, '2024-12-05 14:00:42'),
+('Sport Ikonok Poszter', 'Híres sportolók ikonikus pillanatai.', 9500.00, 10, 3, '2024-12-05 14:00:42'),
+
+-- Bakelit lemezek (10 db)
+('The Beatles - Abbey Road', 'Legendás album 1969-ből.', 12500.00, 15, 1, '2024-12-05 14:00:42'),
+('Pink Floyd - The Dark Side of the Moon', 'Klasszikus progresszív rock album.', 13500.00, 10, 1, '2024-12-05 14:00:42'),
+('Led Zeppelin IV', 'Az egyik legnagyobb rockalbum.', 12800.00, 12, 1, '2024-12-05 14:00:42'),
+('Queen - A Night at the Opera', 'Freddie Mercury ikonikus albuma.', 14000.00, 8, 1, '2024-12-05 14:00:42'),
+('David Bowie - The Rise and Fall of Ziggy Stardust', 'Bowie egyik legjobb lemeze.', 13200.00, 9, 1, '2024-12-05 14:00:42'),
+('Michael Jackson - Thriller', 'A világ legkelendőbb albuma.', 14500.00, 7, 1, '2024-12-05 14:00:42'),
+('Nirvana - Nevermind', 'Az alternatív rock csúcsa.', 12000.00, 14, 1, '2024-12-05 14:00:42'),
+('The Rolling Stones - Sticky Fingers', 'Legendás rock album.', 12500.00, 10, 1, '2024-12-05 14:00:42'),
+('Metallica - Master of Puppets', 'Thrash metal mestermű.', 13000.00, 11, 1, '2024-12-05 14:00:42'),
+('Radiohead - OK Computer', 'Alternatív rock alapmű.', 12700.00, 13, 1, '2024-12-05 14:00:42'),
+
+-- Rádiók (10 db)
+('Philips Vintage Rádió', 'Klasszikus fa rádió, AM/FM.', 35000.00, 5, 2, '2024-12-05 14:00:42'),
+('Sony Digitális Rádió', 'Modern rádió ébresztő funkcióval.', 18000.00, 8, 2, '2024-12-05 14:00:42'),
+('Retro Bakelit Rádió', '1950-es évekbeli dizájn.', 40000.00, 4, 2, '2024-12-05 14:00:42'),
+('Bose SoundTouch WiFi Rádió', 'Prémium hangzás és WiFi kapcsolat.', 85000.00, 6, 2, '2024-12-05 14:00:42'),
+('Grundig Classic World Receiver', 'Nemzetközi vételre alkalmas rádió.', 32000.00, 7, 2, '2024-12-05 14:00:42'),
+('Panasonic FM/AM Rádió', 'Egyszerű, hordozható rádió.', 15000.00, 10, 2, '2024-12-05 14:00:42'),
+('JVC Bluetooth Rádió', 'Digitális kijelző és Bluetooth kapcsolat.', 28000.00, 9, 2, '2024-12-05 14:00:42'),
+('Marshall Stanmore II', 'Retro megjelenés, modern technológia.', 95000.00, 3, 2, '2024-12-05 14:00:42'),
+('Roberts Revival iStream 3', 'Elegáns rádió WiFi és DAB funkcióval.', 98000.00, 4, 2, '2024-12-05 14:00:42'),
+('Teac Internet Rádió', 'Internetes és DAB rádió funkciókkal.', 75000.00, 5, 2, '2024-12-05 14:00:42'),
+
+-- Lemezlejátszók (10 db)
+('Audio-Technica AT-LP120X', 'Professzionális bakelit lejátszó.', 110000.00, 6, 3, '2024-12-05 14:00:42'),
+('Sony PS-LX310BT', 'Bluetooth kompatibilis lemezjátszó.', 85000.00, 8, 3, '2024-12-05 14:00:42'),
+('Technics SL-1210MK7', 'DJ-k által kedvelt profi lemezjátszó.', 160000.00, 4, 3, '2024-12-05 14:00:42'),
+('Pro-Ject Debut Carbon Evo', 'Prémium hangminőség, karbon kar.', 130000.00, 5, 3, '2024-12-05 14:00:42'),
+('Rega Planar 3', 'Kézi hajtású audiophile lemezjátszó.', 140000.00, 4, 3, '2024-12-05 14:00:42'),
+('Victrola 8-in-1', 'Többfunkciós lemezjátszó, USB digitalizálás.', 75000.00, 7, 3, '2024-12-05 14:00:42'),
+('Denon DP-300F', 'Automatikus működés, kiváló hangzás.', 90000.00, 9, 3, '2024-12-05 14:00:42'),
+('Crosley Cruiser Deluxe', 'Hordozható bakelit lejátszó.', 45000.00, 10, 3, '2024-12-05 14:00:42'),
+('Lenco L-85', 'USB digitalizálás és beépített előerősítő.', 62000.00, 8, 3, '2024-12-05 14:00:42'),
+('Fluance RT81', 'Fa ház, prémium alkatrészek.', 98000.00, 5, 3, '2024-12-05 14:00:42'),
+
+-- Ékszerek (10 db)
+('Arany Nyaklánc', '18 karátos aranyból készült elegáns nyaklánc.', 250000.00, 3, 2, '2024-12-05 14:00:42'),
+('Ezüst Karkötő', '925-ös tisztaságú ezüst karkötő.', 75000.00, 5, 2, '2024-12-05 14:00:42'),
+('Gyémánt Gyűrű', 'Tökéletes eljegyzési gyűrű gyémánttal.', 450000.00, 2, 2, '2024-12-05 14:00:42'),
+('Platina Eljegyzési Gyűrű', 'Luxus kategóriás eljegyzési gyűrű platina foglalattal.', 600000.00, 1, 2, '2024-12-05 14:00:42'),
+('Fehérarany Nyaklánc', 'Kiváló minőségű fehérarany nyaklánc.', 280000.00, 4, 2, '2024-12-05 14:00:42'),
+('Rubin Medál', 'Rubin drágakővel díszített elegáns medál.', 320000.00, 3, 2, '2024-12-05 14:00:42'),
+('Ezüst Karikagyűrű', 'Klasszikus karikagyűrű 925-ös ezüstből.', 90000.00, 6, 2, '2024-12-05 14:00:42'),
+('Zafír Fülbevaló', 'Kék zafírral kirakott elegáns fülbevaló.', 210000.00, 2, 2, '2024-12-05 14:00:42'),
+('Gyöngy Nyakék', 'Természetes gyöngyökből készült nyakék.', 180000.00, 4, 2, '2024-12-05 14:00:42'),
+('Emerald Karkötő', 'Zöld smaragd drágakövekkel kirakott karkötő.', 275000.00, 3, 2, '2024-12-05 14:00:42'),
+
+-- Játék Konzolok (10 db)
+('PlayStation 5', 'Sony új generációs konzolja.', 250000.00, 10, 1, '2024-12-05 14:00:42'),
+('Xbox Series X', 'Microsoft csúcskategóriás konzolja.', 230000.00, 8, 1, '2024-12-05 14:00:42'),
+('Nintendo Switch OLED', 'Hordozható és otthoni konzol egyben.', 140000.00, 12, 1, '2024-12-05 14:00:42'),
+('PlayStation 4 Pro', '4K-s játékélmény.', 120000.00, 15, 1, '2024-12-05 14:00:42'),
+('Xbox Series S', 'Megfizethetőbb next-gen konzol.', 110000.00, 20, 1, '2024-12-05 14:00:42'),
+('Nintendo Switch Lite', 'Kompakt, hordozható konzol.', 90000.00, 18, 1, '2024-12-05 14:00:42'),
+('Steam Deck', 'PC-s játékok hordozhatóan.', 160000.00, 5, 1, '2024-12-05 14:00:42'),
+('Atari VCS', 'Retro konzol modern technológiával.', 85000.00, 7, 1, '2024-12-05 14:00:42'),
+('SEGA Genesis Mini', 'Klasszikus SEGA játékokkal.', 35000.00, 25, 1, '2024-12-05 14:00:42'),
+('Super Nintendo Classic Edition', 'Retro Nintendo játékokkal.', 40000.00, 22, 1, '2024-12-05 14:00:42'),
+
+-- Lámpák (10 db)
+('Modern Állólámpa', 'Minimalista stílusú LED állólámpa.', 45000.00, 10, 2, '2024-12-05 14:00:42'),
+('Asztali Olvasólámpa', 'Állítható fényerő és kar.', 22000.00, 15, 2, '2024-12-05 14:00:42'),
+('Kristály Csillár', 'Elegáns, luxus megjelenés.', 150000.00, 5, 2, '2024-12-05 14:00:42'),
+('LED Mennyezeti Lámpa', 'Távirányítós fényerőszabályzással.', 60000.00, 12, 2, '2024-12-05 14:00:42'),
+('Indusztriális Fali Lámpa', 'Loft stílusú, fém kerettel.', 38000.00, 8, 2, '2024-12-05 14:00:42'),
+('Napenergia Lámpa', 'Kültéri, napelemes működés.', 25000.00, 20, 2, '2024-12-05 14:00:42'),
+('Vintage Asztali Lámpa', 'Réz kivitel, antik stílus.', 42000.00, 6, 2, '2024-12-05 14:00:42'),
+('Éjszakai Fény Projektor', 'Csillagos égbolt kivetítő.', 33000.00, 14, 2, '2024-12-05 14:00:42'),
+('RGB Gamer Lámpa', 'Színes LED világítás játékosoknak.', 48000.00, 10, 2, '2024-12-05 14:00:42'),
+('Japán Stílusú Papírlámpa', 'Trendi és természetes hatású.', 27000.00, 18, 2, '2024-12-05 14:00:42'),
+
+-- Porcelánok (10 db)
+('Kínai Porcelán Váza', 'Kézzel festett, tradicionális minta.', 120000.00, 3, 3, '2024-12-05 14:00:42'),
+('Herendi Teás Készlet', 'Exkluzív magyar porcelán.', 250000.00, 2, 3, '2024-12-05 14:00:42'),
+('Japán Porcelán Tányér', 'Finoman kidolgozott, kék-fehér díszítéssel.', 85000.00, 5, 3, '2024-12-05 14:00:42'),
+('Vintage Porcelán Csésze', 'Antik, kézzel festett csésze.', 35000.00, 10, 3, '2024-12-05 14:00:42'),
+('Porcelán Ékszerdoboz', 'Dekoratív és funkcionális tároló.', 65000.00, 8, 3, '2024-12-05 14:00:42'),
+('Barokk Stílusú Porcelán Gyertyatartó', 'Művészien díszített.', 95000.00, 4, 3, '2024-12-05 14:00:42'),
+('Antik Francia Porcelán Tál', 'Kézi festés és aranyozott perem.', 130000.00, 3, 3, '2024-12-05 14:00:42'),
+('Porcelán Fali Dekoráció', 'Elegáns, egyedi mintázat.', 78000.00, 6, 3, '2024-12-05 14:00:42'),
+('Kézzel Festett Porcelán Tálca', 'Különleges dísztárgy.', 112000.00, 5, 3, '2024-12-05 14:00:42'),
+('Modern Minimalista Porcelán Edénykészlet', 'Letisztult dizájn.', 145000.00, 7, 3, '2024-12-05 14:00:42'),
+
+-- Gyűjthető Játékok (10 db)
+('Funko Pop! Star Wars', 'Gyűjtői Star Wars figura.', 12000.00, 15, 2, '2024-12-05 14:00:42'),
+('LEGO Harry Potter Kastély', 'Részletes LEGO építmény.', 85000.00, 8, 2, '2024-12-05 14:00:42'),
+('Hot Wheels Limitált Kiadás', 'Ritka gyűjtői kisautó.', 5000.00, 20, 2, '2024-12-05 14:00:42'),
+('Transformers Akciófigura', 'Prémium minőségű figura.', 25000.00, 10, 2, '2024-12-05 14:00:42'),
+('Pokemon Kártyacsomag', 'Ritka és erős lapok.', 14000.00, 25, 2, '2024-12-05 14:00:42'),
+('Star Wars LEGO Millennium Falcon', 'Nagy méretű LEGO készlet.', 120000.00, 5, 2, '2024-12-05 14:00:42'),
+('Nerf Ultra One Blaster', 'Prémium habszivacs lövő.', 22000.00, 12, 2, '2024-12-05 14:00:42'),
+('G.I. Joe Akciófigura', 'Részletes kidolgozás.', 18000.00, 15, 2, '2024-12-05 14:00:42'),
+('Barbie Gyűjtői Baba', 'Exkluzív kiadás.', 30000.00, 7, 2, '2024-12-05 14:00:42'),
+('Disney Infinity Figurák', 'Különleges gyűjthető darabok.', 12000.00, 18, 2, '2024-12-05 14:00:42'),
