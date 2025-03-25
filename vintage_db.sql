@@ -2,10 +2,10 @@
 -- version 5.1.2
 -- https://www.phpmyadmin.net/
 --
--- Gép: localhost:3306
--- Létrehozás ideje: 2025. Már 10. 12:47
--- Kiszolgáló verziója: 5.7.24
--- PHP verzió: 8.3.1
+-- Host: localhost:3306
+-- Generation Time: Mar 25, 2025 at 02:36 PM
+-- Server version: 5.7.24
+-- PHP Version: 8.3.1
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -18,14 +18,14 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Adatbázis: `vintage_db`
+-- Database: `vintage_db`
 --
 CREATE DATABASE IF NOT EXISTS `vintage_db` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
 USE `vintage_db`;
 
 DELIMITER $$
 --
--- Eljárások
+-- Procedures
 --
 CREATE DEFINER=`root`@`localhost` PROCEDURE `addCategories` (IN `nameIN` VARCHAR(100), IN `descIN` VARCHAR(150))   INSERT INTO categories (`categories`.`name`,`categories`.`description`)
 VALUES (nameIN,descIN)$$
@@ -49,6 +49,12 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `addProduct` (IN `nameIN` VARCHAR(10
     VALUES (nameIN, descIN, priceIN, quantityIN, categoryId);
 END$$
 
+CREATE DEFINER=`root`@`localhost` PROCEDURE `changePassword` (IN `userIdIN` INT(8), IN `newPasswordIN` VARCHAR(255), IN `creatorIN` INT(100))   BEGIN
+    UPDATE `user`
+    SET `password` = SHA1(newPasswordIN)
+    WHERE `id` = userIdIN;
+END$$
+
 CREATE DEFINER=`root`@`localhost` PROCEDURE `getAllUser` ()   SELECT * FROM `user`$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `getProductByID` (IN `idIN` INT(8))   SELECT *
@@ -62,8 +68,8 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `isUserExists` (IN `emailIN` VARCHAR
 DECLARE user_count INT;
 
     SELECT COUNT(*) INTO user_count 
-    FROM user 
-    WHERE email = emailIN;
+    FROM `user` 
+    WHERE `email` = emailIN;
 
     IF user_count > 0 THEN
         SET resultOUT = TRUE;
@@ -75,15 +81,17 @@ END$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `login` (IN `email` VARCHAR(100), IN `password` VARCHAR(100))   SELECT * FROM `user`
 WHERE `user`.`email` = email AND `user`.`password` = sha1(password)$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `registration` (IN `userIN` VARCHAR(100), IN `firstnameIN` VARCHAR(100), IN `lastnameIN` VARCHAR(100), IN `emailIN` VARCHAR(100), IN `phoneIN` VARCHAR(100), IN `passwordIN` VARCHAR(200))   INSERT INTO `user`(`User`.`username`, `User`.`firstname`, `User`.`lastname`,`user`.`email`, `user`.`phone_number`, `user`.`password`, `user`.`is_admin`, `user`.`is_deleted`) VALUES (userIN, firstnameIN, lastnameIN,emailIN, phoneIN, SHA1(passwordIN),0,0)$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `registerAdmin` (IN `userIN` VARCHAR(100), IN `firstnameIN` VARCHAR(100), IN `lastnameIN` VARCHAR(100), IN `emailIN` VARCHAR(100), IN `phoneIN` VARCHAR(100), IN `passwordIN` VARCHAR(100))   INSERT INTO `user`(`user`.`username`, `user`.`firstname`, `user`.`lastname`,`user`.`email`, `user`.`phone_number`, `user`.`password`, `user`.`is_admin`, `user`.`is_deleted`) VALUES (userIN, firstnameIN, lastnameIN,emailIN, phoneIN, SHA1(passwordIN),1,0)$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `users_uppdate` (IN `userIdIN` INT(11), IN `userIN` VARCHAR(100), IN `passwordIN` VARCHAR(255), IN `emailIN` VARCHAR(255), IN `isadminIN` BOOLEAN, IN `isdeletedIN` BOOLEAN)   UPDATE `user`
-SET  `user`.`username`= userIN,
-	`user`.`password` = passwordIN,
-    `user`.`email` = emailIN,
-    `user`.`is_admin` = isadminIN,
-    `user`.`is_deleted` = isdeletedIN
-WHERE `user`.`user_id` = userIdIN$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `registration` (IN `userIN` VARCHAR(100), IN `firstnameIN` VARCHAR(100), IN `lastnameIN` VARCHAR(100), IN `emailIN` VARCHAR(100), IN `phoneIN` VARCHAR(100), IN `passwordIN` VARCHAR(200))   INSERT INTO `user`(`user`.`username`, `user`.`firstname`, `user`.`lastname`,`user`.`email`, `user`.`phone_number`, `user`.`password`, `user`.`is_admin`, `user`.`is_deleted`) VALUES (userIN, firstnameIN, lastnameIN,emailIN, phoneIN, SHA1(passwordIN),0,0)$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `userUpdate` (IN `userIdIN` INT(8), IN `userIN` VARCHAR(100), IN `passwordIN` VARCHAR(100), IN `emailIN` VARCHAR(100), IN `isadminIN` BOOLEAN, IN `isdeletedIN` BOOLEAN)   UPDATE `users`
+SET `users`.`username` = userIN,
+	`users`.`password` = passwordIN,
+    `users`.`email` = emailIN,
+    `users`.`is_admin` = isadminIN,
+    `users`.`is_deleted` = isdeletedIN
+WHERE `users`.`user_id` = userIdIN$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `user_delete` (IN `userIN` INT(11))   UPDATE `users` 
 SET `users`.`is_deleted` = 1,
@@ -95,7 +103,7 @@ DELIMITER ;
 -- --------------------------------------------------------
 
 --
--- Tábla szerkezet ehhez a táblához `categories`
+-- Table structure for table `categories`
 --
 
 CREATE TABLE `categories` (
@@ -105,7 +113,7 @@ CREATE TABLE `categories` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
--- A tábla adatainak kiíratása `categories`
+-- Dumping data for table `categories`
 --
 
 INSERT INTO `categories` (`category_id`, `name`, `description`) VALUES
@@ -131,7 +139,7 @@ INSERT INTO `categories` (`category_id`, `name`, `description`) VALUES
 -- --------------------------------------------------------
 
 --
--- Tábla szerkezet ehhez a táblához `orders`
+-- Table structure for table `orders`
 --
 
 CREATE TABLE `orders` (
@@ -146,7 +154,7 @@ CREATE TABLE `orders` (
 -- --------------------------------------------------------
 
 --
--- Tábla szerkezet ehhez a táblához `order_items`
+-- Table structure for table `order_items`
 --
 
 CREATE TABLE `order_items` (
@@ -160,7 +168,7 @@ CREATE TABLE `order_items` (
 -- --------------------------------------------------------
 
 --
--- Tábla szerkezet ehhez a táblához `payments`
+-- Table structure for table `payments`
 --
 
 CREATE TABLE `payments` (
@@ -175,7 +183,7 @@ CREATE TABLE `payments` (
 -- --------------------------------------------------------
 
 --
--- Tábla szerkezet ehhez a táblához `products`
+-- Table structure for table `products`
 --
 
 CREATE TABLE `products` (
@@ -189,7 +197,7 @@ CREATE TABLE `products` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
--- A tábla adatainak kiíratása `products`
+-- Dumping data for table `products`
 --
 
 INSERT INTO `products` (`product_id`, `name`, `description`, `price`, `stock_quanty`, `category_id`, `created_at`) VALUES
@@ -249,7 +257,7 @@ INSERT INTO `products` (`product_id`, `name`, `description`, `price`, `stock_qua
 -- --------------------------------------------------------
 
 --
--- Tábla szerkezet ehhez a táblához `shipping_addresses`
+-- Table structure for table `shipping_addresses`
 --
 
 CREATE TABLE `shipping_addresses` (
@@ -266,7 +274,7 @@ CREATE TABLE `shipping_addresses` (
 -- --------------------------------------------------------
 
 --
--- Tábla szerkezet ehhez a táblához `test_feedback`
+-- Table structure for table `test_feedback`
 --
 
 CREATE TABLE `test_feedback` (
@@ -282,7 +290,7 @@ CREATE TABLE `test_feedback` (
 -- --------------------------------------------------------
 
 --
--- Tábla szerkezet ehhez a táblához `user`
+-- Table structure for table `user`
 --
 
 CREATE TABLE `user` (
@@ -295,125 +303,126 @@ CREATE TABLE `user` (
   `password` text NOT NULL,
   `is_admin` tinyint(1) NOT NULL,
   `is_deleted` tinyint(1) NOT NULL DEFAULT '0',
-  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `deleted_at` timestamp NULL DEFAULT NULL
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `deleted_at` timestamp NULL DEFAULT NULL,
+  `profile_picture` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
--- A tábla adatainak kiíratása `user`
+-- Dumping data for table `user`
 --
 
-INSERT INTO `user` (`id`, `username`, `firstname`, `lastname`, `email`, `phone_number`, `password`, `is_admin`, `is_deleted`, `created_at`, `deleted_at`) VALUES
-(1, 'hermannmate420', 'Mate', 'Hermann', 'hermate67@gmail.com', '+36074088704', '58b080f4d0240741b9ef583fc1106e9bcabf2042', 1, 0, '2025-02-12 01:01:40', NULL),
-(2, 'Matevagyok', 'Énvagyok', 'Mate', 'hddgamer88@gmail.com', '+367848484848', '664819d8c5343676c9225b5ed00a5cdc6f3a1ff3', 0, 0, '2025-02-25 12:00:00', NULL),
-(3, 'Admin', 'Admin', 'Admin', 'aretrovintage@gmail.com', '06696996', '664819d8c5343676c9225b5ed00a5cdc6f3a1ff3', 1, 0, '2025-03-10 12:03:52', NULL),
-(4, 'MartinGal', 'Gál', 'Martin Ferenc', 'martingal2003@gmail.com', '+36501246417', 'bfea1585627570da7fa410b1405f96dcaff25a04', 1, 0, '2025-03-07 13:22:38', NULL),
-(5, '1KZ1k', 'Káplár', 'Zalán', 'kaplarzalan@gmail.com', '06303124092', '084a025c2a5c1404577fc14105594b52dde532aa', 0, 0, '2025-03-09 18:15:48', NULL),
-(7, 'panczamilan', 'Pancza', 'Milán', 'panczamilan19@gmail.com', '+36202500673', '664819d8c5343676c9225b5ed00a5cdc6f3a1ff3', 0, 0, '2025-03-10 11:36:46', NULL);
+INSERT INTO `user` (`id`, `username`, `firstname`, `lastname`, `email`, `phone_number`, `password`, `is_admin`, `is_deleted`, `created_at`, `deleted_at`, `profile_picture`) VALUES
+(1, 'hermannmate420', 'Mate', 'Hermann', 'hermate67@gmail.com', '+36074088704', '58b080f4d0240741b9ef583fc1106e9bcabf2042', 1, 0, '2025-02-12 01:01:40', NULL, NULL),
+(2, 'Matevagyok', 'Énvagyok', 'Mate', 'hddgamer88@gmail.com', '+367848484848', '664819d8c5343676c9225b5ed00a5cdc6f3a1ff3', 0, 0, '2025-02-25 12:00:00', NULL, NULL),
+(3, 'NotAdmin', 'Gábor', 'Attila', 'attila.gabor@gmail.com', '+3456642257', '510bf3284d7f0f3cb996c2e0163d7e86aee40a69', 0, 0, '2025-03-04 18:01:59', NULL, NULL),
+(4, 'Tesztelek54', 'Teszt', 'Elek', 'tesztelek@gmail.com', '+3670585895', '803de60414f888d695aadd09de69a78f8b470547', 1, 0, '2025-03-07 11:14:02', NULL, NULL),
+(5, 'TesztAdmin', 'Admin', 'Teszt', 'AdminTeszt@gmail.com', '+3673777373', '5c8956161238b0a10da03c7bfe4f152e15bb1d70', 1, 0, '2025-03-11 10:52:56', NULL, NULL),
+(6, 'AdminTeszt', 'Teszt', 'Admin', 'TesztAdmin@gmail.com', '+3673754543', 'd5198e4889a9365dc467262fdef7643158b05a9a', 1, 0, '2025-03-11 11:50:54', NULL, NULL);
 
 --
--- Indexek a kiírt táblákhoz
+-- Indexes for dumped tables
 --
 
 --
--- A tábla indexei `categories`
+-- Indexes for table `categories`
 --
 ALTER TABLE `categories`
   ADD PRIMARY KEY (`category_id`);
 
 --
--- A tábla indexei `orders`
+-- Indexes for table `orders`
 --
 ALTER TABLE `orders`
   ADD PRIMARY KEY (`order_id`);
 
 --
--- A tábla indexei `order_items`
+-- Indexes for table `order_items`
 --
 ALTER TABLE `order_items`
   ADD PRIMARY KEY (`order_item_id`);
 
 --
--- A tábla indexei `payments`
+-- Indexes for table `payments`
 --
 ALTER TABLE `payments`
   ADD PRIMARY KEY (`payment_id`);
 
 --
--- A tábla indexei `products`
+-- Indexes for table `products`
 --
 ALTER TABLE `products`
   ADD PRIMARY KEY (`product_id`);
 
 --
--- A tábla indexei `shipping_addresses`
+-- Indexes for table `shipping_addresses`
 --
 ALTER TABLE `shipping_addresses`
   ADD PRIMARY KEY (`address_id`);
 
 --
--- A tábla indexei `test_feedback`
+-- Indexes for table `test_feedback`
 --
 ALTER TABLE `test_feedback`
   ADD PRIMARY KEY (`feedback_id`);
 
 --
--- A tábla indexei `user`
+-- Indexes for table `user`
 --
 ALTER TABLE `user`
   ADD PRIMARY KEY (`id`);
 
 --
--- A kiírt táblák AUTO_INCREMENT értéke
+-- AUTO_INCREMENT for dumped tables
 --
 
 --
--- AUTO_INCREMENT a táblához `categories`
+-- AUTO_INCREMENT for table `categories`
 --
 ALTER TABLE `categories`
   MODIFY `category_id` int(8) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
--- AUTO_INCREMENT a táblához `orders`
+-- AUTO_INCREMENT for table `orders`
 --
 ALTER TABLE `orders`
   MODIFY `order_id` int(8) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT a táblához `order_items`
+-- AUTO_INCREMENT for table `order_items`
 --
 ALTER TABLE `order_items`
   MODIFY `order_item_id` int(8) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT a táblához `payments`
+-- AUTO_INCREMENT for table `payments`
 --
 ALTER TABLE `payments`
   MODIFY `payment_id` int(8) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT a táblához `products`
+-- AUTO_INCREMENT for table `products`
 --
 ALTER TABLE `products`
   MODIFY `product_id` int(8) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=53;
 
 --
--- AUTO_INCREMENT a táblához `shipping_addresses`
+-- AUTO_INCREMENT for table `shipping_addresses`
 --
 ALTER TABLE `shipping_addresses`
   MODIFY `address_id` int(8) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT a táblához `test_feedback`
+-- AUTO_INCREMENT for table `test_feedback`
 --
 ALTER TABLE `test_feedback`
   MODIFY `feedback_id` int(8) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT a táblához `user`
+-- AUTO_INCREMENT for table `user`
 --
 ALTER TABLE `user`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
