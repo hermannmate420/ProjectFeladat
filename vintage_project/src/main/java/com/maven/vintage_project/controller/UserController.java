@@ -7,18 +7,23 @@ package com.maven.vintage_project.controller;
 import com.maven.vintage_project.config.JWT;
 import com.maven.vintage_project.model.User;
 import com.maven.vintage_project.service.UserService;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
+import org.glassfish.jersey.media.multipart.*;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -31,6 +36,7 @@ public class UserController {
     @Context
     private UriInfo context;
     private UserService layer = new UserService();
+    private static final String UPLOAD_DIR = "/var/www/uploads/";
     
     public UserController() {
     }
@@ -162,8 +168,7 @@ public class UserController {
         if (isValid != 1) {
         return Response.status(isValid == 2 ? 498 : 401).entity(isValid == 2 ? "InvalidToken" : "TokenExpired").build();
         }
-        
-         JSONObject body;
+        JSONObject body;
         try {
             body = new JSONObject(bodyString);
         } catch (Exception e) {
@@ -181,6 +186,57 @@ public class UserController {
         JSONObject obj = layer.changePassword(userId, newPassword, creator);
         return Response.status(obj.getInt("statusCode")).entity(obj.toString()).type(MediaType.APPLICATION_JSON).build();
     }
+
+    @POST
+    @Path("sendEmail")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response sendEmail(@HeaderParam("token") String jwt, String bodyString) {
+        int isValid = JWT.validateJWT(jwt);
+
+        if (isValid == 1) {
+            JSONObject body = new JSONObject(bodyString);
+            
+            Boolean obj = User.sendEmail(body.getString("to"), body.getBoolean("ccMe"));
+            return Response.status(200).entity(obj.toString()).type(MediaType.APPLICATION_JSON).build();
+        } else if (isValid == 2) {
+            return Response.status(498).entity("InvalidToken").type(MediaType.APPLICATION_JSON).build();
+        } else {
+            return Response.status(401).entity("TokenExpired").type(MediaType.APPLICATION_JSON).build();
+        }
+
+    }
+    
+    @POST
+    @Path("/{id}/upload-profile-picture")
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response uploadProfilePicture(
+            @PathParam("id") Integer userId,
+            @FormDataParam("file") InputStream fileInputStream,
+            @FormDataParam("file") FormDataContentDisposition fileMetaData) {
+        try {
+            // Fájlnév beállítása és mentése
+            String fileName = "profile_" + userId + "_" + fileMetaData.getFileName();
+            String filePath = UPLOAD_DIR + fileName;
+
+            File file = new File(filePath);
+            try (FileOutputStream out = new FileOutputStream(file)) {
+                byte[] buffer = new byte[1024];
+                int bytesRead;
+                while ((bytesRead = fileInputStream.read(buffer)) != -1) {
+                    out.write(buffer, 0, bytesRead);
+                }
+            }
+            
+            JSONObject result = layer.updateProfilePicture(userId, filePath);
+
+            // HTTP státusz kód beállítása a JSON válasz alapján
+            int statusCode = result.getInt("status");
+            return Response.status(200).entity("{\"status\":200,\"message\":\"File uploaded successfully\",\"path\":\"" + filePath + "\"}").build();
+        } catch (Exception e) {
+            return Response.status(500)
+                    .entity("{\"status\":500,\"error\":\"" + e.getMessage() + "\"}")
+                    .build();
+        }
+    }
 }
-
-

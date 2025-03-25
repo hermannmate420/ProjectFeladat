@@ -279,4 +279,20 @@ public class UserService {
         toReturn.put("statusCode", statusCode);
         return toReturn;
     }
+    
+    public JSONObject updateProfilePicture(Integer userId, String filePath) {
+        User u = new User(userId);
+        Boolean success = u.updateProfilePicture(filePath);
+        
+        JSONObject response = new JSONObject();
+        if (success) {
+            response.put("status", 200);  // OK
+            response.put("message", "Profile picture updated successfully");
+            response.put("profilePicture", filePath);
+        } else {
+            response.put("status", 500);  // Internal Server Error
+            response.put("error", "Failed to update profile picture");
+        }
+        return response;
+    }
 }

@@ -4,17 +4,27 @@
  */
 package com.maven.vintage_project.model;
 
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Properties;
+import javax.mail.Message;
+import javax.mail.PasswordAuthentication;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.EntityTransaction;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -110,6 +120,8 @@ public class User implements Serializable {
     @Column(name = "deleted_at")
     @Temporal(TemporalType.TIMESTAMP)
     private Date deletedAt;
+    @Column(name = "profile_picture")
+    private String profilePicture;
 
     //Singleton EntityManager jobb hívássa
     @PersistenceUnit
@@ -141,6 +153,7 @@ public class User implements Serializable {
             this.isDeleted = u.getIsDeleted(); //7
             this.createdAt = u.getCreatedAt(); //8
             this.deletedAt = u.getDeletedAt(); //9
+            this.profilePicture = u.getProfilePicture();
         } catch (Exception ex) {
             System.err.println("Hiba: " + ex.getLocalizedMessage());
         } finally {
@@ -259,6 +272,14 @@ public User(String username, String firstname, String lastname, String email, St
     public void setDeletedAt(Date deletedAt) {
         this.deletedAt = deletedAt;
     }
+    
+    public String getProfilePicture() {
+        return profilePicture;
+    }
+
+    public void setProfilePicture(String profilePicture) {
+        this.profilePicture = profilePicture;
+    }
 
     @Override
     public int hashCode() {
@@ -287,6 +308,7 @@ public User(String username, String firstname, String lastname, String email, St
     
     
     public User login(String email, String password) {
+        //Bejelentkezés
         EntityManager em = getEntityManager();
         
         try {
@@ -305,23 +327,21 @@ public User(String username, String firstname, String lastname, String email, St
             SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             for (Object[] o : resultList) {
                 User u = new User(
-                        Integer.valueOf(o[0].toString()), //id
-                        o[1].toString(), //username
-                        o[2].toString(), //firstname
-                        o[3].toString(), //lastname
-                        o[4].toString(), //email
-                        o[5].toString(), //phoneNumber
-                        o[6].toString(), //password
-                        Boolean.parseBoolean(o[7].toString()), //isAdmin
-                        Boolean.parseBoolean(o[8].toString()), //IsDeleted
-                        formatter.parse(o[9].toString()), //createdAt
-                        o[10] == null ? null : formatter.parse(o[10].toString()) //deletedAt
+                        Integer.valueOf(o[0].toString()),
+                        o[1].toString(),
+                        o[2].toString(),
+                        o[3].toString(),
+                        o[4].toString(),
+                        o[5].toString(),
+                        o[6].toString(),
+                        Boolean.parseBoolean(o[7].toString()),
+                        Boolean.parseBoolean(o[8].toString()),
+                        formatter.parse(o[9].toString()),
+                        o[10] == null ? null : formatter.parse(o[10].toString())
                 );
                 toReturn = u;
-                System.out.println(u);
             }
             
-            System.out.println(toReturn);
             return toReturn;
         } catch (NumberFormatException | ParseException e) {
             System.err.println("Hiba: " + e.getLocalizedMessage());
@@ -333,6 +353,7 @@ public User(String username, String firstname, String lastname, String email, St
     }
     
     public Boolean registerUser(User u) {
+        //Felhasználó regisztráció
         EntityManager em = getEntityManager();
 
         try {
@@ -344,14 +365,6 @@ public User(String username, String firstname, String lastname, String email, St
             spq.registerStoredProcedureParameter("emailIN", String.class, ParameterMode.IN);
             spq.registerStoredProcedureParameter("phoneIN", String.class, ParameterMode.IN);
             spq.registerStoredProcedureParameter("passwordIN", String.class, ParameterMode.IN);
-            
-            /*System.out.println("Passing Parameters to Stored Procedure:");
-            System.out.println("Username: " + u.getUsername());
-            System.out.println("Firstname: " + u.getFirstname());
-            System.out.println("Lastname: " + u.getLastname());
-            System.out.println("Email: " + u.getEmail());
-            System.out.println("Phone: " + u.getPhoneNumber());
-            System.out.println("Password: " + u.getPassword());*/
 
             spq.setParameter("userIN", u.getUsername());
             spq.setParameter("firstnameIN", u.getFirstname());
@@ -373,11 +386,14 @@ public User(String username, String firstname, String lastname, String email, St
     }
     
     public Boolean registerAdmin(User u) {
+        //Regisztrálunk Admint Adminnal
         EntityManager em = getEntityManager();
 
         try {
+            //Ez a tárolt a DB-ben
             StoredProcedureQuery spq = em.createStoredProcedureQuery("registerAdmin");
 
+            //Bemenő paraméterek
             spq.registerStoredProcedureParameter("userIN", String.class, ParameterMode.IN);
             spq.registerStoredProcedureParameter("firstnameIN", String.class, ParameterMode.IN);
             spq.registerStoredProcedureParameter("lastnameIN", String.class, ParameterMode.IN);
@@ -405,6 +421,7 @@ public User(String username, String firstname, String lastname, String email, St
     }
     
     public static Boolean isUserExists(String email) {
+        //Létezik-e  a felhasználó email alapján
         EntityManager em = getEntityManager();
 
         try {
@@ -469,6 +486,7 @@ public User(String username, String firstname, String lastname, String email, St
     }
     
     public Boolean changePassword(Integer userId, String newPassword, Integer creator) {
+        //Jelszóváltoztatás
         EntityManager em = emf.createEntityManager();
 
         try {
@@ -487,6 +505,69 @@ public User(String username, String firstname, String lastname, String email, St
             return true;
         } catch (Exception e) {
             System.err.println("Hiba: " + e.getLocalizedMessage());
+            return false;
+        } finally {
+            em.clear();
+            em.close();
+        }
+    }
+    
+    public static Boolean sendEmail(String to, boolean ccMe){
+        try {
+        // Betöltjük a konfigurációt
+            Properties config = new Properties();
+            try (InputStream input = User.class.getClassLoader().getResourceAsStream("config.properties")) {
+                if (input == null) {
+                    throw new FileNotFoundException("config.properties nem található");
+                }
+                config.load(input);
+            }
+            final String from = config.getProperty("mail.from");
+            final String password = config.getProperty("mail.password");
+            String host = config.getProperty("mail.host");
+            String port = config.getProperty("mail.port");
+        
+            Properties properties = System.getProperties();
+            properties.put("mail.smtp.host", host);
+            properties.put("mail.smtp.port", port);
+            properties.put("mail.smtp.ssl.enable", config.getProperty("mail.ssl.enable"));
+            properties.put("mail.smtp.auth", config.getProperty("mail.smtp.auth"));
+
+            Session session = Session.getInstance(properties, new javax.mail.Authenticator() {
+                protected PasswordAuthentication getPasswordAuthentication() {
+                    return new PasswordAuthentication(from, password);
+                }
+            });
+            session.setDebug(true);
+            MimeMessage message = new MimeMessage(session);
+            message.setFrom(new InternetAddress(from));
+            message.addRecipient(Message.RecipientType.TO, new InternetAddress(to));
+            message.setSubject("Teszt email");
+
+            String msg = "Az lesz az a szöveg ami az emailbe kerül. Ez lehet nagyon hosszú is, akár HTML is.";
+            message.setContent(msg, "text/html;charset=utf-8");
+
+            Transport.send(message);
+            return true;
+        } catch(Exception ex) {
+        System.err.println("Hiba: " + ex.getLocalizedMessage());
+        return false;
+    }
+    }
+    
+    public Boolean updateProfilePicture(String filePath) {
+        EntityManager em = getEntityManager();
+        EntityTransaction tx = em.getTransaction();
+        
+        try {
+            tx.begin();
+            this.profilePicture = filePath;
+            em.merge(this);
+            tx.commit();
+            return true;
+        } catch(Exception e) {
+            if(tx.isActive()) tx.rollback();
+            System.err.println("Hiba a profilkép frissítésénél: " + e.getMessage());
             return false;
         } finally {
             em.clear();
