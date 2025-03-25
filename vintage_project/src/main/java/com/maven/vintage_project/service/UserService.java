@@ -6,10 +6,20 @@ package com.maven.vintage_project.service;
 
 import com.maven.vintage_project.config.JWT;
 import com.maven.vintage_project.model.User;
+import java.io.File;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Pattern;
+import javax.ws.rs.core.MediaType;
+import static jdk.nashorn.tools.ShellFunctions.input;
+import net.coobird.thumbnailator.Thumbnails;
+import org.jboss.resteasy.plugins.providers.multipart.InputPart;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 
 /**
  *
@@ -21,6 +31,8 @@ public class UserService {
     private static final Pattern EMAIL_PATTERN = Pattern.compile(EMAIL_REGEX);
     private static final String PHONE_REGEX = "^(\\+?[0-9]{1,3})?[ -]?[0-9]{6,14}$";
     private static final Pattern PHONE_PATTERN = Pattern.compile(PHONE_REGEX);
+    private static final String UPLOAD_DIR = System.getProperty("jboss.server.data.dir") + "/uploads";
+
 
     
     //Még nincsen benne semmiben
@@ -280,19 +292,63 @@ public class UserService {
         return toReturn;
     }
     
-    public JSONObject updateProfilePicture(Integer userId, String filePath) {
-        User u = new User(userId);
-        Boolean success = u.updateProfilePicture(filePath);
-        
-        JSONObject response = new JSONObject();
-        if (success) {
-            response.put("status", 200);  // OK
-            response.put("message", "Profile picture updated successfully");
-            response.put("profilePicture", filePath);
-        } else {
-            response.put("status", 500);  // Internal Server Error
-            response.put("error", "Failed to update profile picture");
+    public JSONObject uploadAndResizeProfilePicture(Integer userId, MultipartFormDataInput input) {
+    JSONObject responseJson = new JSONObject();
+    
+    try {
+        // Mappa létrehozása, ha nem létezik
+        File uploadDir = new File(UPLOAD_DIR);
+        if (!uploadDir.exists()) {
+            uploadDir.mkdirs();
         }
-        return response;
+
+        // Fájl beolvasása Multipart adatokból
+        Map<String, List<InputPart>> uploadForm = input.getFormDataMap();
+        List<InputPart> fileParts = uploadForm.get("file");
+
+        if (fileParts == null || fileParts.isEmpty()) {
+            responseJson.put("status", 400);
+            responseJson.put("error", "No file uploaded");
+            return responseJson;
+        }
+
+        InputPart filePart = fileParts.get(0);
+        filePart.setMediaType(MediaType.APPLICATION_OCTET_STREAM_TYPE);
+        try(InputStream fileInputStream = filePart.getBody(InputStream.class, null)) {
+            String fileName = "profile_" + userId + "_" + System.currentTimeMillis() + ".png";
+            String filePath = UPLOAD_DIR + File.separator + fileName;
+            File tempFile = new File(filePath);
+
+            // Fájl mentése
+            Files.copy(fileInputStream, tempFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+
+            // Átméretezés 300x300 px-re
+            Thumbnails.of(tempFile)
+                      .size(300, 300)
+                      .outputFormat("png")
+                      .toFile(tempFile);
+
+            // Adatbázis frissítése a User modellel
+            Boolean success = User.updateProfilePicture(userId, filePath);
+
+            if (success) {
+                responseJson.put("status", 200);
+                responseJson.put("message", "File uploaded and resized successfully");
+                responseJson.put("path", filePath);
+            } else {
+                responseJson.put("status", 404);
+                responseJson.put("error", "User not found");
+            }
+
+            return responseJson;
+        }
+
+        // Fájlnév generálás és elérési út beállítása
+    } catch (Exception e) {
+        responseJson.put("status", 500);
+        responseJson.put("error", e.getMessage());
+        return responseJson;
     }
+}
+
 }

@@ -1,11 +1,10 @@
 com\maven\vintage_project\config\GenerateKey.class
 com\maven\vintage_project\controller\UserController.class
 com\maven\vintage_project\model\User.class
-com\maven\vintage_project\filters\corsFilter.class
-com\maven\vintage_project\model\Products.class
-com\maven\vintage_project\exceptions\ExceptionLogger.class
-com\maven\vintage_project\controller\ApplicationConfig.class
 com\maven\vintage_project\config\JWT.class
 com\maven\vintage_project\model\User$1.class
+com\maven\vintage_project\filters\corsFilter.class
+com\maven\vintage_project\model\Products.class
 com\maven\vintage_project\service\UserService.class
-.netbeans_automatic_build
+com\maven\vintage_project\exceptions\ExceptionLogger.class
+com\maven\vintage_project\controller\ApplicationConfig.class

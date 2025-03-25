@@ -8,9 +8,11 @@ import com.maven.vintage_project.config.JWT;
 import com.maven.vintage_project.model.User;
 import com.maven.vintage_project.service.UserService;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.nio.file.*;
+import java.util.*;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
@@ -23,7 +25,10 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
-import org.glassfish.jersey.media.multipart.*;
+import net.coobird.thumbnailator.Thumbnails;
+import org.jboss.resteasy.annotations.providers.multipart.PartType;
+import org.jboss.resteasy.plugins.providers.multipart.InputPart;
+import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -36,11 +41,9 @@ public class UserController {
     @Context
     private UriInfo context;
     private UserService layer = new UserService();
-    private static final String UPLOAD_DIR = "/var/www/uploads/";
-    
+
     public UserController() {
     }
-    
     
     @GET
     @Produces(MediaType.APPLICATION_XML)
@@ -206,37 +209,17 @@ public class UserController {
 
     }
     
+    
     @POST
     @Path("/{id}/upload-profile-picture")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Produces(MediaType.APPLICATION_JSON)
     public Response uploadProfilePicture(
-            @PathParam("id") Integer userId,
-            @FormDataParam("file") InputStream fileInputStream,
-            @FormDataParam("file") FormDataContentDisposition fileMetaData) {
-        try {
-            // Fájlnév beállítása és mentése
-            String fileName = "profile_" + userId + "_" + fileMetaData.getFileName();
-            String filePath = UPLOAD_DIR + fileName;
-
-            File file = new File(filePath);
-            try (FileOutputStream out = new FileOutputStream(file)) {
-                byte[] buffer = new byte[1024];
-                int bytesRead;
-                while ((bytesRead = fileInputStream.read(buffer)) != -1) {
-                    out.write(buffer, 0, bytesRead);
-                }
-            }
-            
-            JSONObject result = layer.updateProfilePicture(userId, filePath);
-
-            // HTTP státusz kód beállítása a JSON válasz alapján
-            int statusCode = result.getInt("status");
-            return Response.status(200).entity("{\"status\":200,\"message\":\"File uploaded successfully\",\"path\":\"" + filePath + "\"}").build();
-        } catch (Exception e) {
-            return Response.status(500)
-                    .entity("{\"status\":500,\"error\":\"" + e.getMessage() + "\"}")
-                    .build();
-        }
+        @PathParam("id") Integer userId,
+        MultipartFormDataInput input) {
+    
+    JSONObject result = layer.uploadAndResizeProfilePicture(userId, input);
+    return Response.status(result.getInt("status")).entity(result.toString()).build();
     }
+
 }

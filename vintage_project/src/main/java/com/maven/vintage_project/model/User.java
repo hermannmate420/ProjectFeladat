@@ -122,6 +122,8 @@ public class User implements Serializable {
     private Date deletedAt;
     @Column(name = "profile_picture")
     private String profilePicture;
+    @Basic(optional = false)
+    @NotNull
 
     //Singleton EntityManager jobb hívássa
     @PersistenceUnit
@@ -555,24 +557,31 @@ public User(String username, String firstname, String lastname, String email, St
     }
     }
     
-    public Boolean updateProfilePicture(String filePath) {
-        EntityManager em = getEntityManager();
-        EntityTransaction tx = em.getTransaction();
+    public static Boolean updateProfilePicture(Integer userId, String filePath) {
+    EntityManager em = getEntityManager();
+    EntityTransaction tx = em.getTransaction();
+    
+    try {
+        tx.begin();
         
-        try {
-            tx.begin();
-            this.profilePicture = filePath;
-            em.merge(this);
-            tx.commit();
-            return true;
-        } catch(Exception e) {
-            if(tx.isActive()) tx.rollback();
-            System.err.println("Hiba a profilkép frissítésénél: " + e.getMessage());
+        User user = em.find(User.class, userId);
+        if (user == null) {
+            System.err.println("A felhasználó nem található: ID = " + userId);
             return false;
-        } finally {
-            em.clear();
-            em.close();
         }
+        
+        user.profilePicture = filePath; // Közvetlen mező módosítás
+        em.merge(user);
+        tx.commit();
+        return true;
+    } catch (Exception e) {
+        if (tx.isActive()) tx.rollback();
+        System.err.println("Hiba a profilkép frissítésénél: " + e.getMessage());
+        return false;
+    } finally {
+        em.clear();
+        em.close();
+    }
     }
     
 }
