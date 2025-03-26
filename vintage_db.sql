@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Mar 25, 2025 at 02:36 PM
+-- Generation Time: Mar 26, 2025 at 12:15 PM
 -- Server version: 5.7.24
 -- PHP Version: 8.3.1
 
@@ -313,8 +313,8 @@ CREATE TABLE `user` (
 --
 
 INSERT INTO `user` (`id`, `username`, `firstname`, `lastname`, `email`, `phone_number`, `password`, `is_admin`, `is_deleted`, `created_at`, `deleted_at`, `profile_picture`) VALUES
-(1, 'hermannmate420', 'Mate', 'Hermann', 'hermate67@gmail.com', '+36074088704', '58b080f4d0240741b9ef583fc1106e9bcabf2042', 1, 0, '2025-02-12 01:01:40', NULL, NULL),
-(2, 'Matevagyok', 'Énvagyok', 'Mate', 'hddgamer88@gmail.com', '+367848484848', '664819d8c5343676c9225b5ed00a5cdc6f3a1ff3', 0, 0, '2025-02-25 12:00:00', NULL, NULL),
+(1, 'hermannmate420', 'Mate', 'Hermann', 'hermate67@gmail.com', '+36074088704', '58b080f4d0240741b9ef583fc1106e9bcabf2042', 1, 0, '2025-02-12 01:01:40', NULL, 'C:\\wildfly\\standalone\\data/uploads\\profile_1_1742945955279.png'),
+(2, 'Matevagyok', 'Énvagyok', 'Mate', 'hddgamer88@gmail.com', '+367848484848', '664819d8c5343676c9225b5ed00a5cdc6f3a1ff3', 0, 0, '2025-02-25 12:00:00', NULL, 'C:\\wildfly\\standalone\\data\\uploads\\profile_2_1742981105416.png'),
 (3, 'NotAdmin', 'Gábor', 'Attila', 'attila.gabor@gmail.com', '+3456642257', '510bf3284d7f0f3cb996c2e0163d7e86aee40a69', 0, 0, '2025-03-04 18:01:59', NULL, NULL),
 (4, 'Tesztelek54', 'Teszt', 'Elek', 'tesztelek@gmail.com', '+3670585895', '803de60414f888d695aadd09de69a78f8b470547', 1, 0, '2025-03-07 11:14:02', NULL, NULL),
 (5, 'TesztAdmin', 'Admin', 'Teszt', 'AdminTeszt@gmail.com', '+3673777373', '5c8956161238b0a10da03c7bfe4f152e15bb1d70', 1, 0, '2025-03-11 10:52:56', NULL, NULL),
