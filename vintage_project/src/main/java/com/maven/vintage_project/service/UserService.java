@@ -328,6 +328,7 @@ public class UserService {
             Thumbnails.of(tempFile)
                       .size(300, 300)
                       .outputFormat("png")
+                      .outputFormat("jpg")
                       .toFile(tempFile);
 
             // Adatbázis frissítése a User modellel
