@@ -8,11 +8,7 @@ import com.maven.vintage_project.config.JWT;
 import com.maven.vintage_project.model.User;
 import com.maven.vintage_project.service.UserService;
 import java.io.File;
-import java.io.InputStream;
-import java.nio.file.*;
-import java.util.*;
 import javax.ws.rs.Consumes;
-import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
@@ -25,9 +21,6 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
-import net.coobird.thumbnailator.Thumbnails;
-import org.jboss.resteasy.annotations.providers.multipart.PartType;
-import org.jboss.resteasy.plugins.providers.multipart.InputPart;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -225,5 +218,26 @@ public class UserController {
     JSONObject result = layer.uploadAndResizeProfilePicture(userId, input);
     return Response.status(result.getInt("status")).entity(result.toString()).build();
     }
+    
+    @GET
+    @Path("/uploads/{fileName}")
+    public Response getProfilePicture(@PathParam("fileName") String fileName) {
+    File file = layer.getProfilePicture(fileName);
+
+    if (file == null || !file.exists()) {
+        return Response.status(Response.Status.NOT_FOUND).entity("File not found").build();
+    }
+
+    String mimeType = null;
+    try {
+        mimeType = java.nio.file.Files.probeContentType(file.toPath());
+    } catch (Exception e) {
+        mimeType = "application/octet-stream"; // Fallback
+    }
+
+    return Response.ok(file, mimeType)
+                   .header("Content-Disposition", "inline; filename=\"" + file.getName() + "\"")
+                   .build();
+}
 
 }

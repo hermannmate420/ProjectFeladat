@@ -12,6 +12,7 @@ import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.ws.rs.core.MediaType;
 import static jdk.nashorn.tools.ShellFunctions.input;
@@ -31,7 +32,7 @@ public class UserService {
     private static final Pattern EMAIL_PATTERN = Pattern.compile(EMAIL_REGEX);
     private static final String PHONE_REGEX = "^(\\+?[0-9]{1,3})?[ -]?[0-9]{6,14}$";
     private static final Pattern PHONE_PATTERN = Pattern.compile(PHONE_REGEX);
-    private static final String UPLOAD_DIR = System.getProperty("jboss.server.data.dir") + "\\uploads";
+    private static final String UPLOAD_DIR = "C:\\wildfly\\standalone\\deployments\\uploads\\";
 
 
     
@@ -296,15 +297,13 @@ public class UserService {
     
     public JSONObject uploadAndResizeProfilePicture(Integer userId, MultipartFormDataInput input) {
     JSONObject responseJson = new JSONObject();
-    
+
     try {
-        // Mappa létrehozása, ha nem létezik
         File uploadDir = new File(UPLOAD_DIR);
         if (!uploadDir.exists()) {
             uploadDir.mkdirs();
         }
 
-        // Fájl beolvasása Multipart adatokból
         Map<String, List<InputPart>> uploadForm = input.getFormDataMap();
         List<InputPart> fileParts = uploadForm.get("file");
 
@@ -315,44 +314,64 @@ public class UserService {
         }
 
         InputPart filePart = fileParts.get(0);
-        filePart.setMediaType(MediaType.APPLICATION_OCTET_STREAM_TYPE);
-        try(InputStream fileInputStream = filePart.getBody(InputStream.class, null)) {
-            String fileName = "profile_" + userId + "_" + System.currentTimeMillis() + ".png";
-            String filePath = UPLOAD_DIR + File.separator + fileName;
-            File tempFile = new File(filePath);
+        InputStream fileInputStream = filePart.getBody(InputStream.class, null);
 
-            // Fájl mentése
-            Files.copy(fileInputStream, tempFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+        // Fájlnév kinyerése regexszel
+        String contentDisposition = filePart.getHeaders().getFirst("Content-Disposition");
+        Pattern pattern = Pattern.compile("filename=\"([^\"]+)\"");
+        Matcher matcher = pattern.matcher(contentDisposition);
+        String fileNameFromHeader = matcher.find() ? matcher.group(1) : "default.jpg";
+        String extension = fileNameFromHeader.substring(fileNameFromHeader.lastIndexOf('.') + 1).toLowerCase();
 
-            // Átméretezés 300x300 px-re
-            Thumbnails.of(tempFile)
-                      .size(300, 300)
-                      .outputFormat("png")
-                      .outputFormat("jpg")
-                      .toFile(tempFile);
-
-            // Adatbázis frissítése a User modellel
-            Boolean success = User.updateProfilePicture(userId, filePath);
-
-            if (success) {
-                responseJson.put("status", 200);
-                responseJson.put("message", "File uploaded and resized successfully");
-                responseJson.put("path", filePath);
-            } else {
-                responseJson.put("status", 404);
-                responseJson.put("error", "User not found");
-            }
-
+        // Kiterjesztés ellenőrzése
+        if (!extension.equals("png") && !extension.equals("jpg") && !extension.equals("jpeg")) {
+            responseJson.put("status", 415);
+            responseJson.put("error", "Only PNG and JPG files are allowed.");
             return responseJson;
         }
 
-        // Fájlnév generálás és elérési út beállítása
+        // Fájlnév generálása
+        String fileName = "profile_" + userId + "_" + System.currentTimeMillis() + "." + extension;
+        String filePath = UPLOAD_DIR + File.separator + fileName;
+        File tempFile = new File(filePath);
+
+        // Fájl mentése
+        Files.copy(fileInputStream, tempFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+
+        // Átméretezés
+        File resizedFile = new File(filePath);
+        Thumbnails.of(tempFile)
+                  .size(300, 300)
+                  .outputFormat(extension)
+                  .toFile(resizedFile);
+
+        // Adatbázis frissítése
+        Boolean success = User.updateProfilePicture(userId, filePath);
+
+        String url = "/webresources/user/uploads/" + fileName;
+        if (success) {
+            responseJson.put("status", 200);
+            responseJson.put("message", "File uploaded and resized successfully");
+            responseJson.put("url", url);
+            //responseJson.put("url", "/api/user/uploads/" + fileName); // Opcionális URL visszaadás
+        } else {
+            responseJson.put("status", 404);
+            responseJson.put("error", "User not found");
+        }
+
+        return responseJson;
     } catch (Exception e) {
         responseJson.put("status", 500);
         responseJson.put("error", e.getMessage());
         return responseJson;
     }
 }
+
+    
+    public File getProfilePicture(String fileName) {
+        File file = new File(UPLOAD_DIR + fileName);
+        return file.exists() ? file : null;
+    }
 
     public JSONObject sendEmail(String to, String subject, String emailBody) {
         JSONObject responseJson = new JSONObject();
