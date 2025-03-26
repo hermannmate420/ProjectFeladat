@@ -164,7 +164,7 @@ public class User implements Serializable {
         }
     }
 
-    public User(Integer id, String username, String firstname, String lastname, String email, String phoneNumber, String password, Boolean isAdmin, Boolean isDeleted, Date createdAt, Date deletedAt) {
+    public User(Integer id, String username, String firstname, String lastname, String email, String phoneNumber, String password, Boolean isAdmin, Boolean isDeleted, Date createdAt, Date deletedAt, String profilePicture) {
         this.id = id; //0
         this.username = username; //1
         this.firstname = firstname; //2
@@ -176,6 +176,7 @@ public class User implements Serializable {
         this.isDeleted = isDeleted; //8
         this.createdAt = createdAt; //9
         this.deletedAt = deletedAt; //10
+        this.profilePicture = profilePicture; //11
     }
     
 public User(String username, String firstname, String lastname, String email, String phoneNumber, String password) {
@@ -339,7 +340,8 @@ public User(String username, String firstname, String lastname, String email, St
                         Boolean.parseBoolean(o[7].toString()),
                         Boolean.parseBoolean(o[8].toString()),
                         formatter.parse(o[9].toString()),
-                        o[10] == null ? null : formatter.parse(o[10].toString())
+                        o[10] == null ? null : formatter.parse(o[10].toString()),
+                        o[11] == null ? null : o[11].toString()
                 );
                 toReturn = u;
             }
@@ -470,7 +472,8 @@ public User(String username, String firstname, String lastname, String email, St
                         Boolean.parseBoolean(record[7].toString()), //isAdmin
                         Boolean.parseBoolean(record[8].toString()), //isDeleted
                         formatter.parse(record[9].toString()), //createdAt
-                        record[10] == null ? null : formatter.parse(record[10].toString()) //deletedAt
+                        record[10] == null ? null : formatter.parse(record[10].toString()), //deletedAt
+                        record[11] == null ? null : record[11].toString() //
                 );
 
                 toReturn.add(u);
@@ -514,7 +517,7 @@ public User(String username, String firstname, String lastname, String email, St
         }
     }
     
-    public static Boolean sendEmail(String to, boolean ccMe){
+    public static Boolean sendEmail(String to, String subject, String emailBody){
         try {
         // Betöltjük a konfigurációt
             Properties config = new Properties();
@@ -523,31 +526,33 @@ public User(String username, String firstname, String lastname, String email, St
                     throw new FileNotFoundException("config.properties nem található");
                 }
                 config.load(input);
+                System.out.println("DEBUG: Jelszó a configból: " + config.getProperty("mail.password"));
+
             }
             final String from = config.getProperty("mail.from");
             final String password = config.getProperty("mail.password");
             String host = config.getProperty("mail.host");
             String port = config.getProperty("mail.port");
         
+            //Email küldési beállítások
             Properties properties = System.getProperties();
             properties.put("mail.smtp.host", host);
             properties.put("mail.smtp.port", port);
             properties.put("mail.smtp.ssl.enable", config.getProperty("mail.ssl.enable"));
             properties.put("mail.smtp.auth", config.getProperty("mail.smtp.auth"));
 
+            //Hitelesítés
             Session session = Session.getInstance(properties, new javax.mail.Authenticator() {
                 protected PasswordAuthentication getPasswordAuthentication() {
                     return new PasswordAuthentication(from, password);
                 }
             });
-            session.setDebug(true);
+            session.setDebug(true); //Csak teszteléskor True
             MimeMessage message = new MimeMessage(session);
             message.setFrom(new InternetAddress(from));
             message.addRecipient(Message.RecipientType.TO, new InternetAddress(to));
-            message.setSubject("Teszt email");
-
-            String msg = "Az lesz az a szöveg ami az emailbe kerül. Ez lehet nagyon hosszú is, akár HTML is.";
-            message.setContent(msg, "text/html;charset=utf-8");
+            message.setSubject(subject);
+            message.setContent(emailBody, "text/html;charset=utf-8");
 
             Transport.send(message);
             return true;

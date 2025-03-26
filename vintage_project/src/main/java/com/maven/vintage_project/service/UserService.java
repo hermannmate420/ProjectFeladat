@@ -31,7 +31,7 @@ public class UserService {
     private static final Pattern EMAIL_PATTERN = Pattern.compile(EMAIL_REGEX);
     private static final String PHONE_REGEX = "^(\\+?[0-9]{1,3})?[ -]?[0-9]{6,14}$";
     private static final Pattern PHONE_PATTERN = Pattern.compile(PHONE_REGEX);
-    private static final String UPLOAD_DIR = System.getProperty("jboss.server.data.dir") + "/uploads";
+    private static final String UPLOAD_DIR = System.getProperty("jboss.server.data.dir") + "\\uploads";
 
 
     
@@ -194,7 +194,6 @@ public class UserService {
         return toReturn;
     }
     
-    
     public JSONObject getAllUser() {
         JSONObject toReturn = new JSONObject();
         String status = "success";
@@ -224,6 +223,8 @@ public class UserService {
                 toAdd.put("isDeleted", actualUser.getIsDeleted());
                 toAdd.put("createdAt", actualUser.getCreatedAt());
                 toAdd.put("deletedAt", actualUser.getDeletedAt());
+                toAdd.put("profilePicture", actualUser.getProfilePicture());
+                
                 
                 result.put(toAdd);
             }
@@ -262,6 +263,7 @@ public class UserService {
             user.put("isAdmin", modelResult.getIsAdmin());
             user.put("isDeleted", modelResult.getIsDeleted());
             user.put("createdAt", modelResult.getCreatedAt());
+            user.put("profile_picture", modelResult.getProfilePicture());
             
             toReturn.put("result", user);
         }
@@ -351,4 +353,26 @@ public class UserService {
     }
 }
 
+    public JSONObject sendEmail(String to, String subject, String emailBody) {
+        JSONObject responseJson = new JSONObject();
+
+        try {
+            // Meghívjuk a User Model metódusát az email elküldésére
+            Boolean success = User.sendEmail(to, subject, emailBody);
+
+            if (success) {
+                responseJson.put("status", 200);
+                responseJson.put("message", "Email successfully sent.");
+            } else {
+                responseJson.put("status", 500);
+                responseJson.put("error", "Failed to send email.");
+            }
+
+            return responseJson;
+        } catch (Exception e) {
+            responseJson.put("status", 500);
+            responseJson.put("error", e.getMessage());
+            return responseJson;
+        }
+    }
 }

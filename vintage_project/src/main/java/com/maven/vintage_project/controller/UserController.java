@@ -191,22 +191,26 @@ public class UserController {
     }
 
     @POST
-    @Path("sendEmail")
+    @Path("/send")
     @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
     public Response sendEmail(@HeaderParam("token") String jwt, String bodyString) {
         int isValid = JWT.validateJWT(jwt);
 
         if (isValid == 1) {
             JSONObject body = new JSONObject(bodyString);
-            
-            Boolean obj = User.sendEmail(body.getString("to"), body.getBoolean("ccMe"));
-            return Response.status(200).entity(obj.toString()).type(MediaType.APPLICATION_JSON).build();
-        } else if (isValid == 2) {
-            return Response.status(498).entity("InvalidToken").type(MediaType.APPLICATION_JSON).build();
-        } else {
-            return Response.status(401).entity("TokenExpired").type(MediaType.APPLICATION_JSON).build();
-        }
+            String to = body.getString("to");
+            String subject = body.getString("subject");
+            String emailBody = body.getString("body");
 
+            JSONObject response = layer.sendEmail(to, subject, emailBody);
+
+            return Response.status(response.getInt("status")).entity(response.toString()).build();
+        } else if (isValid == 2) {
+            return Response.status(498).entity("{\"error\": \"InvalidToken\"}").build();
+        } else {
+            return Response.status(401).entity("{\"error\": \"TokenExpired\"}").build();
+        }
     }
     
     
