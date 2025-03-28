@@ -400,15 +400,20 @@ public class UserService {
         JSONObject responseJson = new JSONObject();
         
         try {
-            User modifier = User.findById(modifierId); // lekérjük a módosító felhasználót
+            User modifier = User.findById(modifierId);
+            User target = User.findById(targetUserId); // cél user ellenőrzése is
 
-            if (modifier == null) {
+            if (modifier == null || target == null) {
                 responseJson.put("status", 404);
-                responseJson.put("error", "Modifier user not found");
+                responseJson.put("error", "Modifier or target user not found");
                 return responseJson;
             }
-            
-            if (!modifier.getIsAdmin() && modifierId != targetUserId) {
+
+            // Jogosultságellenőrzés
+            if (modifierId.equals(targetUserId)) {
+                // Saját magát módosítja - engedjük
+            } else if (!modifier.getIsAdmin()) {
+                // Más profilját próbálja módosítani, de nem admin - tiltjuk
                 responseJson.put("status", 403);
                 responseJson.put("error", "Only admins can update other users");
                 return responseJson;
@@ -418,7 +423,7 @@ public class UserService {
             Boolean success = User.updateUser(modifierId, targetUserId, u);
             System.out.println(modifierId + " " + targetUserId + " " + u);
             
-            if (success) {
+            if (Boolean.TRUE.equals(success)) {
                 responseJson.put("status", 200);
                 responseJson.put("message", "User updated successfully");
             } else {
@@ -429,7 +434,9 @@ public class UserService {
         } catch (Exception e) {
             responseJson.put("status", 500);
             responseJson.put("error", e.getMessage());
+            e.printStackTrace(); // hibakereséshez hasznos
         }
+
         return responseJson;    
     }
     
