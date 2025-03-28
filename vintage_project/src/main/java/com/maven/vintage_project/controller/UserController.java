@@ -222,22 +222,35 @@ public class UserController {
     @GET
     @Path("/uploads/{fileName}")
     public Response getProfilePicture(@PathParam("fileName") String fileName) {
-    File file = layer.getProfilePicture(fileName);
+        File file = layer.getProfilePicture(fileName);
 
-    if (file == null || !file.exists()) {
-        return Response.status(Response.Status.NOT_FOUND).entity("File not found").build();
+        if (file == null || !file.exists()) {
+            return Response.status(Response.Status.NOT_FOUND).entity("File not found").build();
+        }
+
+        String mimeType = null;
+        try {
+            mimeType = java.nio.file.Files.probeContentType(file.toPath());
+        } catch (Exception e) {
+            mimeType = "application/octet-stream"; // Fallback
+        }
+
+        return Response.ok(file, mimeType)
+            .header("Content-Disposition", "inline; filename=\"" + file.getName() + "\"")
+            .build();
     }
-
-    String mimeType = null;
-    try {
-        mimeType = java.nio.file.Files.probeContentType(file.toPath());
-    } catch (Exception e) {
-        mimeType = "application/octet-stream"; // Fallback
+    @PUT
+    @Path("/{modifierId}/update/{targetUserId}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response updateUser(@PathParam("modifierId") Integer modifierId,
+            @PathParam("targetUserId") int targetUserId, User u) 
+    {
+        System.out.println(">>> JSON received: " + layer);
+        JSONObject result = layer.updateUser(modifierId, targetUserId, u);
+        return Response.status(result.getInt("status"))
+                       .entity(result.toString())
+                       .build();
     }
-
-    return Response.ok(file, mimeType)
-                   .header("Content-Disposition", "inline; filename=\"" + file.getName() + "\"")
-                   .build();
-}
 
 }
