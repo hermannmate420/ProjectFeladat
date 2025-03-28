@@ -395,4 +395,43 @@ public class UserService {
             return responseJson;
         }
     }
+    
+    public JSONObject updateUser(Integer modifierId, Integer targetUserId, User u) {
+        JSONObject responseJson = new JSONObject();
+        
+        try {
+            User modifier = User.findById(modifierId); // lekérjük a módosító felhasználót
+
+            if (modifier == null) {
+                responseJson.put("status", 404);
+                responseJson.put("error", "Modifier user not found");
+                return responseJson;
+            }
+            
+            if (!modifier.getIsAdmin() && modifierId != targetUserId) {
+                responseJson.put("status", 403);
+                responseJson.put("error", "Only admins can update other users");
+                return responseJson;
+            }
+
+            // Meghívjuk az adatbázisban lévő tárolt eljárást
+            Boolean success = User.updateUser(modifierId, targetUserId, u);
+            System.out.println(modifierId + " " + targetUserId + " " + u);
+            
+            if (success) {
+                responseJson.put("status", 200);
+                responseJson.put("message", "User updated successfully");
+            } else {
+                responseJson.put("status", 500);
+                responseJson.put("error", "Database update failed");
+            }
+
+        } catch (Exception e) {
+            responseJson.put("status", 500);
+            responseJson.put("error", e.getMessage());
+        }
+        return responseJson;    
+    }
+    
+    
 }

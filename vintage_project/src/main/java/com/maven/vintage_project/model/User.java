@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Properties;
+import javax.ejb.CreateException;
 import javax.mail.Message;
 import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
@@ -588,5 +589,53 @@ public User(String username, String firstname, String lastname, String email, St
         em.close();
     }
     }
+    
+    public static Boolean updateUser(Integer modifierId, Integer targetUserId, User u) {
+        EntityManager em = getEntityManager();
+        
+        try {
+            StoredProcedureQuery spq = em.createStoredProcedureQuery("updateUser");
+            
+            spq.registerStoredProcedureParameter("modifierId", Integer.class, ParameterMode.IN);
+            spq.registerStoredProcedureParameter("targetUserId", Integer.class, ParameterMode.IN);
+            spq.registerStoredProcedureParameter("newUsername", String.class, ParameterMode.IN);
+            spq.registerStoredProcedureParameter("newFirstname", String.class, ParameterMode.IN);
+            spq.registerStoredProcedureParameter("newLastname", String.class, ParameterMode.IN);
+            spq.registerStoredProcedureParameter("newEmail", String.class, ParameterMode.IN);
+            spq.registerStoredProcedureParameter("newPhoneNumber", String.class, ParameterMode.IN);
+            spq.registerStoredProcedureParameter("newIsAdmin", Boolean.class, ParameterMode.IN);
+            
+            spq.setParameter("modifierId", modifierId);
+            spq.setParameter("targetUserId", targetUserId);
+            spq.setParameter("newUsername", u.getUsername());
+            spq.setParameter("newFirstname", u.getFirstname());
+            spq.setParameter("newLastname", u.getLastname());
+            spq.setParameter("newEmail", u.getEmail());
+            spq.setParameter("newPhoneNumber", u.getPhoneNumber());
+            spq.setParameter("newIsAdmin", u.getIsAdmin());
+            
+            spq.execute();
+            
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+    
+    public static User findById(Integer id) {
+    EntityManager em = getEntityManager();
+
+    try {
+        return em.find(User.class, id);
+    } catch (Exception e) {
+        e.printStackTrace();
+        return null;
+    } finally {
+        if (em != null && em.isOpen()) {
+            em.close();
+        }
+    }
+}
     
 }
