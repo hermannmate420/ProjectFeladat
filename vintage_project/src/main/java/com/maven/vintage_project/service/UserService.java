@@ -7,6 +7,7 @@ package com.maven.vintage_project.service;
 import com.maven.vintage_project.config.JWT;
 import com.maven.vintage_project.model.User;
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
@@ -373,12 +374,13 @@ public class UserService {
         return file.exists() ? file : null;
     }
 
-    public JSONObject sendEmail(String to, String subject, String emailBody) {
+    public JSONObject sendEmail(String to, String subject, String template, Map<String, String> variables) {
         JSONObject responseJson = new JSONObject();
 
         try {
             // Meghívjuk a User Model metódusát az email elküldésére
-            Boolean success = User.sendEmail(to, subject, emailBody);
+            String htmlBody = User.loadEmailTemplate(template, variables);
+            Boolean success = User.sendEmail(to, subject, htmlBody);
 
             if (success) {
                 responseJson.put("status", 200);
@@ -393,7 +395,7 @@ public class UserService {
             responseJson.put("status", 500);
             responseJson.put("error", e.getMessage());
             return responseJson;
-        }
+        } 
     }
     
     public JSONObject updateUser(Integer modifierId, Integer targetUserId, User u) {
