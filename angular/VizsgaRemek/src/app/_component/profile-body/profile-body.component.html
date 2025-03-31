@@ -1,91 +1,166 @@
-<main class="p-5">
+<main id="hatterek" class="p-5">
         <div class="container rounded backgrnd">
                 <div class="row">
-                        <div class="col-md-3 border-right">
-                                <div class="d-flex flex-column align-items-center text-center p-3 py-5"><img
-                                                class="rounded-circle mt-5" width="150px"
-                                                src="https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg"><span
-                                                class="font-weight-bold">Edogaru</span><span
-                                                class="text-black-50">edogaru
-                                                mail.com.my</span><span>
-                                        </span></div>
+                        <div id="fff" class="col-md-3 border-right">
+                                @if (isEditeProfile) {
+                                <div class="d-flex hovereffect flex-column align-items-center text-center p-3 py-5">
+                                        <div class="d-flex flex-column hover-zoom align-items-center text-center p-3">
+                                                <img class="mt-5 border border-dark asd" width="150px"
+                                                        [src]="userData?.result?.profile_picture || 'https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg'">
+                                                <div id="EditPic" class="overlay">
+                                                        <h2>Upload image</h2>
+                                                        <input type="file" (change)="onFileSelected($event)">
+                                                        <button id="buttonPic" class="btn btn-primary mt-2"
+                                                                (click)="uploadProfilePicture()">Upload</button>
+                                                </div>
+
+                                        </div>
+                                </div>
+                                }@else {
+                                <div class="d-flex flex-column align-items-center text-center p-3 py-5">
+                                        <div class="d-flex flex-column hover-zoom align-items-center text-center p-3">
+                                                <img class="mt-5 border border-dark asd" width="150px"
+                                                        [src]="userData?.result?.profile_picture || 'https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg'">
+                                        </div>
+                                </div>
+                                }
                         </div>
                         <div class="col-md-5 border-right">
-
-                                <!-- <div *ngIf="user">
-                                        <h2>Welcome, {{ user.name }}!</h2>
-                                        <p>Email: {{ user.email }}</p>
-                                        <p>Role: {{ user.role }}</p>
-                                </div>
-                                <div *ngIf="!user">
-                                        <p>Loading user data...</p>
-                                </div> -->
-
-
                                 <div class="p-3 py-5">
                                         <div class="d-flex justify-content-between align-items-center mb-3">
-                                                <h4 class="text-right">Profile Settings</h4>
+                                                <h5 class="text-right">Profile Settings</h5>
+                                                <button id="edit" (click)="editProfile()"
+                                                        class="btn btn-success btn-sm rounded" type="button"
+                                                        data-toggle="tooltip" data-placement="top" title="Edit"><i
+                                                                class="bi bi-pencil-square"> Edit profile</i></button>
                                         </div>
+                                        @if (isEditeProfile) {
                                         <div class="row mt-2">
-                                                <div class="col-md-6"><label class="labels">First name</label><input
-                                                                type="text" class="form-control"
-                                                                placeholder="first name" value=""></div>
-                                                <div class="col-md-6"><label class="labels">Last name</label><input
-                                                                type="text" class="form-control" value=""
-                                                                placeholder="surname"></div>
+                                                <div class="col-md-6"><label class="labels">First
+                                                                name</label><input
+                                                                [(ngModel)]="userData.result.firstName" type="text"
+                                                                class="form-control" placeholder="first name"
+                                                                value="firstName">
+                                                </div>
+                                                <div class="col-md-6"><label class="labels">Last
+                                                                name</label><input
+                                                                [(ngModel)]="userData.result.lastName" type="text"
+                                                                class="form-control" placeholder="last name"
+                                                                value="firstName">
+                                                </div>
                                         </div>
                                         <div class="row mt-3">
-                                                <div class="col-md-12"><label class="labels">Mobile Number</label><input
+                                                <div class="col-md-12"><label class="labels">User
+                                                                name</label><input
+                                                                [(ngModel)]="userData.result.username" type="text"
+                                                                class="form-control" placeholder="enter user name"
+                                                                value="phoneNumber"></div>
+                                                <div class="col-md-12"><label class="labels">Mobile
+                                                                Number</label><input [(ngModel)]="userData.result.phone"
                                                                 type="text" class="form-control"
-                                                                placeholder="enter phone number" value=""></div>
-                                                <div class="col-md-12"><label class="labels">Address Line
-                                                                1</label><input type="text" class="form-control"
-                                                                placeholder="enter address line 1" value=""></div>
-                                                <div class="col-md-12"><label class="labels">Address Line
-                                                                2</label><input type="text" class="form-control"
-                                                                placeholder="enter address line 2" value=""></div>
-                                                <div class="col-md-12"><label class="labels">Postcode</label><input
-                                                                type="text" class="form-control"
-                                                                placeholder="enter address line 2" value=""></div>
-                                                <div class="col-md-12"><label class="labels">State</label><input
-                                                                type="text" class="form-control"
-                                                                placeholder="enter address line 2" value=""></div>
-                                                <div class="col-md-12"><label class="labels">Area</label><input
-                                                                type="text" class="form-control"
-                                                                placeholder="enter address line 2" value=""></div>
-                                                <div class="col-md-12"><label class="labels">Email ID</label><input
-                                                                type="text" class="form-control"
-                                                                placeholder="enter email id" value=""></div>
-                                                <div class="col-md-12"><label class="labels">Education</label><input
-                                                                type="text" class="form-control" placeholder="education"
-                                                                value=""></div>
-                                        </div>
-                                        <div class="row mt-3">
-                                                <div class="col-md-6"><label class="labels">Country</label><input
-                                                                type="text" class="form-control" placeholder="country"
-                                                                value=""></div>
-                                                <div class="col-md-6"><label class="labels">State/Region</label><input
-                                                                type="text" class="form-control" value=""
-                                                                placeholder="state"></div>
+                                                                placeholder="enter phone number" value="phoneNumber">
+                                                </div>
+                                                <div class="col-md-12"><label class="labels">Email</label><input
+                                                                [(ngModel)]="userData.result.email" type="text"
+                                                                class="form-control" placeholder="enter email address"
+                                                                value="email">
+                                                </div>
                                         </div>
                                         <div class="mt-5 text-center"><button class="btn btn-primary profile-button"
-                                                        type="button">Save
+                                                        (click)="saveProfile()" type="button">Save
                                                         Profile</button></div>
+                                        }@else {
+                                        <div *ngIf="userData">
+                                                <h2>Welcome, {{ userData.result.lastName }}!</h2>
+                                                <p>Email: {{ userData.result.email }}</p>
+                                                <p>id: {{ userData.result.id }}</p>
+                                                <p>registered at: {{ userData.result.createdAt }}</p>
+                                        </div>
+                                        <div *ngIf="!userData">
+                                                <p>Loading user data...</p>
+                                        </div>
+                                        }
+                                        
+                                        <hr class="my-4">
+                                        <h5 class="text-center">Change Password</h5>
+                                        <div class="row mt-3">
+                                                <div class="col-md-12">
+                                                        <label class="labels">New password</label>
+                                                        <input type="password" class="form-control"
+                                                                [(ngModel)]="newPassword"
+                                                                placeholder="Enter new password">
+                                                </div>
+                                                <div class="col-md-12 mt-2">
+                                                        <label class="labels">Confirm new password</label>
+                                                        <input type="password" class="form-control"
+                                                                [(ngModel)]="confirmPassword"
+                                                                placeholder="Confirm new password">
+                                                </div>
+                                                <div class="col-md-12 mt-4 text-center">
+                                                        <button class="btn btn-outline-warning"
+                                                                (click)="changePassword()">Change password</button>
+                                                </div>
+                                        </div>
+
+
                                 </div>
                         </div>
                         <div class="col-md-4">
                                 <div class="p-3 py-5">
+                                        @if (isEditeAddress) {
                                         <div class="d-flex justify-content-between align-items-center experience">
-                                                <span>Edit
-                                                        Experience</span><span class="border px-3 p-1 add-experience"><i
-                                                                class="fa fa-plus"></i>&nbsp;Experience</span>
+                                                <h5>Shipping address</h5>
+                                                <a (click)="editAddress()">
+                                                        <span class="border px-3 p-1 add-experience">
+                                                                Edit address
+                                                        </span>
+                                                </a>
                                         </div><br>
-                                        <div class="col-md-12"><label class="labels">Experience in
-                                                        Designing</label><input type="text" class="form-control"
-                                                        placeholder="experience" value=""></div> <br>
-                                        <div class="col-md-12"><label class="labels">Additional Details</label><input
-                                                        type="text" class="form-control"
-                                                        placeholder="additional details" value=""></div>
+                                        <!-- <p>Address Line 1: {{userData.result.addressLine}}</p>
+                                        <p>Address Line 2: {{userData.result.addressLine}}</p>
+                                        <p>Country: {{userData.result.country}}</p>
+                                        <p>State/Region: {{userData.result.stateRegion}}</p> -->
+                                        }@else {
+                                        <div class="d-flex justify-content-between align-items-center experience">
+                                                <h5>Shipping address</h5>
+                                                <a (click)="editAddress()">
+                                                        <span class="border px-3 p-1 add-experience">
+                                                                Edit address
+                                                        </span>
+                                                </a>
+                                        </div><br>
+                                        <div class="col-md-12">
+                                                <label class="labels">
+                                                        Address Line 1
+                                                </label>
+                                                <input type="text" class="form-control" placeholder="Address Line 1"
+                                                        value="">
+                                        </div>
+                                        <div class="col-md-12">
+                                                <label class="labels">
+                                                        Address Line 2
+                                                </label>
+                                                <input type="text" class="form-control" placeholder="Address Line 2"
+                                                        value="">
+                                        </div>
+                                        <div class="row mt-3">
+                                                <div class="col-md-6"><label class="labels">
+                                                                Country
+                                                        </label>
+                                                        <input type="text" class="form-control" placeholder="country"
+                                                                value="">
+                                                </div>
+                                                <div class="col-md-6">
+                                                        <label class="labels">
+                                                                State/Region
+                                                        </label>
+                                                        <input type="text" class="form-control" value=""
+                                                                placeholder="state">
+                                                </div>
+                                        </div>
+                                        <div class="mt-5 text-center"><button class="btn btn-primary profile-button"
+                                                        type="button">Save</button></div>
+                                        }
                                 </div>
                         </div>
                 </div>

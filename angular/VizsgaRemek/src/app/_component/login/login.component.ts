@@ -4,6 +4,7 @@ import { FooterComponent } from '../footer/footer.component';
 import { LoginService } from '../../services/login.service';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { Title } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-login',
@@ -17,7 +18,9 @@ export class LoginComponent implements OnInit {
   showPassword: boolean = false;
   errorMessage: string = '';
 
-  constructor(private fb: FormBuilder, private loginService: LoginService, private router: Router) {}
+  constructor(private fb: FormBuilder, private loginService: LoginService, private router: Router, private titleService: Title ) {
+    titleService.setTitle("Login");
+  }
 
   ngOnInit(): void {
     this.loginForm = this.fb.group({
@@ -38,7 +41,6 @@ export class LoginComponent implements OnInit {
       const { email, password } = this.loginForm.value;
       await this.loginService.login(email, password);
       alert('Login successful!');
-      
       this.router.navigate([this.loginService.getIsAdmin() ? '/admin' : '/home']);
     } catch (error) {
       console.error('Error logging in: ', error);

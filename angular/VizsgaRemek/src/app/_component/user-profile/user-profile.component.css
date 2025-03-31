@@ -1,4 +1,30 @@
-main {
-    background-color: #BFA082;
+
+
+a.active {
+    background-color: #0d6efd;
+    color: white !important;
 }
 
+.admin-sidebar {
+    width: 220px;
+    transition: all 0.3s ease;
+    overflow-x: hidden;
+}
+
+.admin-sidebar.closed {
+    width: 0;
+    padding: 0;
+    border: none;
+}
+
+.toggle-btn {
+    position: absolute;
+    top: 15px;
+    left: -100px;
+    z-index: 100;
+    transition: left 0.3s ease;
+}
+
+.admin-sidebar.closed+section .toggle-btn {
+    left: 15px;
+}

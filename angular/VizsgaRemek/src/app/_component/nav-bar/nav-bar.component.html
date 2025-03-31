@@ -6,22 +6,26 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav mx-auto">
+                <li class="nav-item">
+                    @if (navIsAdmin) {
+                <li><a class="nav-link active text-danger" href="/admin"><strong>Admin</strong></a></li>
+                }@else{
+
+                }
+                </li>
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
                         aria-expanded="false">
                         Profile
                     </a>
                     <ul class="dropdown-menu">
-                        @if (navIsAdmin) {
-                            <li><a class="dropdown-item" href="/admin">Admin</a></li>
-                        }@else{
-                            <li><a class="dropdown-item" href="/profile">Profile</a></li>
-                        }
+                        <li><a class="dropdown-item" href="/profile">Profile</a></li>
                         <li><a class="dropdown-item" href="/posts">My posts</a></li>
                         <li>
                             <hr class="dropdown-divider">
                         </li>
-                        <li><a *ngIf="isAuthenticated" (click)="onLogOut()" class="dropdown-item" href="#">Logout</a></li>
+                        <li><a *ngIf="isAuthenticated" (click)="onLogOut()" class="dropdown-item" href="#">Logout</a>
+                        </li>
                     </ul>
                 </li>
                 <li class="nav-item">
@@ -45,6 +49,9 @@
                     </div>
                 </form>
             </ul>
+            <button (click)="toggleTheme()" class="btn btn-outline-secondary justify-content-md-end">
+                {{ darkModeService.isDarkMode() ? '🌞' : '🌙' }}
+            </button>
         </div>
     </div>
 </nav>

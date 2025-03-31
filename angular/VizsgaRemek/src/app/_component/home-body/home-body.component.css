@@ -1,6 +1,4 @@
-main {
-    background-color: #BFA082;
-}
+
 
 .parallax-one {
     background-image: url(../../../../public/placeholder.webp);
@@ -117,4 +115,19 @@ a.qwe {
 
 img+img {
     border-radius: 50%;
+}
+
+.scroll-to-top {
+    border-radius: 10px;
+    background-color: beige;
+    position: fixed;
+    bottom: 15px;
+    right: 15px;
+    opacity: 0;
+    transition: all .2s ease-in-out;
+}
+
+.show-scrollTop {
+    opacity: 1;
+    transition: all .2s ease-in-out;
 }

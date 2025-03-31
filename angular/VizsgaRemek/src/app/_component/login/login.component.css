@@ -1,5 +1,6 @@
 #hatter {
     background-color: #847B45;
+    color: #000;
 }
 
 #asd {
@@ -21,4 +22,8 @@ a:hover {
 .loginsection {
     height: auto;
     width: auto;
+}
+
+#reg {
+    text-decoration: none;
 }

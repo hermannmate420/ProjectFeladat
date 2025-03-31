@@ -5,6 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { ProfileBodyComponent } from '../profile-body/profile-body.component';
 import { MypostsComponent } from "../myposts/myposts.component";
 import { BlogComponent } from "../blog/blog.component";
+import { Title } from '@angular/platform-browser';
 import { MypostsBodyComponent } from "../myposts-body/myposts-body.component";
 
 @Component({
@@ -14,5 +15,7 @@ import { MypostsBodyComponent } from "../myposts-body/myposts-body.component";
   styleUrl: './profile.component.css'
 })
 export class ProfileComponent {
-
+  constructor(private titleService: Title) {
+    titleService.setTitle("Profile");
+  }
 }

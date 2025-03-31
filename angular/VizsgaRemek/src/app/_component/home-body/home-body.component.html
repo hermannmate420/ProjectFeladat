@@ -1,9 +1,10 @@
-<main role="main">
+<main id="hatterek" role="main">
 
     <div class="container">
         <div class="row">
             <section>
                 <div class="parallax-one text-center text-light text-uppercase">
+                    <a id="top"></a>
                     <div id="hgh">
                         <img class="p-2 logo" src="retro_logo.png" alt="logo" width="100" height="100">
                         <h2>Retro Vintage Shop</h2>
@@ -21,25 +22,25 @@
 
         <div class="row pt-5 hovimg">
 
-            <hr class="featurette-divider">
+            <hr class="featurette-divider pb-5">
 
             <div class="col-lg-4 ">
                 <a href="">
                     <img class="img-fluid" src="bakelit_lemez.jpg" alt="" width="300" height="300">
                 </a>
-                <h2>Bakelit lemezek</h2>
+                <h2>Bakelite discs</h2>
             </div>
             <div class="col-lg-4 ">
                 <a href="">
                     <img class="img-fluid" src="poszterek.webp" alt="img-fluid" width="300" height="300">
                 </a>
-                <h2>Poszterek</h2>
+                <h2>Posters</h2>
             </div>
             <div class="col-lg-4 ">
                 <a href="">
                     <img class="img-fluid" src="óra.webp" alt="" width="300" height="300">
                 </a>
-                <h2>Órák</h2>
+                <h2>Watches</h2>
             </div>
         </div>
 
@@ -208,7 +209,11 @@
 
         <hr class="featurette-divider">
 
-        <p class="float-right"><a class="qwe text-uppercase" href="#hgh"><strong>Back to top <i class="bi bi-arrow-up-square"></i></strong></a></p>
+        <div class="scroll-to-top" [ngClass]="{'show-scrollTop': windowScrolled}">
+            <button type="button" class="btn active" data-toggle="button" aria-pressed="true" (click)="scrollToTop()">
+                <i class="fas fa-chevron-up"> Back to top </i>
+            </button>
+        </div>
 
     </div>
     <br>
