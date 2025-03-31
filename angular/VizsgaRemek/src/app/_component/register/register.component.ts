@@ -51,7 +51,7 @@ export class RegisterComponent {
             // Email küldés - most már van token!
             this.emailService.sendEmail(
               formData.email,
-              'Üdvözlünk a Retro Shopban!',
+              'Welcome to Vintage Shop',
               'welcome', // template name
               {
                 name: formData.firstName,

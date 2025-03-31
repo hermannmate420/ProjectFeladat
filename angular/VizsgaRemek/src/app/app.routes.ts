@@ -20,6 +20,7 @@ import { AdminNewsletterComponent } from './_component/admin-newsletter/admin-ne
 import { AdminAnalyticsComponent } from './_component/admin-analytics/admin-analytics.component';
 import { AdminMessagesComponent } from './_component/admin-messages/admin-messages.component';
 import { ShopLayoutComponent } from './_component/shop-layout/shop-layout.component';
+import { ForgotResetPasswordComponent } from './_component/forgot-reset-password/forgot-reset-password.component';
 
 export const routes: Routes = [
     { path: '', redirectTo: '/login', pathMatch: 'full' },
@@ -27,7 +28,8 @@ export const routes: Routes = [
     { path: 'profile', component: ProfileComponent },
     { path: 'login', component: LoginComponent },
     { path: 'register', component: RegisterComponent },
-    { path: 'resetpassword', component: ResetpasswordComponent },
+    { path: 'forgotpassword', component: ResetpasswordComponent },
+    { path:'reset-password', component: ForgotResetPasswordComponent},
     { path: 'blog', component: BlogComponent },
     {
         path: 'shop', component: ShopLayoutComponent,
