@@ -654,7 +654,33 @@ public User(String username, String firstname, String lastname, String email, St
         if (em != null && em.isOpen()) {
             em.close();
         }
+        }
     }
-}
+    
+    public static Map<String, Object> findIdByEmail(String email) {
+        EntityManager em = getEntityManager();
+        try {
+            StoredProcedureQuery spq = em.createStoredProcedureQuery("findUserByEmail");
+            spq.registerStoredProcedureParameter("p_email", String.class, ParameterMode.IN);
+            spq.setParameter("p_email", email);
+
+            List<Object[]> result = spq.getResultList();
+            if (result.isEmpty()) return null;
+
+            Object[] row = result.get(0);
+            Map<String, Object> userData = new HashMap<>();
+            userData.put("id", ((Number) row[0]).intValue());
+            userData.put("firstname", (String) row[1]);
+
+            return userData;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        } finally {
+            if (em != null) em.close();
+        }
+    }
+
+
     
 }

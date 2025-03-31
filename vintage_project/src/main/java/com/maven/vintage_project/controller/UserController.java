@@ -214,7 +214,6 @@ public class UserController {
         }
     }
     
-    
     @POST
     @Path("/{id}/upload-profile-picture")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
@@ -247,6 +246,7 @@ public class UserController {
             .header("Content-Disposition", "inline; filename=\"" + file.getName() + "\"")
             .build();
     }
+    
     @PUT
     @Path("/{modifierId}/update/{targetUserId}")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -260,5 +260,36 @@ public class UserController {
                        .entity(result.toString())
                        .build();
     }
+    
+    @POST
+    @Path("/forgot-password")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response forgotPassword(Map<String, String> payload) {
+        String email = payload.get("email");
+        System.out.println("[DEBUG] Forgot password request received for email: " + email);
+
+
+        try {
+            boolean success = layer.resetPasswordWithoutToken(email);
+
+            System.out.println("[DEBUG] Controller példányosított UserService: " + layer.getClass().getName());
+            if (success) {
+                System.out.println("[DEBUG] Reset link successfully sent to: " + email);
+                return Response.ok("{\"message\": \"Reset link sent.\"}").build();
+            } else {
+                System.out.println("[DEBUG] No user found with email: " + email);
+                return Response.status(Response.Status.NOT_FOUND)
+                    .entity("{\"error\": \"User not found.\"}").build();
+        }
+        } catch (Exception e) {
+            System.out.println("[ERROR] Exception in forgotPassword: " + e.getMessage());
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                .entity("{\"error\": \"Something went wrong.\"}")
+                .build();
+    }
+}
+
+
 
 }

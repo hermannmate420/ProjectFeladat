@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -28,6 +29,7 @@ import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
  * @author herma
  */
 public class UserService {
+
     private User layer = new User();
     private static final String EMAIL_REGEX = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,10}$";
     private static final Pattern EMAIL_PATTERN = Pattern.compile(EMAIL_REGEX);
@@ -35,8 +37,6 @@ public class UserService {
     private static final Pattern PHONE_PATTERN = Pattern.compile(PHONE_REGEX);
     private static final String UPLOAD_DIR = "C:\\wildfly\\standalone\\deployments\\uploads\\";
 
-
-    
     //Még nincsen benne semmiben
     public static boolean isValidPhoneNumber(String phoneNumber) {
         if (phoneNumber == null || phoneNumber.trim().isEmpty()) {
@@ -51,32 +51,32 @@ public class UserService {
         }
         return EMAIL_PATTERN.matcher(email.trim()).matches();
     }
-    
+
     public static boolean isValidPassword(String password) {
-        if(password.length() < 8) {
+        if (password.length() < 8) {
             return false;
         }
-        
+
         boolean hasNum = false;
         boolean hasUpperCase = false;
         boolean hasLowerCase = false;
         boolean hasSpecialChar = false;
-        
-        for(char c : password.toCharArray()) {
-            if(Character.isDigit(c)) {
+
+        for (char c : password.toCharArray()) {
+            if (Character.isDigit(c)) {
                 hasNum = true;
-            } else if(Character.isUpperCase(c)) {
+            } else if (Character.isUpperCase(c)) {
                 hasUpperCase = true;
-            } else if(Character.isLowerCase(c)) {
+            } else if (Character.isLowerCase(c)) {
                 hasLowerCase = true;
-            } else if("!@#$%^&*()_+-=[]{}|;':,.<>?/`~".indexOf(c) != -1) {
+            } else if ("!@#$%^&*()_+-=[]{}|;':,.<>?/`~".indexOf(c) != -1) {
                 hasSpecialChar = true;
             }
         }
-        
+
         return hasNum && hasUpperCase && hasLowerCase && hasSpecialChar;
     }
-    
+
     public JSONObject login(String email, String password) {
         JSONObject toReturn = new JSONObject();
         String status = "success";
@@ -104,7 +104,7 @@ public class UserService {
                     result.put("jwt", JWT.createJWT(modelResult));
 
                     toReturn.put("result", result);
-                    
+
                 }
             }
 
@@ -117,41 +117,43 @@ public class UserService {
         toReturn.put("statusCode", statusCode);
         return toReturn;
     }
-    
+
     public JSONObject registerUser(User u) {
         JSONObject toReturn = new JSONObject();
         String status = "success";
         int statusCode = 200;
-        
+
         if (!isValidEmail(u.getEmail())) {
-        status = "InvalidEmail";
-        statusCode = 417;
-    } else if (!isValidPassword(u.getPassword())) {
-        status = "InvalidPassword";
-        statusCode = 417;
-    } else if (isUserExists(u.getEmail())) {
-        status = "UserAlreadyExists";
-        statusCode = 417;
-    } else {
-        boolean registerUser = layer.registerUser(u);
-        if (!registerUser) {
-            status = "fail";
+            status = "InvalidEmail";
             statusCode = 417;
+        } else if (!isValidPassword(u.getPassword())) {
+            status = "InvalidPassword";
+            statusCode = 417;
+        } else if (isUserExists(u.getEmail())) {
+            status = "UserAlreadyExists";
+            statusCode = 417;
+        } else if (!isValidPhoneNumber(u.getPhoneNumber())) {
+            status = "InvalidPhoneNumber";
+            statusCode = 417;
+        } else {
+            boolean registerUser = layer.registerUser(u);
+            if (!registerUser) {
+                status = "fail";
+                statusCode = 417;
+            }
         }
-    }
-        
 
         toReturn.put("status", status);
         toReturn.put("statusCode", statusCode);
         return toReturn;
-        
+
     }
-    
+
     private boolean isUserExists(String email) {
-    // EZ ellenörzi hogy létezik e a felhasználó
-    return User.isUserExists(email);
-}
-    
+        // EZ ellenörzi hogy létezik e a felhasználó
+        return User.isUserExists(email);
+    }
+
     public JSONObject registerAdmin(User u, String jwt) {
         JSONObject toReturn = new JSONObject();
         String status = "success";
@@ -195,7 +197,7 @@ public class UserService {
         toReturn.put("statusCode", statusCode);
         return toReturn;
     }
-    
+
     public JSONObject getAllUser() {
         JSONObject toReturn = new JSONObject();
         String status = "success";
@@ -203,37 +205,36 @@ public class UserService {
         try {
             List<User> modelResult = layer.getAllUser();
             if (modelResult == null) {
-            status = "ModelException";
-            statusCode = 500;
-        } else if (modelResult.isEmpty()) {
-            status = "NoUsersFound";
-            statusCode = 417;
-        } else {
-            JSONArray result = new JSONArray();
-            
-            for(User actualUser : modelResult){
-                JSONObject toAdd = new JSONObject();
+                status = "ModelException";
+                statusCode = 500;
+            } else if (modelResult.isEmpty()) {
+                status = "NoUsersFound";
+                statusCode = 417;
+            } else {
+                JSONArray result = new JSONArray();
 
-                toAdd.put("id", actualUser.getId());
-                toAdd.put("username", actualUser.getUsername());
-                toAdd.put("firstName", actualUser.getFirstname());
-                toAdd.put("lastName", actualUser.getLastname());
-                toAdd.put("email", actualUser.getEmail());
-                toAdd.put("phoneNumber", actualUser.getPhoneNumber());
-                toAdd.put("password", actualUser.getPassword());
-                toAdd.put("isAdmin", actualUser.getIsAdmin());
-                toAdd.put("isDeleted", actualUser.getIsDeleted());
-                toAdd.put("createdAt", actualUser.getCreatedAt());
-                toAdd.put("deletedAt", actualUser.getDeletedAt());
-                toAdd.put("profilePicture", actualUser.getProfilePicture());
-                
-                
-                result.put(toAdd);
+                for (User actualUser : modelResult) {
+                    JSONObject toAdd = new JSONObject();
+
+                    toAdd.put("id", actualUser.getId());
+                    toAdd.put("username", actualUser.getUsername());
+                    toAdd.put("firstName", actualUser.getFirstname());
+                    toAdd.put("lastName", actualUser.getLastname());
+                    toAdd.put("email", actualUser.getEmail());
+                    toAdd.put("phoneNumber", actualUser.getPhoneNumber());
+                    toAdd.put("password", actualUser.getPassword());
+                    toAdd.put("isAdmin", actualUser.getIsAdmin());
+                    toAdd.put("isDeleted", actualUser.getIsDeleted());
+                    toAdd.put("createdAt", actualUser.getCreatedAt());
+                    toAdd.put("deletedAt", actualUser.getDeletedAt());
+                    toAdd.put("profilePicture", actualUser.getProfilePicture());
+
+                    result.put(toAdd);
+                }
+
+                toReturn.put("result", result);
+                System.out.println("getAllUser() meghívva");
             }
-            
-            toReturn.put("result", result);
-            System.out.println("getAllUser() meghívva");
-        }
         } catch (Exception ex) {
             ex.printStackTrace();
             status = "ModelException";
@@ -243,19 +244,19 @@ public class UserService {
         toReturn.put("statusCode", statusCode);
         return toReturn;
     }
-    
-    public JSONObject getUserById(Integer id){
+
+    public JSONObject getUserById(Integer id) {
         JSONObject toReturn = new JSONObject();
         String status = "success";
         int statusCode = 200;
         User modelResult = new User(id);
-        
-        if(modelResult.getEmail() == null){
+
+        if (modelResult.getEmail() == null) {
             status = "UserNotFound";
             statusCode = 417;
-        }else{
+        } else {
             JSONObject user = new JSONObject();
-            
+
             user.put("id", modelResult.getId());
             user.put("username", modelResult.getUsername());
             user.put("firstName", modelResult.getFirstname());
@@ -266,109 +267,108 @@ public class UserService {
             user.put("isDeleted", modelResult.getIsDeleted());
             user.put("createdAt", modelResult.getCreatedAt());
             user.put("profile_picture", modelResult.getProfilePicture());
-            
+
             toReturn.put("result", user);
         }
-        
+
         toReturn.put("status", status);
         toReturn.put("statusCode", statusCode);
         return toReturn;
     }
-    
-    public JSONObject changePassword(Integer userId, String newPassword, Integer creator){
+
+    public JSONObject changePassword(Integer userId, String newPassword, Integer creator) {
         JSONObject toReturn = new JSONObject();
         String status = "success";
         int statusCode = 200;
-        
-        if(userId == creator){
+
+        if (userId == creator) {
             Boolean modelResult = layer.changePassword(userId, newPassword, creator);
-            if(!modelResult){
+            if (!modelResult) {
                 status = "ModelException";
                 statusCode = 500;
             }
-        } else{
+        } else {
             status = "PermissionError";
             statusCode = 417;
         }
-        
+
         toReturn.put("status", status);
         toReturn.put("statusCode", statusCode);
         return toReturn;
     }
-    
+
     public JSONObject uploadAndResizeProfilePicture(Integer userId, MultipartFormDataInput input) {
-    JSONObject responseJson = new JSONObject();
+        JSONObject responseJson = new JSONObject();
 
-    try {
-        File uploadDir = new File(UPLOAD_DIR);
-        if (!uploadDir.exists()) {
-            uploadDir.mkdirs();
-        }
+        try {
+            File uploadDir = new File(UPLOAD_DIR);
+            if (!uploadDir.exists()) {
+                uploadDir.mkdirs();
+            }
 
-        Map<String, List<InputPart>> uploadForm = input.getFormDataMap();
-        List<InputPart> fileParts = uploadForm.get("file");
+            Map<String, List<InputPart>> uploadForm = input.getFormDataMap();
+            List<InputPart> fileParts = uploadForm.get("file");
 
-        if (fileParts == null || fileParts.isEmpty()) {
-            responseJson.put("status", 400);
-            responseJson.put("error", "No file uploaded");
+            if (fileParts == null || fileParts.isEmpty()) {
+                responseJson.put("status", 400);
+                responseJson.put("error", "No file uploaded");
+                return responseJson;
+            }
+
+            InputPart filePart = fileParts.get(0);
+            InputStream fileInputStream = filePart.getBody(InputStream.class, null);
+
+            // Fájlnév kinyerése regexszel
+            String contentDisposition = filePart.getHeaders().getFirst("Content-Disposition");
+            Pattern pattern = Pattern.compile("filename=\"([^\"]+)\"");
+            Matcher matcher = pattern.matcher(contentDisposition);
+            String fileNameFromHeader = matcher.find() ? matcher.group(1) : "default.jpg";
+            String extension = fileNameFromHeader.substring(fileNameFromHeader.lastIndexOf('.') + 1).toLowerCase();
+
+            // Kiterjesztés ellenőrzése
+            if (!extension.equals("png") && !extension.equals("jpg") && !extension.equals("jpeg")) {
+                responseJson.put("status", 415);
+                responseJson.put("error", "Only PNG and JPG files are allowed.");
+                return responseJson;
+            }
+
+            // Fájlnév generálása
+            String fileName = "profile_" + userId + "_" + System.currentTimeMillis() + "." + extension;
+            String filePath = UPLOAD_DIR + File.separator + fileName;
+            File tempFile = new File(filePath);
+
+            // Fájl mentése
+            Files.copy(fileInputStream, tempFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+
+            // Átméretezés
+            File resizedFile = new File(filePath);
+            Thumbnails.of(tempFile)
+                    .size(300, 300)
+                    .outputFormat(extension)
+                    .toFile(resizedFile);
+
+            // Adatbázis frissítése
+            Boolean success = User.updateProfilePicture(userId, filePath);
+
+            String url = "/webresources/user/uploads/" + fileName;
+            if (success) {
+                responseJson.put("status", 200);
+                responseJson.put("message", "File uploaded and resized successfully");
+                responseJson.put("url", url);
+                //responseJson.put("url", "/api/user/uploads/" + fileName); // Opcionális URL visszaadás
+            } else {
+                responseJson.put("status", 404);
+                responseJson.put("error", "User not found");
+            }
+
+            return responseJson;
+        } catch (Exception e) {
+            responseJson.put("status", 500);
+            responseJson.put("error", e.getMessage());
             return responseJson;
         }
-
-        InputPart filePart = fileParts.get(0);
-        InputStream fileInputStream = filePart.getBody(InputStream.class, null);
-
-        // Fájlnév kinyerése regexszel
-        String contentDisposition = filePart.getHeaders().getFirst("Content-Disposition");
-        Pattern pattern = Pattern.compile("filename=\"([^\"]+)\"");
-        Matcher matcher = pattern.matcher(contentDisposition);
-        String fileNameFromHeader = matcher.find() ? matcher.group(1) : "default.jpg";
-        String extension = fileNameFromHeader.substring(fileNameFromHeader.lastIndexOf('.') + 1).toLowerCase();
-
-        // Kiterjesztés ellenőrzése
-        if (!extension.equals("png") && !extension.equals("jpg") && !extension.equals("jpeg")) {
-            responseJson.put("status", 415);
-            responseJson.put("error", "Only PNG and JPG files are allowed.");
-            return responseJson;
-        }
-
-        // Fájlnév generálása
-        String fileName = "profile_" + userId + "_" + System.currentTimeMillis() + "." + extension;
-        String filePath = UPLOAD_DIR + File.separator + fileName;
-        File tempFile = new File(filePath);
-
-        // Fájl mentése
-        Files.copy(fileInputStream, tempFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
-
-        // Átméretezés
-        File resizedFile = new File(filePath);
-        Thumbnails.of(tempFile)
-                  .size(300, 300)
-                  .outputFormat(extension)
-                  .toFile(resizedFile);
-
-        // Adatbázis frissítése
-        Boolean success = User.updateProfilePicture(userId, filePath);
-
-        String url = "/webresources/user/uploads/" + fileName;
-        if (success) {
-            responseJson.put("status", 200);
-            responseJson.put("message", "File uploaded and resized successfully");
-            responseJson.put("url", url);
-            //responseJson.put("url", "/api/user/uploads/" + fileName); // Opcionális URL visszaadás
-        } else {
-            responseJson.put("status", 404);
-            responseJson.put("error", "User not found");
-        }
-
-        return responseJson;
-    } catch (Exception e) {
-        responseJson.put("status", 500);
-        responseJson.put("error", e.getMessage());
-        return responseJson;
     }
-}
 
-    
     public File getProfilePicture(String fileName) {
         File file = new File(UPLOAD_DIR + fileName);
         return file.exists() ? file : null;
@@ -395,12 +395,12 @@ public class UserService {
             responseJson.put("status", 500);
             responseJson.put("error", e.getMessage());
             return responseJson;
-        } 
+        }
     }
-    
+
     public JSONObject updateUser(Integer modifierId, Integer targetUserId, User u) {
         JSONObject responseJson = new JSONObject();
-        
+
         try {
             User modifier = User.findById(modifierId);
             User target = User.findById(targetUserId); // cél user ellenőrzése is
@@ -424,10 +424,13 @@ public class UserService {
             // Meghívjuk az adatbázisban lévő tárolt eljárást
             Boolean success = User.updateUser(modifierId, targetUserId, u);
             System.out.println(modifierId + " " + targetUserId + " " + u);
-            
+
             if (Boolean.TRUE.equals(success)) {
                 responseJson.put("status", 200);
                 responseJson.put("message", "User updated successfully");
+            } else if (!isValidEmail(u.getEmail())) {
+                responseJson.put("status", 417);
+                responseJson.put("message", "InvalidEmail");
             } else {
                 responseJson.put("status", 500);
                 responseJson.put("error", "Database update failed");
@@ -439,8 +442,39 @@ public class UserService {
             e.printStackTrace(); // hibakereséshez hasznos
         }
 
-        return responseJson;    
+        return responseJson;
     }
-    
-    
+
+    public boolean resetPasswordWithoutToken(String email) {
+        try {
+            Map<String, Object> userData = User.findIdByEmail(email);
+            if (userData == null) {
+                System.out.println("[DEBUG] User data not found in DB.");
+                return false;
+            }
+
+            Integer userId = (Integer) userData.get("id");
+            String firstname = (String) userData.get("firstname");
+
+            System.out.println("[DEBUG] Found userId: " + userId + ", firstname: " + firstname);
+            String jwtToken = JWT.createJWT(new User(userId));
+
+            Map<String, String> variables = new HashMap<>();
+            variables.put("name", firstname);
+            variables.put("resetLink", "http://localhost:4200/reset-password?token=" + jwtToken);
+
+            JSONObject result = sendEmail(
+                    email, "Jelszó visszaállítás - Vintage Webshop", "forgot-password", variables);
+
+            System.out.println("[DEBUG] sendEmail result: " + result.toString());
+            return result.optInt("status") == 200;
+            //System.out.println("[DEBUG] resetPasswordWithoutToken END: true");
+            //return true;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
 }
