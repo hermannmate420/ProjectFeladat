@@ -4,16 +4,17 @@
  */
 package com.maven.vintage_project.model;
 
+import java.io.BufferedReader;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.Serializable;
+import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Properties;
-import javax.ejb.CreateException;
+import java.util.*;
+import java.util.stream.Collectors;
 import javax.mail.Message;
 import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
@@ -563,6 +564,24 @@ public User(String username, String firstname, String lastname, String email, St
     }
     }
     
+    public static String loadEmailTemplate(String templateName, Map<String, String> placeholders) throws IOException {
+    InputStream is = User.class.getClassLoader().getResourceAsStream("email-templates/" + templateName + ".html");
+
+    if (is == null) {
+        throw new FileNotFoundException("Nem található a sablon: " + templateName);
+    }
+
+    String content = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8))
+        .lines()
+        .collect(Collectors.joining("\n"));
+
+    for (Map.Entry<String, String> entry : placeholders.entrySet()) {
+        content = content.replace("{{" + entry.getKey() + "}}", entry.getValue());
+    }
+
+    return content;
+} 
+    
     public static Boolean updateProfilePicture(Integer userId, String filePath) {
     EntityManager em = getEntityManager();
     EntityTransaction tx = em.getTransaction();
@@ -573,11 +592,11 @@ public User(String username, String firstname, String lastname, String email, St
         User user = em.find(User.class, userId);
         if (user == null) {
             System.err.println("A felhasználó nem található: ID = " + userId);
+            tx.rollback();
             return false;
         }
-        
-        user.profilePicture = filePath; // Közvetlen mező módosítás
-        em.merge(user);
+        System.out.println(">> Profilkép frissítés: user.email = " + user.getEmail());
+        user.setProfilePicture(filePath); // Közvetlen mező módosítás
         tx.commit();
         return true;
     } catch (Exception e) {

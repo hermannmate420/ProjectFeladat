@@ -8,6 +8,8 @@ import com.maven.vintage_project.config.JWT;
 import com.maven.vintage_project.model.User;
 import com.maven.vintage_project.service.UserService;
 import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.HeaderParam;
@@ -194,9 +196,15 @@ public class UserController {
             JSONObject body = new JSONObject(bodyString);
             String to = body.getString("to");
             String subject = body.getString("subject");
-            String emailBody = body.getString("body");
+            String template = body.getString("template");
+            JSONObject vars = body.getJSONObject("placeholders");
 
-            JSONObject response = layer.sendEmail(to, subject, emailBody);
+            Map<String, String> placeholders = new HashMap<>();
+            for (String key : vars.keySet()) {
+                placeholders.put(key, vars.getString(key));
+            }
+
+            JSONObject response = layer.sendEmail(to, subject, template, placeholders);
 
             return Response.status(response.getInt("status")).entity(response.toString()).build();
         } else if (isValid == 2) {
