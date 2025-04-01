@@ -1,26 +1,8 @@
-<div *ngIf="products.length > 0" class="cart-body-container">
-  <h3 class="cart-body-header">Kiválasztott termékek</h3>
-
-  <!-- Terméklista -->
-  <div *ngFor="let product of products" class="cart-item">
-    <span>{{ product.name }} - {{ product.price }} Ft x {{ product.quantity }}</span>
-    
-    <!-- Mennyiség növelése/csökkentése -->
-    <button class="cart-button" (click)="increaseQuantity(product)">+</button>
-    <button class="cart-button" (click)="decreaseQuantity(product)">-</button>
-
-    <!-- Termék törlése -->
-    <button class="cart-button" (click)="removeProduct(product)">Törlés</button>
-  </div>
-
-  <!-- Összegzés -->
-  <div><strong>Nettó összeg: {{ netTotal }} Ft</strong></div>
-  <div><strong>Bruttó összeg (27% ÁFA): {{ grossTotal.toFixed(2) }} Ft</strong></div>
-  <div><strong>Szállítási díj: {{ shippingFee }} Ft</strong></div>
-  <div><strong>Teljes végösszeg: {{ totalAmount.toFixed(2) }} Ft</strong></div>
+<div class="container form-container">
+    <h2>Megrendelés adatai</h2>
+        <form class="cart">
+            <div class="col-12">
+                
+            </div>
+        </form>
 </div>
-
-<div *ngIf="products.length === 0">
-  <p>Nincsenek termékek a kosárban.</p>
-</div>
-  

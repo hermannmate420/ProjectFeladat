@@ -18,6 +18,38 @@ export class LoginService {
     this.authenticated$ = this.authenticatedSubject.asObservable();
   }
 
+  //goole login start
+
+  async googleLogin(idToken: string): Promise<any> {
+    try {
+      const response = await fetch(`${this.url}/googleLogin`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ token: idToken })
+      });
+  
+      if (!response.ok) {
+        throw new Error('Google login failed');
+      }
+  
+      if (isPlatformBrowser(this.platformId)) {
+        console.log('A függvény böngészőben fut');
+      const data = await response.json();
+      localStorage.setItem('token', data.result.jwt);
+      localStorage.setItem('id', data.result.id);
+      this.authenticatedSubject.next(true);
+      return data;
+      }
+    } catch (error) {
+      console.error('Google login error:', error);
+      throw error;
+    }
+  }
+  
+
+
+  //google login end
+
   async login(email: string, password: string): Promise<any> {
     const loginCreds = { email, password };
 

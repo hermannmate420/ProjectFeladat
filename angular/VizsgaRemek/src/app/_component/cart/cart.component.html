@@ -1,61 +1,14 @@
-<app-nav-bar></app-nav-bar>
-<div class="form-container">
-  <div class="checkout-form">
-    <h2>Megrendelés adatai</h2>
-    <form (ngSubmit)="checkout()" class="cart">
-      <!-- Név mező -->
-      <label for="name">Név:</label>
-      <input type="text" id="name" [(ngModel)]="name" name="name" required />
-
-      <!-- Cím mező -->
-      <label for="address">Szállítási cím:</label>
-      <input type="text" id="address" [(ngModel)]="address" name="address" required />
-
-      <!-- Fizetési mód -->
-      <label for="payment">Fizetési mód:</label>
-      <div>
-        <label>
-          <input type="radio" [(ngModel)]="paymentMethod" name="paymentMethod" value="credit" />
-          Hitelkártya
-        </label>
-        <label>
-          <input type="radio" [(ngModel)]="paymentMethod" name="paymentMethod" value="paypal" />
-          PayPal
-        </label>
-        <label>
-          <input type="radio" [(ngModel)]="paymentMethod" name="paymentMethod" value="cash" />
-          Utánvét
-        </label>
-      </div>
-
-      <!-- Kép megjelenítése, ha választottak fizetési módot -->
-      <div *ngIf="paymentMethod">
-        <img *ngIf="paymentMethod === 'credit'" src="credit-card-icon.png" alt="Credit Card" class="payment-images">
-        <img *ngIf="paymentMethod === 'paypal'" src="paypal-icon.png" alt="PayPal" class="payment-images">
-        <img *ngIf="paymentMethod === 'cash'" src="cash-on-delivery-icon.png" alt="Cash on Delivery" class="payment-images">
-      </div>
-
-      <!-- Kártya adatok mezők, csak akkor jelennek meg, ha a fizetési mód "credit" -->
-      <div *ngIf="paymentMethod === 'credit'" class="credit-fields">
-        <label for="cardNumber">Kártyaszám:</label>
-        <input type="text" id="cardNumber" [(ngModel)]="cardNumber" name="cardNumber" required />
-
-        <label for="expiryDate">Lejárat:</label>
-        <input type="text" id="expiryDate" [(ngModel)]="expiryDate" name="expiryDate" required />
-
-        <label for="cvv">CVV:</label>
-        <input type="text" id="cvv" [(ngModel)]="cvv" name="cvv" required />
-      </div>
-
-      <!-- Submit gomb -->
-      <button type="submit" id="acceptbtn" [disabled]="!isFormValid()">
-        Rendelés véglegesítése
-      </button>
-    </form>
-  </div>
-
-  <div class="product-list">
-    <app-product-list [products]="products"></app-product-list>
-  </div>
+<main id="hatterek">
+    <app-nav-bar></app-nav-bar>
+<div class="container">
+    <div class="row pt-5 pb-5">
+        <div class="col-sm-12 col-lg-6">
+            <app-cart-body></app-cart-body>
+        </div>
+        <div class="col-sm-12 col-lg-6">
+            <app-cart-product-list></app-cart-product-list>
+        </div>
+    </div>
 </div>
 <app-footer></app-footer>
+</main>
