@@ -33,25 +33,26 @@ import org.json.JSONObject;
  */
 @Path("user")
 public class UserController {
+
     @Context
     private UriInfo context;
     private UserService layer = new UserService();
 
     public UserController() {
     }
-    
+
     @GET
     @Produces(MediaType.APPLICATION_XML)
     public String getXml() {
         //TODO return proper representation object
         throw new UnsupportedOperationException();
     }
-    
+
     @PUT
     @Consumes(MediaType.APPLICATION_XML)
     public void putXml(String content) {
     }
-    
+
     @POST
     @Path("login")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -61,7 +62,7 @@ public class UserController {
         JSONObject obj = layer.login(body.getString("email"), body.getString("password"));
         return Response.status(obj.getInt("statusCode")).entity(obj.toString()).type(MediaType.APPLICATION_JSON).build();
     }
-    
+
     @POST
     @Path("registerUser")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -73,9 +74,9 @@ public class UserController {
             body = new JSONObject(bodyString);
         } catch (JSONException e) {
             return Response.status(Response.Status.BAD_REQUEST)
-                       .entity("Invalid JSON format").type(MediaType.APPLICATION_JSON).build();
-            }
-        
+                    .entity("Invalid JSON format").type(MediaType.APPLICATION_JSON).build();
+        }
+
         /*System.out.println("Parsed Data:");
         System.out.println("Username: " + body.optString("username"));
         System.out.println("Email: " + body.optString("email"));
@@ -88,15 +89,14 @@ public class UserController {
                 body.getString("phoneNumber"),
                 body.getString("password")
         );
-        
+
         /*System.out.println("Mapped User Object:");
         System.out.println("Username: " + u.getUsername());
         System.out.println("Email: " + u.getEmail());*/
-
         JSONObject obj = layer.registerUser(u);
         return Response.status(obj.getInt("statusCode")).entity(obj.toString()).type(MediaType.APPLICATION_JSON).build();
     }
-    
+
     @POST
     @Path("registerAdmin")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -106,9 +106,9 @@ public class UserController {
             body = new JSONObject(bodyString);
         } catch (JSONException e) {
             return Response.status(Response.Status.BAD_REQUEST)
-                       .entity("Invalid JSON format").type(MediaType.APPLICATION_JSON).build();
-            }
-        
+                    .entity("Invalid JSON format").type(MediaType.APPLICATION_JSON).build();
+        }
+
         User u = new User(
                 body.getString("username"),
                 body.getString("firstName"),
@@ -117,12 +117,12 @@ public class UserController {
                 body.getString("phoneNumber"),
                 body.getString("password")
         );
-        
+
         JSONObject obj = layer.registerAdmin(u, jwt);
         return Response.status(obj.getInt("statusCode")).entity(obj.toString()).type(MediaType.APPLICATION_JSON).build();
 
     }
-    
+
     @GET
     @Path("getAllUser")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -139,7 +139,7 @@ public class UserController {
         }
 
     }
-    
+
     @GET
     @Path("getUserById")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -162,9 +162,9 @@ public class UserController {
     @Consumes(MediaType.APPLICATION_JSON)
     public Response changePassword(@HeaderParam("token") String jwt, String bodyString) {
         int isValid = JWT.validateJWT(jwt);
-        
+
         if (isValid != 1) {
-        return Response.status(isValid == 2 ? 498 : 401).entity(isValid == 2 ? "InvalidToken" : "TokenExpired").build();
+            return Response.status(isValid == 2 ? 498 : 401).entity(isValid == 2 ? "InvalidToken" : "TokenExpired").build();
         }
         JSONObject body;
         try {
@@ -172,15 +172,15 @@ public class UserController {
         } catch (Exception e) {
             return Response.status(400).entity("Invalid JSON format").type(MediaType.APPLICATION_JSON).build();
         }
-        
+
         if (!body.has("userId") || !body.has("newPassword")) {
             return Response.status(400).entity("Missing userId or newPassword field").type(MediaType.APPLICATION_JSON).build();
         }
-        
+
         Integer userId = body.getInt("userId");
         String newPassword = body.getString("newPassword");
         Integer creator = JWT.getUserIdByToken(jwt);
-        
+
         JSONObject obj = layer.changePassword(userId, newPassword, creator);
         return Response.status(obj.getInt("statusCode")).entity(obj.toString()).type(MediaType.APPLICATION_JSON).build();
     }
@@ -213,19 +213,19 @@ public class UserController {
             return Response.status(401).entity("{\"error\": \"TokenExpired\"}").build();
         }
     }
-    
+
     @POST
     @Path("/{id}/upload-profile-picture")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Produces(MediaType.APPLICATION_JSON)
     public Response uploadProfilePicture(
-        @PathParam("id") Integer userId,
-        MultipartFormDataInput input) {
-    
-    JSONObject result = layer.uploadAndResizeProfilePicture(userId, input);
-    return Response.status(result.getInt("status")).entity(result.toString()).build();
+            @PathParam("id") Integer userId,
+            MultipartFormDataInput input) {
+
+        JSONObject result = layer.uploadAndResizeProfilePicture(userId, input);
+        return Response.status(result.getInt("status")).entity(result.toString()).build();
     }
-    
+
     @GET
     @Path("/uploads/{fileName}")
     public Response getProfilePicture(@PathParam("fileName") String fileName) {
@@ -243,24 +243,23 @@ public class UserController {
         }
 
         return Response.ok(file, mimeType)
-            .header("Content-Disposition", "inline; filename=\"" + file.getName() + "\"")
-            .build();
+                .header("Content-Disposition", "inline; filename=\"" + file.getName() + "\"")
+                .build();
     }
-    
+
     @PUT
     @Path("/{modifierId}/update/{targetUserId}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response updateUser(@PathParam("modifierId") Integer modifierId,
-            @PathParam("targetUserId") int targetUserId, User u) 
-    {
+            @PathParam("targetUserId") int targetUserId, User u) {
         System.out.println(">>> JSON received: " + layer);
         JSONObject result = layer.updateUser(modifierId, targetUserId, u);
         return Response.status(result.getInt("status"))
-                       .entity(result.toString())
-                       .build();
+                .entity(result.toString())
+                .build();
     }
-    
+
     @POST
     @Path("/forgot-password")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -268,7 +267,6 @@ public class UserController {
     public Response forgotPassword(Map<String, String> payload) {
         String email = payload.get("email");
         System.out.println("[DEBUG] Forgot password request received for email: " + email);
-
 
         try {
             boolean success = layer.resetPasswordWithoutToken(email);
@@ -280,16 +278,36 @@ public class UserController {
             } else {
                 System.out.println("[DEBUG] No user found with email: " + email);
                 return Response.status(Response.Status.NOT_FOUND)
-                    .entity("{\"error\": \"User not found.\"}").build();
-        }
+                        .entity("{\"error\": \"User not found.\"}").build();
+            }
         } catch (Exception e) {
             System.out.println("[ERROR] Exception in forgotPassword: " + e.getMessage());
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                .entity("{\"error\": \"Something went wrong.\"}")
-                .build();
+                    .entity("{\"error\": \"Something went wrong.\"}")
+                    .build();
+        }
     }
-}
 
+    @PUT
+    @Path("/deleteUser/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response logicalDeleteUser(
+            @PathParam("id") Integer targetUserId,
+            @HeaderParam("token") String token) {
+        try {
+            Integer requesterId = JWT.getUserIdByToken(token);
+            Boolean isAdmin = JWT.isAdmin(token);
 
+            JSONObject result = layer.logicallyDeleteUser(targetUserId, requesterId, isAdmin);
+            int code = result.optInt("statusCode", 500);
+            return Response.status(code).entity(result.toString()).build();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Response.status(Response.Status.UNAUTHORIZED)
+                    .entity("{\"error\": \"Invalid or missing token.\"}")
+                    .build();
+        }
+    }
 
 }

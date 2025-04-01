@@ -1,4 +1,4 @@
-    /*
+/*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
@@ -65,7 +65,6 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "User.findByCreatedAt", query = "SELECT u FROM User u WHERE u.createdAt = :createdAt"),
     @NamedQuery(name = "User.findByDeletedAt", query = "SELECT u FROM User u WHERE u.deletedAt = :deletedAt")})
 
-
 public class User implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -89,7 +88,7 @@ public class User implements Serializable {
     @Size(min = 1, max = 100)
     @Column(name = "lastname")
     private String lastname;
-    @Pattern(regexp="[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?", message="Invalid email")//if the field contains email address consider using this annotation to enforce field validation
+    @Pattern(regexp = "[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?", message = "Invalid email")//if the field contains email address consider using this annotation to enforce field validation
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 100)
@@ -133,20 +132,20 @@ public class User implements Serializable {
 
     public static EntityManager getEntityManager() {
         if (emf == null) {
-        emf = Persistence.createEntityManagerFactory("com.maven_vintage_project_war_1.0-SNAPSHOTPU");
+            emf = Persistence.createEntityManagerFactory("com.maven_vintage_project_war_1.0-SNAPSHOTPU");
         }
         return emf.createEntityManager();
     }
 
     public User() {
     }
-    
+
     public User(Integer id) {
         EntityManager em = emf.createEntityManager();
-        
+
         try {
             User u = em.find(User.class, id);
-            
+
             this.id = u.getId(); //0
             this.username = u.getUsername(); //1
             this.firstname = u.getFirstname();  //2
@@ -180,8 +179,8 @@ public class User implements Serializable {
         this.deletedAt = deletedAt; //10
         this.profilePicture = profilePicture; //11
     }
-    
-public User(String username, String firstname, String lastname, String email, String phoneNumber, String password) {
+
+    public User(String username, String firstname, String lastname, String email, String phoneNumber, String password) {
         this.username = username;
         this.firstname = firstname;
         this.lastname = lastname;
@@ -277,7 +276,7 @@ public User(String username, String firstname, String lastname, String email, St
     public void setDeletedAt(Date deletedAt) {
         this.deletedAt = deletedAt;
     }
-    
+
     public String getProfilePicture() {
         return profilePicture;
     }
@@ -310,23 +309,22 @@ public User(String username, String firstname, String lastname, String email, St
     public String toString() {
         return "com.maven.vintage_project.model.User[ id=" + id + " ]";
     }
-    
-    
+
     public User login(String email, String password) {
         //Bejelentkezés
         EntityManager em = getEntityManager();
-        
+
         try {
             StoredProcedureQuery spq = em.createStoredProcedureQuery("login");
-            
+
             spq.registerStoredProcedureParameter("emailIN", String.class, ParameterMode.IN);
             spq.registerStoredProcedureParameter("passwordIN", String.class, ParameterMode.IN);
-            
+
             spq.setParameter("emailIN", email);
             spq.setParameter("passwordIN", password);
-            
+
             spq.execute();
-            
+
             List<Object[]> resultList = spq.getResultList();
             User toReturn = new User();
             SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -347,7 +345,7 @@ public User(String username, String firstname, String lastname, String email, St
                 );
                 toReturn = u;
             }
-            
+
             return toReturn;
         } catch (NumberFormatException | ParseException e) {
             System.err.println("Hiba: " + e.getLocalizedMessage());
@@ -357,7 +355,7 @@ public User(String username, String firstname, String lastname, String email, St
             em.close();
         }
     }
-    
+
     public Boolean registerUser(User u) {
         //Felhasználó regisztráció
         EntityManager em = getEntityManager();
@@ -390,7 +388,7 @@ public User(String username, String firstname, String lastname, String email, St
             em.close();
         }
     }
-    
+
     public Boolean registerAdmin(User u) {
         //Regisztrálunk Admint Adminnal
         EntityManager em = getEntityManager();
@@ -425,7 +423,7 @@ public User(String username, String firstname, String lastname, String email, St
             em.close();
         }
     }
-    
+
     public static Boolean isUserExists(String email) {
         //Létezik-e  a felhasználó email alapján
         EntityManager em = getEntityManager();
@@ -451,6 +449,7 @@ public User(String username, String firstname, String lastname, String email, St
             em.close();
         }
     }
+
     //Megkapjuk az összes felhasználót
     public List<User> getAllUser() {
         EntityManager em = getEntityManager();
@@ -491,7 +490,7 @@ public User(String username, String firstname, String lastname, String email, St
             em.close();
         }
     }
-    
+
     public Boolean changePassword(Integer userId, String newPassword, Integer creator) {
         //Jelszóváltoztatás
         EntityManager em = emf.createEntityManager();
@@ -518,10 +517,10 @@ public User(String username, String firstname, String lastname, String email, St
             em.close();
         }
     }
-    
-    public static Boolean sendEmail(String to, String subject, String emailBody){
+
+    public static Boolean sendEmail(String to, String subject, String emailBody) {
         try {
-        // Betöltjük a konfigurációt
+            // Betöltjük a konfigurációt
             Properties config = new Properties();
             try (InputStream input = User.class.getClassLoader().getResourceAsStream("config.properties")) {
                 if (input == null) {
@@ -535,7 +534,7 @@ public User(String username, String firstname, String lastname, String email, St
             final String password = config.getProperty("mail.password");
             String host = config.getProperty("mail.host");
             String port = config.getProperty("mail.port");
-        
+
             //Email küldési beállítások
             Properties properties = System.getProperties();
             properties.put("mail.smtp.host", host);
@@ -558,63 +557,65 @@ public User(String username, String firstname, String lastname, String email, St
 
             Transport.send(message);
             return true;
-        } catch(Exception ex) {
-        System.err.println("Hiba: " + ex.getLocalizedMessage());
-        return false;
-    }
-    }
-    
-    public static String loadEmailTemplate(String templateName, Map<String, String> placeholders) throws IOException {
-    InputStream is = User.class.getClassLoader().getResourceAsStream("email-templates/" + templateName + ".html");
-
-    if (is == null) {
-        throw new FileNotFoundException("Nem található a sablon: " + templateName);
-    }
-
-    String content = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8))
-        .lines()
-        .collect(Collectors.joining("\n"));
-
-    for (Map.Entry<String, String> entry : placeholders.entrySet()) {
-        content = content.replace("{{" + entry.getKey() + "}}", entry.getValue());
-    }
-
-    return content;
-} 
-    
-    public static Boolean updateProfilePicture(Integer userId, String filePath) {
-    EntityManager em = getEntityManager();
-    EntityTransaction tx = em.getTransaction();
-    
-    try {
-        tx.begin();
-        
-        User user = em.find(User.class, userId);
-        if (user == null) {
-            System.err.println("A felhasználó nem található: ID = " + userId);
-            tx.rollback();
+        } catch (Exception ex) {
+            System.err.println("Hiba: " + ex.getLocalizedMessage());
             return false;
         }
-        System.out.println(">> Profilkép frissítés: user.email = " + user.getEmail());
-        user.setProfilePicture(filePath); // Közvetlen mező módosítás
-        tx.commit();
-        return true;
-    } catch (Exception e) {
-        if (tx.isActive()) tx.rollback();
-        System.err.println("Hiba a profilkép frissítésénél: " + e.getMessage());
-        return false;
-    } finally {
-        em.clear();
-        em.close();
     }
+
+    public static String loadEmailTemplate(String templateName, Map<String, String> placeholders) throws IOException {
+        InputStream is = User.class.getClassLoader().getResourceAsStream("email-templates/" + templateName + ".html");
+
+        if (is == null) {
+            throw new FileNotFoundException("Nem található a sablon: " + templateName);
+        }
+
+        String content = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8))
+                .lines()
+                .collect(Collectors.joining("\n"));
+
+        for (Map.Entry<String, String> entry : placeholders.entrySet()) {
+            content = content.replace("{{" + entry.getKey() + "}}", entry.getValue());
+        }
+
+        return content;
     }
-    
+
+    public static Boolean updateProfilePicture(Integer userId, String filePath) {
+        EntityManager em = getEntityManager();
+        EntityTransaction tx = em.getTransaction();
+
+        try {
+            tx.begin();
+
+            User user = em.find(User.class, userId);
+            if (user == null) {
+                System.err.println("A felhasználó nem található: ID = " + userId);
+                tx.rollback();
+                return false;
+            }
+            System.out.println(">> Profilkép frissítés: user.email = " + user.getEmail());
+            user.setProfilePicture(filePath); // Közvetlen mező módosítás
+            tx.commit();
+            return true;
+        } catch (Exception e) {
+            if (tx.isActive()) {
+                tx.rollback();
+            }
+            System.err.println("Hiba a profilkép frissítésénél: " + e.getMessage());
+            return false;
+        } finally {
+            em.clear();
+            em.close();
+        }
+    }
+
     public static Boolean updateUser(Integer modifierId, Integer targetUserId, User u) {
         EntityManager em = getEntityManager();
-        
+
         try {
             StoredProcedureQuery spq = em.createStoredProcedureQuery("updateUser");
-            
+
             spq.registerStoredProcedureParameter("modifierId", Integer.class, ParameterMode.IN);
             spq.registerStoredProcedureParameter("targetUserId", Integer.class, ParameterMode.IN);
             spq.registerStoredProcedureParameter("newUsername", String.class, ParameterMode.IN);
@@ -623,7 +624,7 @@ public User(String username, String firstname, String lastname, String email, St
             spq.registerStoredProcedureParameter("newEmail", String.class, ParameterMode.IN);
             spq.registerStoredProcedureParameter("newPhoneNumber", String.class, ParameterMode.IN);
             spq.registerStoredProcedureParameter("newIsAdmin", Boolean.class, ParameterMode.IN);
-            
+
             spq.setParameter("modifierId", modifierId);
             spq.setParameter("targetUserId", targetUserId);
             spq.setParameter("newUsername", u.getUsername());
@@ -632,31 +633,31 @@ public User(String username, String firstname, String lastname, String email, St
             spq.setParameter("newEmail", u.getEmail());
             spq.setParameter("newPhoneNumber", u.getPhoneNumber());
             spq.setParameter("newIsAdmin", u.getIsAdmin());
-            
+
             spq.execute();
-            
+
             return true;
         } catch (Exception e) {
             e.printStackTrace();
             return false;
         }
     }
-    
-    public static User findById(Integer id) {
-    EntityManager em = getEntityManager();
 
-    try {
-        return em.find(User.class, id);
-    } catch (Exception e) {
-        e.printStackTrace();
-        return null;
-    } finally {
-        if (em != null && em.isOpen()) {
-            em.close();
-        }
+    public static User findById(Integer id) {
+        EntityManager em = getEntityManager();
+
+        try {
+            return em.find(User.class, id);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        } finally {
+            if (em != null && em.isOpen()) {
+                em.close();
+            }
         }
     }
-    
+
     public static Map<String, Object> findIdByEmail(String email) {
         EntityManager em = getEntityManager();
         try {
@@ -665,7 +666,9 @@ public User(String username, String firstname, String lastname, String email, St
             spq.setParameter("p_email", email);
 
             List<Object[]> result = spq.getResultList();
-            if (result.isEmpty()) return null;
+            if (result.isEmpty()) {
+                return null;
+            }
 
             Object[] row = result.get(0);
             Map<String, Object> userData = new HashMap<>();
@@ -677,10 +680,29 @@ public User(String username, String firstname, String lastname, String email, St
             e.printStackTrace();
             return null;
         } finally {
-            if (em != null) em.close();
+            if (em != null) {
+                em.close();
+            }
         }
     }
 
+    public static boolean deleteById(Integer userId) {
+        EntityManager em = getEntityManager();
+        try {
+            StoredProcedureQuery spq = em.createStoredProcedureQuery("userDelete");
+            spq.registerStoredProcedureParameter("userIN", Integer.class, ParameterMode.IN);
+            spq.setParameter("userIN", userId);
+            spq.execute();
+            return true;
 
-    
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        } finally {
+            if (em != null) {
+                em.close();
+            }
+        }
+    }
+
 }

@@ -449,14 +449,12 @@ public class UserService {
         try {
             Map<String, Object> userData = User.findIdByEmail(email);
             if (userData == null) {
-                System.out.println("[DEBUG] User data not found in DB.");
                 return false;
             }
 
             Integer userId = (Integer) userData.get("id");
             String firstname = (String) userData.get("firstname");
 
-            System.out.println("[DEBUG] Found userId: " + userId + ", firstname: " + firstname);
             String jwtToken = JWT.createJWT(new User(userId));
 
             Map<String, String> variables = new HashMap<>();
@@ -466,15 +464,53 @@ public class UserService {
             JSONObject result = sendEmail(
                     email, "Jelszó visszaállítás - Vintage Webshop", "forgot-password", variables);
 
-            System.out.println("[DEBUG] sendEmail result: " + result.toString());
             return result.optInt("status") == 200;
-            //System.out.println("[DEBUG] resetPasswordWithoutToken END: true");
-            //return true;
-
         } catch (Exception e) {
             e.printStackTrace();
             return false;
         }
+    }
+
+    public JSONObject logicallyDeleteUser(Integer targetUserId, Integer requesterId, boolean isAdmin) {
+        JSONObject response = new JSONObject();
+
+        try {
+            User user = User.findById(targetUserId);
+
+            if (user == null) {
+                response.put("statusCode", 404);
+                response.put("status", "User not found");
+                return response;
+            }
+
+            if (!isAdmin && !requesterId.equals(targetUserId)) {
+                response.put("statusCode", 403);
+                response.put("status", "You are not allowed to delete this user");
+                return response;
+            }
+
+            if (user.getIsDeleted()) {
+                response.put("statusCode", 409);
+                response.put("status", "User already deleted");
+                return response;
+            }
+
+            boolean success = User.deleteById(targetUserId);
+            if (success) {
+                response.put("statusCode", 200);
+                response.put("status", "User marked as deleted");
+            } else {
+                response.put("statusCode", 500);
+                response.put("status", "Deletion failed");
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.put("statusCode", 500);
+            response.put("status", "Internal error: " + e.getMessage());
+        }
+
+        return response;
     }
 
 }
