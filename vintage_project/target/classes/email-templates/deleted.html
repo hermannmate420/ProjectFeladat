@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="hu">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fiók törölve</title>
+</head>
+
+<body style="margin: 0; padding: 0; background-color: #f6f7fb; font-family: 'Segoe UI', sans-serif;">
+
+  <table width="100%" cellpadding="0" cellspacing="0">
+    <tr>
+      <td style="padding: 30px 15px;">
+        <table width="600" cellpadding="0" cellspacing="0"
+          style="border-radius: 8px; overflow: hidden; max-width: 600px; width: 100%;">
+
+          <!-- Header -->
+          <tr>
+            <td
+              style="background-image: url('https://raw.githubusercontent.com/MartinGal2003/imageForEmail/refs/heads/main/placeholder.webp'); background-size: cover; background-position: center; height: 200px; text-align: center;">
+              <div style="padding-top: 40px;">
+                <img src="https://raw.githubusercontent.com/MartinGal2003/imageForEmail/refs/heads/main/retro_logo.png"
+                  alt="Retro Shop Logo" width="120" style="display: block; margin: 0 auto 10px;" />
+                <h2 style="color: #ffffff; margin: 0; font-size: 22px; text-transform: uppercase;">
+                  Retro Vintage Shop
+                </h2>
+              </div>
+            </td>
+          </tr>
+
+          <!-- Main content -->
+          <tr>
+            <td style="padding: 30px;">
+              <h2 style="margin-top: 0; color: #cc0000;">Your Account Has Been Deleted</h2>
+              <p style="font-size: 16px; color: #444;">Dear <strong>{{name}}</strong>,</p>
+
+              <p style="font-size: 15px; color: #444;">
+                Your account has been deleted due to one of the following reasons:
+              </p>
+              <ul style="font-size: 15px; color: #444; padding-left: 20px;">
+                <li>🧍 You requested the deletion yourself</li>
+                <li>🛡️ An admin removed your account</li>
+                <li>📆 You haven't logged in for over a year</li>
+              </ul>
+
+              <p style="font-size: 15px; color: #444; margin-top: 15px;">
+                If you believe this was a mistake or changed your mind, we’d love to have you back!
+              </p>
+
+              <p style="text-align: center; margin: 30px 0;">
+                <a href="{{homeLink}}"
+                  style="display: inline-block; padding: 12px 24px; background-color: #007bff; color: #ffffff; text-decoration: none; border-radius: 4px; font-size: 16px;">
+                  🔁 I'm Coming Back!
+                </a>
+              </p>
+
+              <p style="font-size: 13px; color: #999999; text-align: center;">
+                If you no longer wish to use our services, you can simply ignore this message.
+              </p>
+            </td>
+          </tr>
+
+        </table>
+      </td>
+    </tr>
+  </table>
+
+</body>
+
+</html>
