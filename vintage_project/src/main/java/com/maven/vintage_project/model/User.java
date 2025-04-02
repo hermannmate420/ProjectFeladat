@@ -11,8 +11,11 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Serializable;
 import java.nio.charset.StandardCharsets;
+import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.stream.Collectors;
 import javax.mail.Message;
@@ -694,6 +697,52 @@ public class User implements Serializable {
             spq.setParameter("userIN", userId);
             spq.execute();
             return true;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        } finally {
+            if (em != null) {
+                em.close();
+            }
+        }
+    }
+
+    public static boolean reactivateById(Integer userId) {
+        EntityManager em = getEntityManager();
+        try {
+            StoredProcedureQuery spq = em.createStoredProcedureQuery("reactivateUser");
+            spq.registerStoredProcedureParameter("userIN", Integer.class, ParameterMode.IN);
+            spq.setParameter("userIN", userId);
+            spq.execute();
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        } finally {
+            if (em != null) {
+                em.close();
+            }
+        }
+    }
+
+    public static boolean canBeReactivatedByEmail(String email) {
+        EntityManager em = getEntityManager();
+        try {
+            StoredProcedureQuery spq = em.createStoredProcedureQuery("getDeletedUserInfo");
+            spq.registerStoredProcedureParameter("p_email", String.class, ParameterMode.IN);
+            spq.setParameter("p_email", email);
+
+            List<Object> result = spq.getResultList();
+            if (result.isEmpty()) {
+                return false;
+            }
+
+            Timestamp deletedAt = (Timestamp) result.get(0);
+            Instant deletedTime = Instant.ofEpochMilli(deletedAt.getTime());
+            Instant threeYearsAgo = Instant.now().minus(1095, ChronoUnit.DAYS);
+
+            return deletedTime.isAfter(threeYearsAgo);
 
         } catch (Exception e) {
             e.printStackTrace();

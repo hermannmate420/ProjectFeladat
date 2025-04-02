@@ -7,17 +7,16 @@ package com.maven.vintage_project.service;
 import com.maven.vintage_project.config.JWT;
 import com.maven.vintage_project.model.User;
 import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
+import java.time.*;
+import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import javax.ws.rs.core.MediaType;
-import static jdk.nashorn.tools.ShellFunctions.input;
 import net.coobird.thumbnailator.Thumbnails;
 import org.jboss.resteasy.plugins.providers.multipart.InputPart;
 import org.json.JSONArray;
@@ -508,6 +507,90 @@ public class UserService {
             e.printStackTrace();
             response.put("statusCode", 500);
             response.put("status", "Internal error: " + e.getMessage());
+        }
+
+        return response;
+    }
+
+    public JSONObject reactivationRequest(String email) {
+        JSONObject response = new JSONObject();
+
+        try {
+            Map<String, Object> userData = User.findIdByEmail(email);
+            if (userData == null) {
+                response.put("statusCode", 404);
+                response.put("status", "Account cannot be reactivated or not found");
+                return response;
+            }
+
+            Integer id = (Integer) userData.get("id");
+            String name = (String) userData.get("firstname");
+
+            User tempUser = new User(id); // csak az ID alapján
+            String token = JWT.createJWT(tempUser);
+
+            Map<String, String> vars = new HashMap<>();
+            vars.put("name", name);
+            vars.put("reactivateLink", "http://localhost:4200/reactivate?token=" + token);
+
+            JSONObject mail = sendEmail(
+                    email,
+                    "Fiók újraaktiválása - Vintage Webshop",
+                    "reactivate",
+                    vars
+            );
+
+            if (mail.optInt("status") == 200) {
+                response.put("statusCode", 200);
+                response.put("status", "Reactivation email sent");
+            } else {
+                response.put("statusCode", 500);
+                response.put("status", "Failed to send email");
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.put("statusCode", 500);
+            response.put("status", "Internal error");
+        }
+
+        return response;
+    }
+
+    public JSONObject reactivateFromToken(String token) {
+        JSONObject response = new JSONObject();
+
+        try {
+            Integer userId = JWT.getUserIdByToken(token);
+            User user = User.findById(userId);
+
+            if (user == null || !user.getIsDeleted()) {
+                response.put("statusCode", 404);
+                response.put("status", "User not found or already active");
+                return response;
+            }
+
+            Instant deletedAt = user.getDeletedAt().toInstant();
+            Instant threeYearsAgo = Instant.now().minus(1095, ChronoUnit.DAYS);
+            if (deletedAt.isBefore(threeYearsAgo)) {
+                response.put("statusCode", 410);
+                response.put("status", "Reactivation period expired");
+                return response;
+            }
+
+            boolean ok = User.reactivateById(userId);
+            if (ok) {
+                response.put("statusCode", 200);
+                response.put("status", "User successfully reactivated");
+            } else {
+                response.put("statusCode", 500);
+                response.put("status", "Reactivation failed");
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.put("statusCode", 500);
+            response.put("status", "Invalid token or internal error");
         }
 
         return response;

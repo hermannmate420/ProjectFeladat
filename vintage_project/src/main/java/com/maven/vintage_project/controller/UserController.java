@@ -310,4 +310,34 @@ public class UserController {
         }
     }
 
+    @GET
+    @Path("/reactivatable")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response isReactivatable(@QueryParam("email") String email) {
+        boolean can = User.canBeReactivatedByEmail(email);
+        JSONObject res = new JSONObject();
+        res.put("reactivatable", can);
+        return Response.ok(res.toString()).build();
+    }
+
+    @POST
+    @Path("/reactivate-request")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response sendReactivationEmail(Map<String, String> body) {
+        String email = body.get("email");
+        JSONObject result = layer.reactivationRequest(email);
+        int code = result.optInt("statusCode", 500);
+        return Response.status(code).entity(result.toString()).build();
+    }
+
+    @PUT
+    @Path("/reactivate-from-token")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response reactivateFromToken(@QueryParam("token") String token) {
+        JSONObject result = layer.reactivateFromToken(token);
+        int code = result.optInt("statusCode", 500);
+        return Response.status(code).entity(result.toString()).build();
+    }
+
 }
