@@ -314,50 +314,49 @@ public class User implements Serializable {
     }
 
     public User login(String email, String password) {
-        //Bejelentkezés
-        EntityManager em = getEntityManager();
+    EntityManager em = getEntityManager();
 
-        try {
-            StoredProcedureQuery spq = em.createStoredProcedureQuery("login");
+    try {
+        StoredProcedureQuery spq = em.createStoredProcedureQuery("login");
 
-            spq.registerStoredProcedureParameter("emailIN", String.class, ParameterMode.IN);
-            spq.registerStoredProcedureParameter("passwordIN", String.class, ParameterMode.IN);
+        spq.registerStoredProcedureParameter("emailIN", String.class, ParameterMode.IN);
+        spq.registerStoredProcedureParameter("passwordIN", String.class, ParameterMode.IN);
 
-            spq.setParameter("emailIN", email);
-            spq.setParameter("passwordIN", password);
+        spq.setParameter("emailIN", email);
+        spq.setParameter("passwordIN", password);
 
-            spq.execute();
-
-            List<Object[]> resultList = spq.getResultList();
-            User toReturn = new User();
-            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            for (Object[] o : resultList) {
-                User u = new User(
-                        Integer.valueOf(o[0].toString()),
-                        o[1].toString(),
-                        o[2].toString(),
-                        o[3].toString(),
-                        o[4].toString(),
-                        o[5].toString(),
-                        o[6].toString(),
-                        Boolean.parseBoolean(o[7].toString()),
-                        Boolean.parseBoolean(o[8].toString()),
-                        formatter.parse(o[9].toString()),
-                        o[10] == null ? null : formatter.parse(o[10].toString()),
-                        o[11] == null ? null : o[11].toString()
-                );
-                toReturn = u;
-            }
-
-            return toReturn;
-        } catch (NumberFormatException | ParseException e) {
-            System.err.println("Hiba: " + e.getLocalizedMessage());
-            return null;
-        } finally {
-            em.clear();
-            em.close();
+        List<Object[]> resultList = spq.getResultList();
+        if (resultList.isEmpty()) {
+            return new User(); // Visszatér üres user objektummal
         }
+
+        Object[] o = resultList.get(0);
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+        return new User(
+            Integer.valueOf(o[0].toString()),           // id
+            o[1].toString(),                            // username
+            o[2].toString(),                            // firstname
+            o[3].toString(),                            // lastname
+            o[4].toString(),                            // email
+            o[5].toString(),                            // password
+            o[6].toString(),                            // phone
+            Boolean.parseBoolean(o[7].toString()),      // isAdmin
+            Boolean.parseBoolean(o[8].toString()),      // isDeleted
+            formatter.parse(o[9].toString()),           // createdAt
+            o[10] == null ? null : formatter.parse(o[10].toString()), // deletedAt
+            o[11] == null ? null : o[11].toString()     // profile_pic..
+        );
+
+    } catch (NumberFormatException | ParseException e) {
+        System.err.println("Hiba: " + e.getLocalizedMessage());
+        return null;
+    } finally {
+        em.clear();
+        em.close();
     }
+}
+
 
     public Boolean registerUser(User u) {
         //Felhasználó regisztráció

@@ -77,45 +77,50 @@ public class UserService {
     }
 
     public JSONObject login(String email, String password) {
-        JSONObject toReturn = new JSONObject();
-        String status = "success";
-        int statusCode = 200;
+    JSONObject toReturn = new JSONObject();
+    String status = "success";
+    int statusCode = 200;
 
-        if (isValidEmail(email)) {
-            User modelResult = layer.login(email, password);
+    if (isValidEmail(email)) {
+        User modelResult = layer.login(email, password);
 
-            if (modelResult == null) {
-                status = "modelException";
-                statusCode = 500;
-            } else {
-                if (modelResult.getId() == null) {
-                    status = "userNotFound";
-                    statusCode = 417;
-                } else {
-                    JSONObject result = new JSONObject();
-                    result.put("id", modelResult.getId());
-                    result.put("username", modelResult.getUsername());
-                    result.put("firstName", modelResult.getFirstname());
-                    result.put("lastName", modelResult.getLastname());
-                    result.put("email", modelResult.getEmail());
-                    result.put("isAdmin", modelResult.getIsAdmin());
-                    result.put("isDeleted", modelResult.getIsDeleted());
-                    result.put("jwt", JWT.createJWT(modelResult));
-
-                    toReturn.put("result", result);
-
-                }
-            }
-
+        if (modelResult == null) {
+            status = "modelException";
+            statusCode = 500;
         } else {
-            status = "invalidEmail";
-            statusCode = 417;
+            if (modelResult.getId() == null) {
+                status = "userNotFound";
+                statusCode = 417;
+
+            } else if (Boolean.TRUE.equals(modelResult.getIsDeleted())) {
+                status = "userDeleted";
+                statusCode = 423;
+
+            } else {
+                JSONObject result = new JSONObject();
+                result.put("id", modelResult.getId());
+                result.put("username", modelResult.getUsername());
+                result.put("firstName", modelResult.getFirstname());
+                result.put("lastName", modelResult.getLastname());
+                result.put("email", modelResult.getEmail());
+                result.put("isAdmin", modelResult.getIsAdmin());
+                result.put("isDeleted", modelResult.getIsDeleted());
+                result.put("jwt", JWT.createJWT(modelResult));
+
+                toReturn.put("result", result);
+            }
         }
 
-        toReturn.put("status", status);
-        toReturn.put("statusCode", statusCode);
-        return toReturn;
+    } else {
+        status = "invalidEmail";
+        statusCode = 417;
     }
+
+    toReturn.put("status", status);
+    toReturn.put("statusCode", statusCode);
+    return toReturn;
+}
+
 
     public JSONObject registerUser(User u) {
         JSONObject toReturn = new JSONObject();
