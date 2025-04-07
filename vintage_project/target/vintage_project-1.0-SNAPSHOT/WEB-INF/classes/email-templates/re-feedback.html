@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="hu">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Feedback Reply</title>
+</head>
+
+<body style="margin: 0; padding: 0; background-color: #f0f2f5; font-family: Arial, sans-serif;">
+    <table width="100%" cellpadding="0" cellspacing="0">
+        <tr>
+            <td style="padding: 30px 15px;">
+                <table width="600" cellpadding="0" cellspacing="0"
+                    style="border-radius: 8px; overflow: hidden; max-width: 600px; width: 100%;">
+                    <!-- Header Image Section -->
+                    <tr>
+                        <td
+                            style="background-image: url('https://raw.githubusercontent.com/MartinGal2003/imageForEmail/refs/heads/main/placeholder.webp'); background-size: cover; background-position: center; height: 200px; text-align: center;">
+                            <div style="padding-top: 40px;">
+                                <img src="https://raw.githubusercontent.com/MartinGal2003/imageForEmail/refs/heads/main/retro_logo.png"
+                                    alt="Logo" width="120" style="display: block; margin: 0 auto 10px;" />
+                                <h2 style="color: #ffffff; margin: 0; font-size: 20px; text-transform: uppercase;">Retro
+                                    Vintage Shop</h2>
+                            </div>
+                        </td>
+                    </tr>
+
+                    <!-- Content Section -->
+                    <tr>
+                        <td style="padding: 30px;">
+                            <!-- A ticket eredeti üzenete -->
+                            <h2 style="margin-top: 0; color: #333;">Re: {{ticketBody}}</h2>
+                            <!-- Az admin által adott válasz -->
+                            <p style="font-size: 16px; color: #444;">
+                                {{replyBody}}
+                            </p>
+                            <!-- Admin aláírás -->
+                            <p style="font-size: 16px; color: #444;">
+                                With best regards, <strong>{{adminName}}</strong>
+                            </p>
+                        </td>
+                    </tr>
+
+                    <!-- Footer -->
+                    <tr>
+                        <td
+                            style="padding: 20px; background-color: #e9ecef; text-align: center; font-size: 14px; color: #777;">
+                            &copy; {{currentYear}} Retro Vintage Shop. All rights reserved.
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+</body>
+
+</html>
