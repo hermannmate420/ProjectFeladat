@@ -25,19 +25,19 @@
             <hr class="featurette-divider pb-5">
 
             <div class="col-lg-4 ">
-                <a href="">
+                <a [routerLink]="['/shop/all']" [queryParams]="{ category: 'Bakelit Lemez Gyűjtemények' }">
                     <img class="img-fluid" src="bakelit_lemez.jpg" alt="" width="300" height="300">
                 </a>
                 <h2>Bakelite discs</h2>
             </div>
             <div class="col-lg-4 ">
-                <a href="">
+                <a [routerLink]="['/shop/all']" [queryParams]="{ category: 'Falidíszek' }">
                     <img class="img-fluid" src="poszterek.webp" alt="img-fluid" width="300" height="300">
                 </a>
                 <h2>Posters</h2>
             </div>
             <div class="col-lg-4 ">
-                <a href="">
+                <a [routerLink]="['/shop/all']" [queryParams]="{ category: 'Órák' }">
                     <img class="img-fluid" src="óra.webp" alt="" width="300" height="300">
                 </a>
                 <h2>Watches</h2>
@@ -82,130 +82,42 @@
 
         <hr class="featurette-divider">
 
-        <div id="carouselExampleIndicators" class="carousel slide pt-3 pb-2">
-            <div class="carousel-indicators">
-                <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active"
-                    aria-current="true" aria-label="Slide 1"></button>
-                <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1"
-                    aria-label="Slide 2"></button>
-                <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2"
-                    aria-label="Slide 3"></button>
-            </div>
-            <div class="carousel-inner ">
-                <div class="carousel-item active">
-                    <div class="row justify-content-center">
-                        <div class="card col-4">
-                            <img src="" class="card-img-top" alt="">
-                            <div class="card-body justify-content-end">
-                                <h5 class="card-title"></h5>
-                            </div>
-                            <div class="card-body align-content-end text-center">
-                                <a id="btn" href="" class="btn btn-primary">Buy 9.99<i
-                                        class="bi bi-currency-dollar"></i></a>
-                            </div>
-                        </div>
-                        <div class="card col-4">
-                            <img src="" class="card-img-top" alt="">
-                            <div class="card-body justify-content-end">
-                                <h5 class="card-title"></h5>
-                            </div>
-                            <div class="card-body align-content-end text-center">
-                                <a id="btn" href="" class="btn btn-primary">Buy 9.99<i
-                                        class="bi bi-currency-dollar"></i></a>
-                            </div>
-                        </div>
-                        <div class="card col-4">
-                            <img src="" class="card-img-top" alt="">
-                            <div class="card-body justify-content-end">
-                                <h5 class="card-title"></h5>
-                            </div>
-                            <div class="card-body align-content-end text-center">
-                                <a id="btn" href="" class="btn btn-primary">Buy 9.99<i
-                                        class="bi bi-currency-dollar"></i></a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="carousel-item">
-                    <div class="row justify-content-center">
-                        <div class="card col-4">
-                            <img src="" class="card-img-top" alt="">
-                            <div class="card-body justify-content-end">
-                                <h5 class="card-title"></h5>
-                            </div>
-                            <div class="card-body align-content-end text-center">
-                                <a id="btn" href="" class="btn btn-primary">Buy 9.99<i
-                                        class="bi bi-currency-dollar"></i></a>
-                            </div>
-                        </div>
-                        <div class="card col-4">
-                            <img src="" class="card-img-top" alt="">
-                            <div class="card-body justify-content-end">
-                                <h5 class="card-title"></h5>
-                            </div>
-                            <div class="card-body align-content-end text-center">
-                                <a id="btn" href="" class="btn btn-primary">Buy 9.99<i
-                                        class="bi bi-currency-dollar"></i></a>
-                            </div>
-                        </div>
-                        <div class="card col-4">
-                            <img src="" class="card-img-top" alt="">
-                            <div class="card-body justify-content-end">
-                                <h5 class="card-title"></h5>
-                            </div>
-                            <div class="card-body align-content-end text-center">
-                                <a id="btn" href="" class="btn btn-primary">Buy 9.99<i
-                                        class="bi bi-currency-dollar"></i></a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="carousel-item">
-                    <div class="row justify-content-center">
-                        <div class="card col-4">
-                            <img src="" class="card-img-top" alt="">
-                            <div class="card-body justify-content-end">
-                                <h5 class="card-title"></h5>
-                            </div>
-                            <div class="card-body align-content-end text-center">
-                                <a id="btn" href="" class="btn btn-primary">Buy 9.99<i
-                                        class="bi bi-currency-dollar"></i></a>
-                            </div>
-                        </div>
-                        <div class="card col-4">
-                            <img src="" class="card-img-top" alt="">
-                            <div class="card-body justify-content-end">
-                                <h5 class="card-title"></h5>
-                            </div>
-                            <div class="card-body align-content-end text-center">
-                                <a id="btn" href="" class="btn btn-primary">Buy 9.99<i
-                                        class="bi bi-currency-dollar"></i></a>
-                            </div>
-                        </div>
-                        <div class="card col-4">
-                            <img src="" class="card-img-top" alt="">
-                            <div class="card-body justify-content-end">
-                                <h5 class="card-title"></h5>
-                            </div>
-                            <div class="card-body align-content-end text-center">
-                                <a id="btn" href="" class="btn btn-primary">Buy 9.99<i
-                                        class="bi bi-currency-dollar"></i></a>
+        <div id="multiItemCarousel" class="carousel slide" data-bs-ride="carousel">
+            <div class="carousel-inner">
+                <div class="carousel-item" *ngFor="let chunk of chunkedProducts; let i = index"
+                    [class.active]="i === 0">
+                    <div class="container">
+                        <div class="row justify-content-center">
+                            <div class="col-md-4" *ngFor="let product of chunk">
+                                <div class="card h-100 shadow-sm">
+                                    <img src="retro_logo.png" class="card-img-top" alt="{{ product.name }}">
+                                    <div class="card-body">
+                                        <h5 class="card-title">{{ product.name }}</h5>
+                                        <p class="card-text">{{ product.description }}</p>
+                                    </div>
+                                    <div class="card-footer text-end fw-bold">
+                                        {{ product.price | currency:'HUF' }}
+                                    </div>
+                                    <a [routerLink]="['/shop/all']" [queryParams]="{ category: product.category.name }"
+                                        class="btn btn-sm btn-outline-primary m-2 float-end">Megnézem</a>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators"
+
+            <button class="carousel-control-prev" type="button" data-bs-target="#multiItemCarousel"
                 data-bs-slide="prev">
-                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                <span class="visually-hidden">Previous</span>
+                <span class="carousel-control-prev-icon"></span>
             </button>
-            <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators"
+            <button class="carousel-control-next" type="button" data-bs-target="#multiItemCarousel"
                 data-bs-slide="next">
-                <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                <span class="visually-hidden">Next</span>
+                <span class="carousel-control-next-icon"></span>
             </button>
         </div>
+
+
 
         <hr class="featurette-divider">
 

@@ -5,6 +5,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { jwtDecode } from 'jwt-decode';
+import { Title } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-forgot-reset-password',
@@ -22,7 +23,9 @@ export class ForgotResetPasswordComponent implements OnInit {
   countdown: number = 3;
   errorMessage: string = '';
 
-  constructor(private route: ActivatedRoute, private http: HttpClient, private router: Router) { }
+  constructor(private route: ActivatedRoute, private http: HttpClient, private router: Router, private titleService: Title) { 
+    titleService.setTitle("Reset password");
+  }
 
   ngOnInit(): void {
     this.route.queryParams.subscribe(params => {

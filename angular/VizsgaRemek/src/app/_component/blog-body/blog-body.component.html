@@ -1,91 +1,22 @@
 <div class="blog-container">
 
-  <!-- Kereső + rendezés -->
-  <div class="toolbar">
-    <input
-      type="text"
-      placeholder="Keresés posztok között..."
-      [(ngModel)]="searchTerm"
-      class="search-input"
-    />
-    <select [(ngModel)]="sortOrder" class="sort-select">
-      <option value="latest">Legújabb elöl</option>
-      <option value="oldest">Legrégebbi elöl</option>
-      <option value="mostComments">Legtöbb komment</option>
-    </select>
-  </div>
+    <!-- Új poszt -->
+    <app-blog-editor></app-blog-editor>
 
-  <!-- Új poszt -->
-  <div class="new-post-card">
-    <h3 class="new-post-title">Új bejegyzés</h3>
-    <textarea [(ngModel)]="newPostContent" placeholder="Írd meg a gondolataid..."></textarea>
-    <input type="file" (change)="onFileSelected($event)" accept="image/*" />
-    <img *ngIf="selectedImage" [src]="selectedImage" alt="Kép előnézet" style="max-width: 100%; margin-top: 1rem;">
-    <button (click)="addPost()">Közzététel</button>
-  </div>
+    <hr class="my-4">
 
-  <!-- Feed -->
-  <div class="post-feed">
-    <div class="post-card" *ngFor="let post of filteredPosts">
-      <div class="post-header">
-        <div>
-          <strong>{{ post.author }}</strong>
-          <span class="timestamp">{{ post.createdAt | date:'short' }}</span>
-        </div>
-        <button (click)="deletePost(post.id)" class="delete-button">🗑️</button>
-      </div>
-
-      <!-- Poszt szöveg -->
-      <div *ngIf="!post.editing; else editPostBlock" class="post-content">{{ post.content }}</div>
-      <ng-template #editPostBlock>
-        <textarea [(ngModel)]="post.content"></textarea>
-        <button (click)="toggleEditPost(post)">✅ Mentés</button>
-      </ng-template>
-      <button (click)="toggleEditPost(post)">✏️ Szerkesztés</button>
-
-      <!-- Kép -->
-      <img *ngIf="post.image" [src]="post.image" alt="Feltöltött kép" style="max-width: 100%; margin-top: 1rem;">
-      <button (click)="likePost(post.id)" class="like-button">👍 {{ post.likes || 0 }}</button>
-
-      <!-- Kommentek -->
-      <div class="comment-section">
-        <textarea #commentInput placeholder="Írj egy kommentet..."></textarea>
-        <button (click)="addComment(post.id, commentInput.value); commentInput.value=''">Küldés</button>
-
-        <div class="comment" *ngFor="let comment of post.comments">
-          <div class="comment-content">
-
-            <!-- Komment szöveg -->
-            <div *ngIf="!comment.editing; else editCommentBlock">
-              <strong>{{ comment.author }}</strong>: {{ comment.content }}
-            </div>
-            <ng-template #editCommentBlock>
-              <textarea [(ngModel)]="comment.content"></textarea>
-              <button (click)="toggleEditComment(comment)">✅ Mentés</button>
-            </ng-template>
-
-            <!-- Komment műveletek -->
-            <div class="comment-meta">
-              <button (click)="likeComment(post.id, comment.id)" class="like-button">👍 {{ comment.likes || 0 }}</button>
-              <button (click)="deleteComment(post.id, comment.id)" class="delete-button">🗑️</button>
-              <button (click)="toggleEditComment(comment)">✏️</button>
-              <button (click)="toggleReplyInput(comment.id)" class="reply-button">💬 Válasz</button>
-            </div>
-
-            <!-- Válasz írása -->
-            <div *ngIf="replyInputVisible[comment.id]" class="reply-input">
-              <textarea #replyText placeholder="Írj választ..."></textarea>
-              <button (click)="addReply(post.id, comment.id, replyText.value); replyText.value=''">Küldés</button>
-            </div>
-
-            <!-- Válaszok -->
-            <div class="reply" *ngFor="let reply of comment.replies">
-              <strong>{{ reply.author }}</strong>: {{ reply.content }}
-              <button (click)="likeComment(post.id, reply.id)" class="like-button">👍 {{ reply.likes || 0 }}</button>
-            </div>
-          </div>
-        </div>
-      </div>
+    <h2 class="mb-4">📰 Recent Posts</h2>
+    <!-- Kereső + rendezés -->
+    <br>
+    <div class="toolbar">
+        <input type="text" placeholder="Keresés posztok között..." [(ngModel)]="searchTerm" class="search-input" />
+        <select [(ngModel)]="sortOrder" class="sort-select">
+            <option value="latest">Legújabb elöl</option>
+            <option value="oldest">Legrégebbi elöl</option>
+            <option value="mostComments">Legtöbb komment</option>
+        </select>
     </div>
-  </div>
+
+    <!-- Posztok listája -->
+    <app-blog-feed></app-blog-feed>
 </div>

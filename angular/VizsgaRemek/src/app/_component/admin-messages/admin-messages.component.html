@@ -1,1 +1,33 @@
-<p>admin-messages works!</p>
+<div class="container my-5">
+    <h2>📬 Incoming Messages</h2>
+
+    <div class="row mt-4">
+        <div class="col-md-4">
+            <div class="list-group">
+                <button *ngFor="let msg of messages" class="list-group-item list-group-item-action"
+                    [class.active]="selectedMessage?.id === msg.id" (click)="viewMessage(msg)">
+                    <div class="d-flex justify-content-between">
+                        <strong>{{ msg.subject }}</strong>
+                        <span *ngIf="!msg.isRead" class="badge bg-primary">New</span>
+                    </div>
+                    <small>{{ msg.name }} | {{ msg.email }}</small>
+                </button>
+            </div>
+        </div>
+
+        <div class="col-md-8" *ngIf="selectedMessage">
+            <div class="card p-4 shadow">
+                <h5 class="mb-3">{{ selectedMessage.subject }}</h5>
+                <p><strong>From:</strong> {{ selectedMessage.name }} ({{ selectedMessage.email }})</p>
+                <p><strong>Received:</strong> {{ selectedMessage.createdAt | date: 'medium' }}</p>
+                <hr>
+                <p>{{ selectedMessage.message }}</p>
+
+                <div class="text-end mt-3">
+                    <button class="btn btn-outline-danger" (click)="deleteMessage(selectedMessage.id)">🗑
+                        Delete</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

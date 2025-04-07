@@ -1,7 +1,13 @@
-tr.table-danger.disabled-row td {
-    opacity: 0.5;
+.disabled-row {
     pointer-events: none;
+    opacity: 0.5;
 }
+
+tr.disabled-row button {
+    pointer-events: auto;
+    opacity: 1;
+}
+
 
 .overlay-message {
     position: absolute;
@@ -43,4 +49,3 @@ tr.table-danger.disabled-row td {
     border-radius: 4px;
     margin-left: 5px;
 }
-

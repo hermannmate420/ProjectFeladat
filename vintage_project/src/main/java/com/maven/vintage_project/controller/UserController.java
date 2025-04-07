@@ -340,4 +340,27 @@ public class UserController {
         return Response.status(code).entity(result.toString()).build();
     }
 
+    @PUT
+    @Path("/reactivate-user")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response reactivateUserById(
+            @HeaderParam("token") String jwt,
+            @QueryParam("userId") Integer userId) {
+
+        int isValid = JWT.validateJWT(jwt);
+
+        if (isValid != 1) {
+            return Response.status(isValid == 2 ? 498 : 401)
+                    .entity("{\"error\": \"" + (isValid == 2 ? "InvalidToken" : "TokenExpired") + "\"}")
+                    .build();
+        }
+
+        Integer requesterId = JWT.getUserIdByToken(jwt);
+        boolean isAdmin = JWT.isAdmin(jwt);
+
+        JSONObject result = layer.reactivateUserById(userId, requesterId, isAdmin);
+        int code = result.optInt("statusCode", 500);
+        return Response.status(code).entity(result.toString()).build();
+    }
+
 }

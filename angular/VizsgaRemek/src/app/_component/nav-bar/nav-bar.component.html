@@ -24,7 +24,9 @@
                         <li>
                             <hr class="dropdown-divider">
                         </li>
-                        <li><a *ngIf="isAuthenticated" (click)="onLogOut()" class="dropdown-item" href="#">Logout</a>
+                        <li><a *ngIf="isAuthenticated" (click)="onLogOut()" class="dropdown-item" href="#"><strong><i class="bi bi-box-arrow-right"></i> Logout</strong></a>
+                        </li>
+                        <li><a *ngIf="!isAuthenticated" class="dropdown-item" href="/login"><strong><i class="bi bi-box-arrow-in-right"></i> Login</strong></a>
                         </li>
                     </ul>
                 </li>

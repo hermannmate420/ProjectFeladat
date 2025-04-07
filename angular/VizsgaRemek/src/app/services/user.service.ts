@@ -73,5 +73,45 @@ export class UserService {
     );
   }
 
+  deleteUserLogically(userId: number, token: string) {
+    const headers = {
+      'Content-Type': 'application/json',
+      'token': token
+    };
+
+    return this.http.put(
+      `http://127.0.0.1:8080/vintage_project-1.0-SNAPSHOT/webresources/user/deleteUser/${userId}`,
+      {},
+      { headers }
+    );
+  }
+
+  reactivateUser(userId: number, token: string) {
+    const headers = {
+      'Content-Type': 'application/json',
+      token: token
+    };
+
+    const url = `http://127.0.0.1:8080/vintage_project-1.0-SNAPSHOT/webresources/user/reactivateUser/${userId}`;
+    return this.http.put(url, {}, { headers });
+  }
+
+  reactivateUserById(userId: number) {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      throw new Error('Nincs token, kérlek jelentkezz be!');
+    }
+    const headers = {
+      'Content-Type': 'application/json',
+      'token': token
+    };
+
+    const url = `http://127.0.0.1:8080/vintage_project-1.0-SNAPSHOT/webresources/user/reactivate-user?userId=${userId}`;
+    return this.http.put(url, {}, { headers });
+  }
+
+
+
+
 
 }

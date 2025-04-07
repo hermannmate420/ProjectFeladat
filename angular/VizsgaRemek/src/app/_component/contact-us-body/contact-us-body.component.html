@@ -1,0 +1,55 @@
+<section class="py-5" id="contact">
+    <div class="container">
+        <h2 class="text-center mb-4">📬 Contact Us</h2>
+        <p class="text-center text-muted mb-5"><strong>Have a question, issue or feedback? Let us know!</strong></p>
+
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <form [formGroup]="contactForm" (ngSubmit)="onSubmit()" novalidate>
+                    <div class="mb-3">
+                        <label class="form-label">Full Name *</label>
+                        <input formControlName="name" type="text" class="form-control" placeholder="Your name">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Email *</label>
+                        <input formControlName="email" type="email" class="form-control" placeholder="your@email.com">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Subject *</label>
+                        <input formControlName="subject" type="text" class="form-control"
+                            placeholder="Subject of your message">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Message *</label>
+                        <textarea formControlName="message" rows="5" class="form-control"
+                            placeholder="Write your message here..."></textarea>
+                    </div>
+                    <div class="form-check mb-3">
+                        <input type="checkbox" class="form-check-input" formControlName="isHuman" />
+                        <label class="form-check-label">I'm not a robot 🤖</label>
+                    </div>
+                    <div class="form-check mb-3">
+                        <input class="form-check-input" type="checkbox" id="gdpr" formControlName="gdprAgreement" />
+                        <label class="form-check-label" for="gdpr">
+                            I agree to the <a href="/privacy-policy" target="_blank">Privacy Policy</a> and data
+                            handling terms.
+                        </label>
+                    </div>
+                    <div class="text-end">
+                        <button class="btn btn-dark px-4" type="submit" [disabled]="contactForm.invalid || loading">
+                            {{ loading ? 'Sending...' : 'Send Message' }}
+                        </button>
+                    </div>
+                    
+                </form>
+
+                <div *ngIf="successMessage" class="alert alert-success mt-3">
+                    {{ successMessage }}
+                </div>
+                <div *ngIf="errorMessage" class="alert alert-danger mt-3">
+                    {{ errorMessage }}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

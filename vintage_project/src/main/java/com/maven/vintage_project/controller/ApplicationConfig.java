@@ -28,8 +28,9 @@ public class ApplicationConfig extends Application {
      * If required, comment out calling this method in getClasses().
      */
     private void addRestResourceClasses(Set<Class<?>> resources) {
-        resources.add(com.maven.vintage_project.controller.UserController.class);
+        resources.add(com.maven.vintage_project.controller.ProductController.class);
         //resources.add(com.iakk.backendvizsga.controller.UserController.class);
+        resources.add(com.maven.vintage_project.controller.UserController.class);
     }
     
 }

@@ -18,7 +18,7 @@ export class LoginComponent implements OnInit {
   showPassword: boolean = false;
   errorMessage: string = '';
 
-  constructor(private fb: FormBuilder, private loginService: LoginService, private router: Router, private titleService: Title ) {
+  constructor(private fb: FormBuilder, private loginService: LoginService, private router: Router, private titleService: Title) {
     titleService.setTitle("Login");
   }
 
@@ -44,7 +44,10 @@ export class LoginComponent implements OnInit {
       this.router.navigate([this.loginService.getIsAdmin() ? '/admin' : '/home']);
     } catch (error) {
       console.error('Error logging in: ', error);
+      this.checkReactivation(this.loginForm.value.email);
       alert('Error logging in: Invalid email or password!');
+
+      console.log(this.loginForm.value.email)
     }
   }
 
@@ -63,4 +66,36 @@ export class LoginComponent implements OnInit {
   getPasswordClass() {
     return this.password?.touched && this.password?.invalid ? 'invalid' : '';
   }
+
+  checkReactivation(email: string): void {
+    const reactivateCheckUrl = `http://localhost:8080/vintage_project-1.0-SNAPSHOT/webresources/user/reactivatable?email=${email}`;
+    const reactivateRequestUrl = 'http://127.0.0.1:8080/vintage_project-1.0-SNAPSHOT/webresources/user/reactivate-request';
+
+    fetch(reactivateCheckUrl)
+      .then(res => res.json())
+      .then(data => {
+        if (data.reactivatable) {
+          // ✅ Igen, reaktiválható => küldjünk emailt
+          return fetch(reactivateRequestUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email })
+          });
+        } else {
+          throw new Error('Not reactivatable');
+        }
+      })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Failed to send reactivation email.');
+        }
+        alert('Your account is currently inactive. A reactivation email has been sent.');
+      })
+      .catch(err => {
+        console.error('Reactivation check or email error:', err);
+        this.errorMessage = 'Login failed: invalid credentials or account is inactive.';
+      });
+  }
+
+
 }

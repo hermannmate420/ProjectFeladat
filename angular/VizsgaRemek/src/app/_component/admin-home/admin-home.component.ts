@@ -95,7 +95,9 @@ export class AdminHomeComponent implements OnInit {
 
     users.forEach((user, i) => {
       const raw = user.createdAt;
-      const cleaned = raw.replace('CET', 'GMT');
+      const cleaned = raw
+        .replace('CET', 'GMT')
+        .replace('CEST', 'GMT');
 
       const parsed = Date.parse(cleaned);
       if (!isNaN(parsed)) {

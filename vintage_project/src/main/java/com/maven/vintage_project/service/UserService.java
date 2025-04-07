@@ -15,6 +15,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import net.coobird.thumbnailator.Thumbnails;
@@ -600,5 +601,55 @@ public class UserService {
 
         return response;
     }
+    
+    public JSONObject reactivateUserById(Integer targetUserId, Integer requesterId, boolean isAdmin) {
+    JSONObject toReturn = new JSONObject();
+    String status = "success";
+    int statusCode = 200;
+
+    try {
+        User user = User.findById(targetUserId);
+
+        if (user == null) {
+            status = "UserNotFound";
+            statusCode = 404;
+        } else if (!user.getIsDeleted()) {
+            status = "UserAlreadyActive";
+            statusCode = 409;
+        } else if (!isAdmin && !Objects.equals(requesterId, targetUserId)) {
+            status = "PermissionDenied";
+            statusCode = 403;
+        } else {
+            Instant deletedAt = user.getDeletedAt().toInstant();
+            Instant threeYearsAgo = Instant.now().minus(1095, ChronoUnit.DAYS);
+
+            if (deletedAt.isBefore(threeYearsAgo)) {
+                status = "ReactivationPeriodExpired";
+                statusCode = 410;
+            } else {
+                boolean success = User.reactivateById(targetUserId);
+                if (success) {
+                    status = "UserReactivated";
+                    statusCode = 200;
+                } else {
+                    status = "ReactivationFailed";
+                    statusCode = 500;
+                }
+            }
+        }
+    } catch (Exception e) {
+        e.printStackTrace();
+        status = "InternalError";
+        statusCode = 500;
+    }
+
+    toReturn.put("status", status);
+    toReturn.put("statusCode", statusCode);
+    return toReturn;
+}
+
+
+    
+    
 
 }

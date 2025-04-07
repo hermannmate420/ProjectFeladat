@@ -35,6 +35,7 @@ export class AdminUserTableComponent implements OnInit {
   toastMessage: string = '';
   toastColorClass: string = 'bg-success';
   showToast: boolean = false;
+  showOverlay: boolean = true;
 
   constructor(private userService: UserService) { }
 
@@ -55,7 +56,6 @@ export class AdminUserTableComponent implements OnInit {
       }
     });
   }
-
   editUsers(): void {
     if (this.isEdit) {
       this.isEdit = false;
@@ -92,6 +92,7 @@ export class AdminUserTableComponent implements OnInit {
   onSelectUser(): void {
     const found = this.users.find(u => u.id === +this.selectedUserId);
     this.selectedUser = found ? { ...found } : null;
+    this.showOverlay = true;
   }
 
   get filteredUsers() {
@@ -223,5 +224,49 @@ export class AdminUserTableComponent implements OnInit {
       this.showToast = false;
     }, 2000); // 2 másodperc után eltűnik
   }
+
+  deleteUser(user: any): void {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      alert('Token not found – please log in again.');
+      return;
+    }
+
+    if (!confirm(`Are you sure you want to delete user: ${user.username}?`)) {
+      return;
+    }
+
+    this.userService.deleteUserLogically(user.id, token).subscribe({
+      next: () => {
+        this.showSaveToast(`❌ User ${user.username} marked as deleted.`, 'bg-danger');
+        this.ngOnInit();
+      },
+      error: (err) => {
+        console.error('User deletion error:', err);
+        alert('Failed to delete user.');
+      }
+    });
+  }
+
+  reactivateUserById(user: any): void {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      alert('Token not found – please log in again.');
+      return;
+    }
+
+    this.userService.reactivateUserById(user.id).subscribe({
+      next: () => {
+        this.showSaveToast(`♻️ User "${user.username}" reactivated.`, 'bg-success');
+        this.ngOnInit(); // újratöltés
+      },
+      error: (err) => {
+        console.error('Reactivation error:', err);
+        alert('Failed to reactivate user.');
+      }
+    });
+  }
+
+
 
 }
