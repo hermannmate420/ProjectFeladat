@@ -22,14 +22,18 @@ export class ShopAllComponent implements OnInit {
   filterText = '';
   selectedCategory = '';
   categories: string[] = [];
+  currentPage = 1;
+  productPerPage = 10;
+  totalProducts = 0;
 
 
-  constructor(private productService: ProductService, private route: ActivatedRoute) { }
+  constructor(private productService: ProductService, private route: ActivatedRoute,) { }
 
 
   ngOnInit(): void {
     this.productService.filterText$.subscribe(value => this.filterText = value);
     this.productService.selectedCategory$.subscribe(value => this.selectedCategory = value);
+    this.totalProducts = this.products.length;
 
     this.route.queryParams.subscribe(params => {
       const category = params['category'];
@@ -50,6 +54,16 @@ export class ShopAllComponent implements OnInit {
         this.loading = false;
       }
     });
+  }
+
+  get paginatedProducts() {
+    const start = (this.currentPage - 1) * this.productPerPage;
+    const end = start + this.productPerPage;
+    return this.sortedProducts.slice(start, end);
+  }
+
+  get totalPages(): number {
+    return Math.ceil(this.sortedProducts.length / this.productPerPage);
   }
 
   toggle(): void {
@@ -118,26 +132,5 @@ export class ShopAllComponent implements OnInit {
     }
     this.categories = Array.from(categorySet).sort(); // ábécé sorrend
   }
-
-
-
-
-  // onSearchChange(value: string) {
-  //   this.filterText = value;
-  //   this.currentPage = 1;
-  // }
-
-  // onCategoryChange(value: string) {
-  //   this.selectedCategory = value;
-  //   this.currentPage = 1;
-  // }
-
-  // onSortChange(order: 'asc' | 'desc') {
-  //   this.sortOrder = order;
-  // }
-
-  // onPageChange(page: number) {
-  //   this.currentPage = page;
-  // }
 
 }

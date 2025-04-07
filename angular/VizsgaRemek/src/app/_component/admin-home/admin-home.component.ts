@@ -3,6 +3,8 @@ import { UserService } from '../../services/user.service';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { NgApexchartsModule, ApexChart, ApexXAxis, ApexOptions, ApexDataLabels, ApexTitleSubtitle, ApexAxisChartSeries } from 'ng-apexcharts';
+import { ProductService } from '../../services/product.service';
+import { Product } from '../../models/product.model';
 
 
 @Component({
@@ -18,9 +20,13 @@ export class AdminHomeComponent implements OnInit {
   deletedCount = 0;
   adminCount = 0;
   monthlySignupCount = 0;
+  productCount = 0;
+  totalStock = 0;
+  ticketCount = 0;
 
 
-  constructor(private userService: UserService) { }
+
+  constructor(private userService: UserService, private productService: ProductService) { }
 
   ngOnInit(): void {
     this.userService.getAllUsers().subscribe({
@@ -40,10 +46,26 @@ export class AdminHomeComponent implements OnInit {
           ...this.chartOptionss,
           series: [{ name: 'Users', data: monthlyCounts }]
         };
-
-
       },
       error: err => console.error(err)
+    });
+    this.productService.getProducts().subscribe({
+      next: (res) => {
+        const products: Product[] = res || res;
+        this.productCount = products.length;
+        this.totalStock = products.reduce((sum, p) => sum + (p.stockQuanty || 0), 0);
+      },
+      error: err => console.error('❌ Termékek betöltése sikertelen', err)
+    });
+    this.userService.getAllTicket().subscribe({
+      next: (tickets) => {
+        const ticketData = tickets.result || tickets.result;
+        this.ticketCount = tickets.result.length;
+        console.log('Tickets:', tickets);
+      },
+      error: (error) => {
+        console.error('Ticket hiba:', error);
+      }
     });
   }
 
@@ -54,11 +76,13 @@ export class AdminHomeComponent implements OnInit {
       { label: 'Deleted Users', value: this.deletedCount, icon: '❌', bg: 'bg-danger text-light' },
       { label: 'Admins', value: this.adminCount, icon: '🛡️', bg: 'bg-dark text-light' },
 
+      { label: 'Products in Store', value: this.productCount, icon: '📦', bg: 'bg-secondary text-light' },
+      { label: 'Total Stock', value: this.totalStock, icon: '🏷️', bg: 'bg-warning text-dark' },
+
       // ⬇ Új placeholder kártyák (még nincs backend)
       { label: 'Monthly Signups', value: this.monthlySignupCount, icon: '📈', bg: 'bg-info text-light' },
       { label: 'Pending Orders', value: 0, icon: '🛒', bg: 'bg-warning text-light' },
-      { label: 'Products in Store', value: 0, icon: '📦', bg: 'bg-secondary text-light' },
-      { label: 'Support Tickets', value: 0, icon: '🎫', bg: 'bg-light text-dark' }
+      { label: 'Support Tickets', value: this.ticketCount, icon: '🎫', bg: 'bg-light text-dark' }
     ];
   }
 
@@ -113,5 +137,8 @@ export class AdminHomeComponent implements OnInit {
     console.log('📊 Havi bontás:', counts);
     return counts;
   }
+
+
+
 
 }

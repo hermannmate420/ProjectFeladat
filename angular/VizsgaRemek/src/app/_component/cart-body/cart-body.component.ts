@@ -9,5 +9,8 @@ import { CommonModule } from '@angular/common';
   styleUrl: './cart-body.component.css'
 })
 export class CartBodyComponent {
+  cartItems: any[] = [];
+  shippingFee: number = 1000;
+
   
 }

@@ -1,4 +1,4 @@
-export interface Message {
+export interface Ticket {
     id: number;
     name: string;
     email: string;
@@ -6,5 +6,6 @@ export interface Message {
     message: string;
     createdAt: string;
     isRead: boolean;
-    type?: 'feedback';
+    type?: 'ticket';
 }
+

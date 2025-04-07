@@ -2,30 +2,89 @@
     <h2>📬 Incoming Messages</h2>
 
     <div class="row mt-4">
+        <h5>📝 Feedback's</h5>
+        <!-- Üzenetlista -->
         <div class="col-md-4">
-            <div class="list-group">
+            <div class="list-group pb-4">
                 <button *ngFor="let msg of messages" class="list-group-item list-group-item-action"
                     [class.active]="selectedMessage?.id === msg.id" (click)="viewMessage(msg)">
-                    <div class="d-flex justify-content-between">
-                        <strong>{{ msg.subject }}</strong>
+
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <strong>{{ msg.subject }}</strong>
+                            <span *ngIf="msg.type === 'feedback'" class="badge bg-info text-dark ms-2">📝
+                                Feedback</span>
+                        </div>
                         <span *ngIf="!msg.isRead" class="badge bg-primary">New</span>
                     </div>
-                    <small>{{ msg.name }} | {{ msg.email }}</small>
+
+                    <small class="text-muted">{{ msg.name }} | {{ msg.email }}</small>
                 </button>
             </div>
         </div>
-
+        <!-- Részletek -->
         <div class="col-md-8" *ngIf="selectedMessage">
             <div class="card p-4 shadow">
-                <h5 class="mb-3">{{ selectedMessage.subject }}</h5>
+                <h5 class="mb-3">
+                    {{ selectedMessage.subject }}
+                    <span *ngIf="selectedMessage.type === 'feedback'" class="badge bg-info text-dark ms-2">📝
+                        Feedback</span>
+                </h5>
+
                 <p><strong>From:</strong> {{ selectedMessage.name }} ({{ selectedMessage.email }})</p>
                 <p><strong>Received:</strong> {{ selectedMessage.createdAt | date: 'medium' }}</p>
                 <hr>
                 <p>{{ selectedMessage.message }}</p>
 
                 <div class="text-end mt-3">
-                    <button class="btn btn-outline-danger" (click)="deleteMessage(selectedMessage.id)">🗑
-                        Delete</button>
+                    <button class="btn btn-outline-danger" (click)="deleteMessage(selectedMessage.id)">
+                        🗑 Delete
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <br>
+    <hr>
+    <br>
+    <div class="row mt-4">
+
+        <div class="col-md-4">
+        <h5>🎫 Ticket's</h5>
+            <!-- Üzenetlista Ticket -->
+            <div class="list-group pb-4">
+                <button *ngFor="let tck of ticket" class="list-group-item list-group-item-action"
+                    [class.active]="selectedTicket?.id === tck.id" (click)="viewTicket(tck)">
+
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <strong>{{ tck.subject }}</strong>
+                            <span *ngIf="tck.type === 'ticket'" class="badge bg-warning ms-2">🎫 Ticket</span>
+                        </div>
+                        <span *ngIf="!tck.isRead" class="badge bg-primary">New</span>
+                    </div>
+
+                    <small class="text-muted">{{ tck.name }} | {{ tck.email }}</small>
+                </button>
+            </div>
+        </div>
+        <!-- Részletek -->
+        <div class="col-md-8" *ngIf="selectedTicket">
+            <div class="card p-4 shadow">
+                <h5 class="mb-3">
+                    {{ selectedTicket.subject }}
+                    <span *ngIf="selectedTicket.type === 'ticket'" class="badge bg-warning ms-2">🎫 Ticket</span>
+                </h5>
+
+                <p><strong>From:</strong> {{ selectedTicket.name }} ({{ selectedTicket.email }})</p>
+                <p><strong>Received:</strong> {{ selectedTicket.createdAt | date: 'medium' }}</p>
+                <hr>
+                <p>{{ selectedTicket.message }}</p>
+
+                <div class="text-end mt-3">
+                    <button class="btn btn-outline-danger" (click)="deleteMessage(selectedTicket.id)">
+                        🗑 Delete
+                    </button>
                 </div>
             </div>
         </div>

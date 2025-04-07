@@ -18,6 +18,7 @@ export class ContactUsBodyComponent {
   errorMessage = '';
   gdprAgreements = '';
   isHuman = '';
+  clearMessages = {};
 
 
   constructor(private fb: FormBuilder, private http: HttpClient) {
@@ -35,6 +36,12 @@ export class ContactUsBodyComponent {
     if (this.contactForm.invalid) return;
 
     const messageData = this.contactForm.value;
+    this.clearMessages = {
+      fullName: messageData.name,
+      messageText: messageData.message,
+      email: messageData.email,
+      subject: messageData.subject
+    }
 
     this.loading = true;
     this.successMessage = '';
@@ -46,7 +53,7 @@ export class ContactUsBodyComponent {
     };
 
 
-    this.http.post('http://localhost:8080/vintage_project-1.0-SNAPSHOT/webresources/contact/send', messageData)
+    this.http.post('http://127.0.0.1:8080/vintage_project-1.0-SNAPSHOT/webresources/message/create', this.clearMessages)
       .subscribe({
         next: () => {
           this.successMessage = '✅ Message sent successfully!';

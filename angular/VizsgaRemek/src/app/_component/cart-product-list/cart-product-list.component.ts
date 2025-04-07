@@ -1,4 +1,4 @@
-import { Component, Input, ViewEncapsulation } from '@angular/core';
+import { Component, Input, OnInit, ViewEncapsulation } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 
@@ -8,13 +8,22 @@ import { CommonModule } from '@angular/common';
   templateUrl: './cart-product-list.component.html',
   styleUrl: './cart-product-list.component.css'
 })
-export class CartProductListComponent {
-  @Input() products: any[] = [];
-  @Input() shippingFee: number = 1000;
+export class CartProductListComponent implements OnInit {
+  cartItems: any[] = [];
+  shippingFee: number = 1000;
+
+  ngOnInit(): void {
+    this.loadCart();
+  }
+
+  loadCart(): void {
+    const items = localStorage.getItem('cart');
+    this.cartItems = items ? JSON.parse(items) : [];
+  }
 
   // Nettó összeg számítása
   get netTotal(): number {
-    return this.products.reduce((total, product) => total + (product.price * product.quantity), 0);
+    return this.cartItems.reduce((total, product) => total + (product.price * product.quantity), 0);
   }
 
   // Áfa 27% és bruttó összeg számítása
@@ -28,21 +37,30 @@ export class CartProductListComponent {
   }
 
   // Termékek mennyiségének módosítása
-  increaseQuantity(product: any) {
-    product.quantity++;
+  increaseQuantity(cartItems: any) {
+    cartItems.quantity++;
   }
 
-  decreaseQuantity(product: any) {
-    if (product.quantity > 1) {
-      product.quantity--;
+  decreaseQuantity(cartItems: any) {
+    if (cartItems.quantity > 1) {
+      cartItems.quantity--;
     }
   }
 
   // Termék törlése
   removeProduct(product: any) {
-    const index = this.products.indexOf(product);
+    const index = this.cartItems.indexOf(product);
     if (index !== -1) {
-      this.products.splice(index, 1);
+      this.cartItems.splice(index, 1);
     }
+  }
+  
+  clearCart(): void {
+    localStorage.removeItem('cart');
+    this.cartItems = [];
+  }
+
+  checkout(): void {
+    alert('💳 Fizetési folyamat még nincs implementálva.');
   }
 }

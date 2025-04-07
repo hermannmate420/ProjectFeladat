@@ -1,36 +1,4 @@
 <main class="d-flex min-vh-100">
-    <!-- Sidebar -->
-    <nav class="admin-sidebar bg-light border-end p-2" [class.closed]="!sidebarOpen">
-        <aside class="col-md-3">
-            <!-- Kereső -->
-            <div class="card mb-3">
-                <div class="card-header">Keresés</div>
-                <div class="card-body">
-                    <input type="text" [(ngModel)]="filterText" class="form-control" placeholder="Név szerint...">
-                </div>
-            </div>
-
-            <!-- Kategóriák -->
-            <div class="card mb-3">
-                <div class="card-header">Kategóriák</div>
-                <ul class="list-group list-group-flush">
-                    <li class="list-group-item" *ngFor="let cat of categories" [class.active]="selectedCategory === cat"
-                        (click)="selectCategory(cat)">
-                        {{ cat }}
-                    </li>
-                </ul>
-            </div>
-
-            <!-- Csak raktáron -->
-            <div class="card mb-3">
-                <div class="card-header">Raktáron</div>
-                <div class="card-body">
-                    <input type="checkbox" [(ngModel)]="inStockOnly"> Csak raktáron
-                </div>
-            </div>
-        </aside>
-    </nav>
-
     <section class="flex-grow-1 position-relative">
         <app-nav-bar></app-nav-bar>
 

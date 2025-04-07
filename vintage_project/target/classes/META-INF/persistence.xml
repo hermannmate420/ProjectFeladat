@@ -6,6 +6,8 @@
         <class>com.maven.vintage_project.model.Products</class>
         <class>com.maven.vintage_project.model.Category</class>
         <class>com.maven.vintage_project.model.User</class>
+        <class>com.maven.vintage_project.model.Ticket</class>
+        <class>com.maven.vintage_project.model.Message</class>
         <exclude-unlisted-classes>false</exclude-unlisted-classes>
         <properties>
             <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/vintage_db?zeroDateTimeBehavior=CONVERT_TO_NULL"/>

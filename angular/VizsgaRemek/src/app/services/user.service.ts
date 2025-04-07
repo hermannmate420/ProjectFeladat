@@ -110,7 +110,13 @@ export class UserService {
     return this.http.put(url, {}, { headers });
   }
 
+  getAllTicket(): Observable<any> {
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+    });
 
+    return this.http.get('http://127.0.0.1:8080/vintage_project-1.0-SNAPSHOT/webresources/ticket/getAllTickets', { headers });
+  }
 
 
 

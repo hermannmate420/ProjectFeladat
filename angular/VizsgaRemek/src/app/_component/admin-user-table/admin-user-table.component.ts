@@ -75,10 +75,6 @@ export class AdminUserTableComponent implements OnInit {
         console.log('Sikeres mentés:', updated);
         alert('Sikeresen mentve!');
         this.showSaveToast(`✔ User #${user.id} saved successfully!`);
-        // this.showSaveToast(`❌ User #${user.id} has been deleted.`, 'bg-danger'); // ezeket majd a helyükre kell tenni
-        // this.showSaveToast(`🔄 User #${user.id} reactivated.`, 'bg-warning'); // ezeket majd a helyükre kell tenni
-
-
       },
       error: (err) => {
         console.error('Mentési hiba:', err);

@@ -24,9 +24,11 @@
                         <li>
                             <hr class="dropdown-divider">
                         </li>
-                        <li><a *ngIf="isAuthenticated" (click)="onLogOut()" class="dropdown-item" href="#"><strong><i class="bi bi-box-arrow-right"></i> Logout</strong></a>
+                        <li><a *ngIf="isAuthenticated" (click)="onLogOut()" class="dropdown-item" href="#"><strong><i
+                                        class="bi bi-box-arrow-right"></i> Logout</strong></a>
                         </li>
-                        <li><a *ngIf="!isAuthenticated" class="dropdown-item" href="/login"><strong><i class="bi bi-box-arrow-in-right"></i> Login</strong></a>
+                        <li><a *ngIf="!isAuthenticated" class="dropdown-item" href="/login"><strong><i
+                                        class="bi bi-box-arrow-in-right"></i> Login</strong></a>
                         </li>
                     </ul>
                 </li>
@@ -38,9 +40,17 @@
                         <img src="retro_logo.png" alt="Home" width="50" height="50">
                     </a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="/cart">Cart</a>
+                <li class="nav-item position-relative">
+                    <a class="nav-link active d-flex align-items-center" aria-current="page" href="/cart">
+                        Cart
+                        <span *ngIf="totalItems > 0"
+                            class="position-absolute top-10 start-100 translate-middle badge rounded-pill bg-danger"
+                            style="font-size: 0.50rem;">
+                            {{ totalItems }}
+                        </span>
+                    </a>
                 </li>
+
                 <li class="nav-item">
                     <a class="nav-link active" aria-current="page" href="/blog">Blog</a>
                 </li>

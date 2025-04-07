@@ -1,33 +1,33 @@
-<div id="hatterek" *ngIf="products.length > 0" class="product-list-container">
-    <h3 class="product-list-header">Kiválasztott termékek</h3>
+<div *ngIf="cartItems.length > 0" class="product-list-container">
+    <h3 class="product-list-header">🛍️ Kiválasztott termékek</h3>
 
-    <!-- Termékek listája -->
-    <div *ngFor="let product of products" class="product-item">
-        <span>{{ product.name }} - {{ product.price }} Ft x {{ product.quantity }}</span>
+    <div *ngFor="let item of cartItems"
+        class="product-item d-flex justify-content-between align-items-center my-2 border-bottom pb-2">
+        <div>
+            <strong>{{ item.name }}</strong><br />
+            {{ item.price | number:'1.0-0' }} Ft x {{ item.quantity }}
+        </div>
 
-        <!-- Mennyiség növelése/csökkentése -->
-        <button class="product-button" (click)="increaseQuantity(product)">+</button>
-        <button class="product-button" (click)="decreaseQuantity(product)">-</button>
-
-        <!-- Termék törlése -->
-        <button class="product-button" (click)="removeProduct(product)">Törlés</button>
+        <div class="btn-group">
+            <button class="btn btn-sm btn-outline-secondary" (click)="decreaseQuantity(item)">-</button>
+            <button class="btn btn-sm btn-outline-secondary" (click)="increaseQuantity(item)">+</button>
+            <button class="btn btn-sm btn-outline-danger" (click)="removeProduct(item)">🗑️</button>
+        </div>
     </div>
 
-    <!-- Bruttó és nettó összegek, szállítási díj -->
-    <div>
-        <strong>Nettó összeg: {{ netTotal }} Ft</strong>
-    </div>
-    <div>
-        <strong>Bruttó összeg (27% ÁFA): {{ grossTotal.toFixed(2) }} Ft</strong>
-    </div>
-    <div>
-        <strong>Szállítási díj: {{ shippingFee }} Ft</strong>
-    </div>
-    <div>
-        <strong>Teljes végösszeg: {{ totalAmount.toFixed(2) }} Ft</strong>
+    <div class="mt-4">
+        <p><strong>Nettó összeg:</strong> {{ netTotal | number:'1.0-0' }} Ft</p>
+        <p><strong>Bruttó (27% ÁFA):</strong> {{ grossTotal | number:'1.0-0' }} Ft</p>
+        <p><strong>Szállítási díj:</strong> {{ shippingFee | number:'1.0-0' }} Ft</p>
+        <hr />
+        <p class="fs-5"><strong>💰 Végösszeg:</strong> {{ totalAmount | number:'1.0-0' }} Ft</p>
     </div>
 </div>
+<div class="mt-4 d-flex gap-3" *ngIf="cartItems.length > 0">
+    <button class="btn btn-danger" (click)="clearCart()">Kosár ürítése</button>
+    <button class="btn btn-success" (click)="checkout()">Tovább a fizetéshez</button>
+</div>
 
-<div *ngIf="products.length === 0">
-    <p>Nincsenek termékek a kosárban.</p>
+<div *ngIf="cartItems.length === 0" class="alert alert-warning mt-3">
+    A kosár üres.
 </div>
