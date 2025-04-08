@@ -27,4 +27,40 @@ export class ProductService {
       })
     );
   }
+
+  getProductById(id: number): Observable<Product> {
+    return this.http.get<Product>(`${this.baseUrl}/getProduct/?id=${id}`).pipe(
+      catchError((error) => {
+        console.error('Termék lekérése sikertelen:', error);
+        return throwError(() => new Error('Hiba történt a termék lekérésekor.'));
+      })
+    );
+  }
+
+  createProduct(product: Product): Observable<Product> {
+    return this.http.post<Product>(`${this.baseUrl}/createProduct`, product).pipe(
+      catchError((error) => {
+        console.error('Termék létrehozása sikertelen:', error);
+        return throwError(() => new Error('Hiba történt a termék létrehozásakor.'));
+      })
+    );
+  }
+
+  updateProduct(id: number, product: Product): Observable<Product> {
+    return this.http.put<Product>(`${this.baseUrl}/updateProduct`, product).pipe(
+      catchError((error) => {
+        console.error('Termék frissítése sikertelen:', error);
+        return throwError(() => new Error('Hiba történt a termék frissítésekor.'));
+      })
+    );
+  }
+
+  deleteProduct(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.baseUrl}/deleteProduct/?id=${id}`).pipe(
+      catchError((error) => {
+        console.error('Termék törlése sikertelen:', error);
+        return throwError(() => new Error('Hiba történt a termék törlésekor.'));
+      })
+    );
+  }
 }

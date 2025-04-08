@@ -4,6 +4,7 @@ import { LoginService } from '../../services/login.service';
 import { CommonModule } from '@angular/common';
 import { DarkModeService } from '../../services/dark-mode.service';
 import e from 'express';
+import { MessageService } from '../../services/message.service';
 
 @Component({
   selector: 'app-nav-bar',
@@ -15,8 +16,9 @@ export class NavBarComponent {
   isAuthenticated = false;
   navIsAdmin = false;
   cartItems: any[] = [];
+  messageCount: number = 0;
 
-  constructor(private loginService: LoginService, public darkModeService: DarkModeService) {
+  constructor(private loginService: LoginService, public darkModeService: DarkModeService, private messageService: MessageService) {
     this.navIsAdmin = this.loginService.getIsAdmin();
     this.loginService.authenticated$.subscribe(auth => {
       this.isAuthenticated = auth;
@@ -33,10 +35,10 @@ export class NavBarComponent {
     return cart.reduce((sum, item) => sum + (item.quantity || 1), 0);
   }
 
-
   onLogOut(): void {
     this.loginService.logOut();
     window.location.href = '/login';
+    
   }
 
   toggleTheme(): void {

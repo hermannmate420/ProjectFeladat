@@ -2,6 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { UserService } from '../../services/user.service';
 import { ApexNonAxisChartSeries, ApexChart, ApexResponsive, ApexLegend, ApexOptions, NgApexchartsModule } from 'ng-apexcharts';
 import { CommonModule } from '@angular/common';
+import { Title } from '@angular/platform-browser';
+import { ProductService } from '../../services/product.service';
+import { Product } from '../../models/product.model';
+import { MessageService } from '../../services/message.service';
 
 @Component({
   selector: 'app-admin-analytics',
@@ -11,6 +15,9 @@ import { CommonModule } from '@angular/common';
 })
 export class AdminAnalyticsComponent implements OnInit {
   users: any[] = [];
+  products: any[] = [];
+  productCount = 0;
+  totalStock = 0;
   chartOptions: Partial<ApexOptions> = {};
   topUsers = [
     { fullName: 'John Doe', email: 'john@example.com', orders: 17 },
@@ -34,9 +41,9 @@ export class AdminAnalyticsComponent implements OnInit {
     { user: 'Admin', action: 'reactivated user #37.', time: 'Yesterday' }
   ];
   inventoryStats = {
-    available: 312,
-    low: 25,
-    out: 8
+    available: 235,
+    low: 8,
+    out: 2
   };
   supportTickets = {
     open: 14,
@@ -45,7 +52,9 @@ export class AdminAnalyticsComponent implements OnInit {
   };
   monthlySignupCount = 0;
 
-  constructor(private userService: UserService) { }
+  constructor(private userService: UserService, private titleService: Title, private productService: ProductService, private messageService: MessageService) {
+    titleService.setTitle("Admin | Analytics");
+  }
 
   ngOnInit(): void {
     this.userService.getAllUsers().subscribe({
@@ -56,7 +65,7 @@ export class AdminAnalyticsComponent implements OnInit {
         const monthlyCounts = this.getUserRegistrationsPerMonth(this.users);
         const currentMonthIndex = new Date().getMonth();
         this.monthlySignupCount = monthlyCounts[currentMonthIndex];
-    
+
         this.chartOptionss = {
           ...this.chartOptionss,
           series: [{ name: 'Users', data: monthlyCounts }]
@@ -66,6 +75,35 @@ export class AdminAnalyticsComponent implements OnInit {
         console.error('User fetch error', err);
       }
     });
+    this.productService.getProducts().subscribe({
+      next: (res) => {
+        const products: Product[] = res || res;
+        console.log('Products:', products);
+        this.productCount = products.length;
+        this.totalStock = products.reduce((sum, p) => sum + (p.stockQuanty || 0), 0);
+
+        // 💡 Stock statisztikák
+        const available = products.filter(p => p.stockQuanty > 5).length;
+        const low = products.filter(p => p.stockQuanty > 0 && p.stockQuanty <= 5).length;
+        const out = products.filter(p => p.stockQuanty === 0).length;
+
+        this.inventoryStats = { available, low, out };
+      },
+      error: err => console.error('❌ Termékek betöltése sikertelen', err)
+    });
+    this.userService.getAllTicket().subscribe({
+      next: (tickets) => {
+        console.log('Tickets:', tickets);
+        const open = tickets.result.filter((t: { status: string; }) => t.status === 'Open').length;
+        const pending = tickets.result.filter((t: { status: string; }) => t.status === 'Pending').length;
+        const resolved = tickets.result.filter((t: { status: string; }) => t.status === 'Resolved').length;
+    
+        this.supportTickets = { open, pending, resolved };
+      },
+      error: err => console.error('❌ Ticket betöltési hiba:', err)
+    });
+    
+
   }
 
   prepareDonutChart(users: any[]) {
@@ -124,8 +162,9 @@ export class AdminAnalyticsComponent implements OnInit {
 
     users.forEach((user, i) => {
       const raw = user.createdAt;
-      const cleaned = raw.replace('CET', 'GMT'); // vagy akár 'CET' -> '+0100' ha pontosabb kell
-
+      const cleaned = raw
+        .replace('CET', 'GMT') // vagy akár 'CET' -> '+0100' ha pontosabb kell
+        .replace('CEST', 'GMT');
       const parsed = Date.parse(cleaned);
       if (!isNaN(parsed)) {
         const date = new Date(parsed);
@@ -165,5 +204,5 @@ export class AdminAnalyticsComponent implements OnInit {
       }
     ]
   };
-  
+
 }

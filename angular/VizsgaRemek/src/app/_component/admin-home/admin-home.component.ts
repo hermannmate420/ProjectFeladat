@@ -5,6 +5,7 @@ import { RouterModule } from '@angular/router';
 import { NgApexchartsModule, ApexChart, ApexXAxis, ApexOptions, ApexDataLabels, ApexTitleSubtitle, ApexAxisChartSeries } from 'ng-apexcharts';
 import { ProductService } from '../../services/product.service';
 import { Product } from '../../models/product.model';
+import { Title } from '@angular/platform-browser';
 
 
 @Component({
@@ -26,7 +27,9 @@ export class AdminHomeComponent implements OnInit {
 
 
 
-  constructor(private userService: UserService, private productService: ProductService) { }
+  constructor(private userService: UserService, private productService: ProductService, private titleService: Title) { 
+    titleService.setTitle("Admin | home");
+  }
 
   ngOnInit(): void {
     this.userService.getAllUsers().subscribe({
