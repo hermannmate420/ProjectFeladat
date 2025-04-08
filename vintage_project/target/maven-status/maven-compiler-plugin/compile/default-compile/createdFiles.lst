@@ -4,6 +4,7 @@ com\maven\vintage_project\controller\ApplicationConfig.class
 com\maven\vintage_project\model\Ticket.class
 com\maven\vintage_project\service\MessageService$2.class
 com\maven\vintage_project\controller\ProductController.class
+.netbeans_automatic_build
 com\maven\vintage_project\config\GenerateKey.class
 com\maven\vintage_project\controller\UserController.class
 com\maven\vintage_project\model\User.class
