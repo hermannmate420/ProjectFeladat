@@ -4,32 +4,30 @@
  */
 package com.maven.vintage_project.service;
 
-import com.maven.vintage_project.model.Products;
+import com.maven.vintage_project.model.Category;
 import java.io.File;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
+import java.util.Date;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import javax.persistence.EntityManager;
-import javax.persistence.Persistence;
-import javax.persistence.TypedQuery;
-import net.coobird.thumbnailator.Thumbnails;
 import org.jboss.resteasy.plugins.providers.multipart.InputPart;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import com.maven.vintage_project.model.Products;
+import java.text.SimpleDateFormat;
 
 public class ProductService {
 
-    private EntityManager em = Persistence.createEntityManagerFactory("com.maven_vintage_project_war_1.0-SNAPSHOTPU").createEntityManager();
     private static final String UPLOAD_DIR = "C:\\wildfly\\standalone\\deployments\\uploads\\products\\";
+    private final Products model = new Products();
 
-    public JSONObject getProductById(Integer id) {
+
+    /*public JSONObject getProductById(Integer id) {
         JSONObject response = new JSONObject();
         try {
-            Products product = em.find(Products.class, id);
+            Products product = pf.find(Products.class, id);
             if (product == null) {
                 response.put("status", "ProductNotFound").put("statusCode", 404);
                 return response;
@@ -41,85 +39,153 @@ public class ProductService {
             response.put("status", "Error").put("statusCode", 500).put("error", e.getMessage());
         }
         return response;
+    }*/
+    private String formatDate(Date date) {
+        if (date == null) {
+            return null;
+        }
+        return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(date);
+    }
+
+    public JSONObject createProduct(Products p, boolean isAdmin, MultipartFormDataInput input) {
+        JSONObject response = new JSONObject();
+        File savedFile = null;
+        String filename = null;
+
+        if (!isAdmin) {
+            return response.put("success", false).put("message", "Nincs jogosultság a művelethez.");
+        }
+
+        try {
+            // Slug generálása, ha nincs megadva
+            if (p.getSlug() == null || p.getSlug().isEmpty()) {
+                String slug = p.getName()
+                        .toLowerCase()
+                        .replaceAll("[^a-z0-9]+", "-")
+                        .replaceAll("^-|-$", "");
+                p.setSlug(slug);
+            }
+
+            // Meta title generálása, ha nincs megadva
+            if (p.getMetaTitle() == null || p.getMetaTitle().isEmpty()) {
+                p.setMetaTitle("Vásárolható termék: " + p.getName());
+            }
+
+            // Képfeltöltés kezelése
+            List<InputPart> fileParts = input.getFormDataMap().get("file");
+            if (fileParts != null && !fileParts.isEmpty()) {
+                InputPart filePart = fileParts.get(0);
+                InputStream inputStream = filePart.getBody(InputStream.class, null);
+
+                // Fájlnév kinyerése
+                String disposition = filePart.getHeaders().getFirst("Content-Disposition");
+                String originalFilename = disposition.replaceAll(".*filename=\"([^\"]+)\".*", "$1");
+                String extension = originalFilename.substring(originalFilename.lastIndexOf('.') + 1).toLowerCase();
+
+                if (!extension.matches("jpg|jpeg|png")) {
+                    return response.put("success", false).put("message", "Nem támogatott fájltípus.");
+                }
+
+                filename = "product_" + System.currentTimeMillis() + "." + extension;
+                File dir = new File(UPLOAD_DIR);
+                if (!dir.exists()) {
+                    dir.mkdirs();
+                }
+
+                savedFile = new File(dir, filename);
+                Files.copy(inputStream, savedFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+
+                p.setImageUrl("/uploads/products/" + filename);
+            } else {
+                p.setImageUrl("/uploads/products/default.jpg");
+            }
+
+            // Termék mentése model rétegen keresztül
+            boolean result = model.createProduct(p);
+
+            if (!result && savedFile != null && savedFile.exists()) {
+                savedFile.delete(); //Törlés, ha sikertelen a mentés
+            }
+
+            return response.put("success", result)
+                    .put("message", result ? "Termék sikeresen létrehozva." : "Mentés sikertelen.");
+
+        } catch (Exception e) {
+            if (savedFile != null && savedFile.exists()) {
+                savedFile.delete();
+            }
+            e.printStackTrace();
+            return response.put("success", false)
+                    .put("message", "Hiba történt a termék létrehozásakor: " + e.getMessage());
+        }
     }
 
     public JSONObject getAllProducts() {
         JSONObject response = new JSONObject();
-        try {
-            TypedQuery<Products> query = em.createQuery("SELECT p FROM Products p", Products.class);
-            List<Products> products = query.getResultList();
-            JSONArray array = new JSONArray();
+        JSONArray productsArray = new JSONArray();
 
-            for (Products p : products) {
-                array.put(buildProductJson(p));
+        try {
+            List<Products> productList = model.getAllProducts();
+
+            if (productList == null || productList.isEmpty()) {
+                response.put("success", false).put("message", "Nincs elérhető termék.");
+                return response;
             }
 
-            response.put("status", "success").put("statusCode", 200).put("result", array);
+            for (Products p : productList) {
+                if (p.getDeletedAt() != null) {
+                    continue; // skip soft-deleted
+                }
+                JSONObject productJson = new JSONObject();
+                productJson.put("id", p.getProductId());
+                productJson.put("name", p.getName());
+                productJson.put("slug", p.getSlug());
+                productJson.put("metaTitle", p.getMetaTitle());
+                productJson.put("description", p.getDescription());
+                productJson.put("price", p.getPrice());
+                productJson.put("discountPrice", p.getDiscountPrice());
+                productJson.put("stockQuanty", p.getStockQuanty());
+                productJson.put("status", p.getStatus());
+                productJson.put("imageUrl", p.getImageUrl());
+                productJson.put("createdAt", formatDate(p.getCreatedAt()));
+                productJson.put("updatedAt", formatDate(p.getUpdatedAt()));
+                productJson.put("categoryId", p.getCategory() != null ? p.getCategory().getId() : null);
+
+                productsArray.put(productJson);
+            }
+
+            response.put("success", true);
+            response.put("products", productsArray);
+            response.put("count", productsArray.length());
+
         } catch (Exception e) {
-            response.put("status", "Error").put("statusCode", 500).put("error", e.getMessage());
+            e.printStackTrace();
+            response.put("success", false).put("message", "Hiba a lekérdezés során: " + e.getMessage());
         }
+
         return response;
     }
 
-    public JSONObject addProductWithImage(Products product, MultipartFormDataInput input) {
-        JSONObject response = new JSONObject();
+    public JSONObject getProductById(Integer id, boolean isAdmin) {
+        JSONObject toReturn = new JSONObject();
+        String status = "success";
+        int statusCode = 200;
 
-        try {
-            File uploadDir = new File(UPLOAD_DIR);
-            if (!uploadDir.exists()) {
-                uploadDir.mkdirs();
-            }
+        Products modelResult = new Products(id);  // Ezzel betöltjük a terméket
+        System.out.println("id" + modelResult.getProductId() + " " + modelResult.getName());
 
-            // Kép feldolgozása
-            List<InputPart> fileParts = input.getFormDataMap().get("file");
-            if (fileParts == null || fileParts.isEmpty()) {
-                response.put("status", "NoFileUploaded").put("statusCode", 400);
-                return response;
-            }
-
-            InputPart filePart = fileParts.get(0);
-            InputStream fileInputStream = filePart.getBody(InputStream.class, null);
-
-            // Fájlnév kinyerése
-            String contentDisposition = filePart.getHeaders().getFirst("Content-Disposition");
-            Pattern pattern = Pattern.compile("filename=\"([^\"]+)\"");
-            Matcher matcher = pattern.matcher(contentDisposition);
-            String originalFilename = matcher.find() ? matcher.group(1) : "product.jpg";
-            String extension = originalFilename.substring(originalFilename.lastIndexOf('.') + 1).toLowerCase();
-
-            if (!extension.matches("jpg|jpeg|png")) {
-                response.put("status", "UnsupportedFileType").put("statusCode", 415);
-                return response;
-            }
-
-            String filename = "product_" + System.currentTimeMillis() + "." + extension;
-            File targetFile = new File(UPLOAD_DIR + filename);
-
-            Files.copy(fileInputStream, targetFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
-
-            // Átméretezés
-            Thumbnails.of(targetFile)
-                    .size(500, 500)
-                    .outputFormat(extension)
-                    .toFile(targetFile);
-
-            // Termék mentése
-            product.setProductPicture("/webresources/product/uploads/products/" + filename);
-
-            em.getTransaction().begin();
-            em.persist(product);
-            em.getTransaction().commit();
-
-            response.put("status", "success").put("statusCode", 201).put("message", "Product added successfully");
-
-        } catch (Exception e) {
-            if (em.getTransaction().isActive()) {
-                em.getTransaction().rollback();
-            }
-            response.put("status", "Error").put("statusCode", 500).put("error", e.getMessage());
+        // Ha nem admin, csak az 'active' termékeket látja
+        if (!isAdmin && !"active".equalsIgnoreCase(modelResult.getStatus())) {
+            status = "ProductNotFound";
+            statusCode = 417;
+        } else {
+            JSONObject productJson = buildProductJson(modelResult);
+            toReturn.put("result", productJson);
         }
 
-        return response;
+        toReturn.put("status", status);
+        toReturn.put("statusCode", statusCode);
+        return toReturn;
     }
 
     private JSONObject buildProductJson(Products product) {
@@ -129,13 +195,55 @@ public class ProductService {
         obj.put("description", product.getDescription());
         obj.put("price", product.getPrice());
         obj.put("stockQuanty", product.getStockQuanty());
-        obj.put("productPicture", product.getProductPicture());
+        obj.put("productPicture", product.getImageUrl());
 
-        JSONObject categoryObj = new JSONObject();
-        categoryObj.put("id", product.getCategory().getId());
-        categoryObj.put("name", product.getCategory().getName());
+        if (product.getCategory() != null) {
+            JSONObject categoryObj = new JSONObject();
+            categoryObj.put("id", product.getCategory().getId());
+            // Ha a Category entitásban van nevét tartalmazó mező, például:
+            categoryObj.put("name", product.getCategory().getName());
+            obj.put("category", categoryObj);
+        } else {
+            obj.put("category", JSONObject.NULL);
+        }
 
-        obj.put("category", categoryObj);
+        obj.put("status", product.getStatus());
+        obj.put("createdAt", product.getCreatedAt());
+        obj.put("updatedAt", product.getUpdatedAt());
+        obj.put("deletedAt", product.getDeletedAt());
+
         return obj;
     }
+
+    public JSONObject updateProduct(Products p, boolean isAdmin) {
+        JSONObject response = new JSONObject();
+
+        if (!isAdmin) {
+            return response.put("success", false).put("message", "Nincs jogosultság.");
+        }
+
+        try {
+            // Slug generálása, ha hiányzik
+            if (p.getSlug() == null || p.getSlug().isEmpty()) {
+                String slug = p.getName().toLowerCase().replaceAll("[^a-z0-9]+", "-").replaceAll("^-|-$", "");
+                p.setSlug(slug);
+            }
+
+            // Meta title generálása, ha hiányzik
+            if (p.getMetaTitle() == null || p.getMetaTitle().isEmpty()) {
+                p.setMetaTitle("Vásárolható termék: " + p.getName());
+            }
+
+            boolean result = model.updateProduct(p);
+
+            return response.put("success", result)
+                    .put("message", result ? "Sikeres frissítés." : "Frissítés sikertelen.");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return response.put("success", false)
+                    .put("message", "Hiba frissítés közben: " + e.getMessage());
+        }
+    }
+
 }

@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Title } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-admin-newsletter',
@@ -7,5 +8,8 @@ import { Component } from '@angular/core';
   styleUrl: './admin-newsletter.component.css'
 })
 export class AdminNewsletterComponent {
+  constructor(private titleService: Title) {
+    titleService.setTitle("Admin | Newsletter");
+  }
 
 }

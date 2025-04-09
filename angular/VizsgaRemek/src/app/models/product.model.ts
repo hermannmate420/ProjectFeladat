@@ -4,12 +4,19 @@ export interface Category {
 }
 
 export interface Product {
-    productId: number;
+    id: number;
     name: string;
     description: string;
+    slug?: string;
+    metaTitle?: string;
     price: number;
+    discountPrice?: number;
     stockQuanty: number;
-    productPicture: string;
     categoryId: number;
+    status: 'active' | 'inactive';
+    createdAt: string;
     category: Category;
+    updatedAt?: string;
+    imageUrl?: string;
+    deletedAt?: string | null;
 }

@@ -55,6 +55,7 @@ export class ShopAllComponent implements OnInit {
       }
     });
   }
+  
 
   get paginatedProducts() {
     const start = (this.currentPage - 1) * this.productPerPage;
@@ -76,7 +77,7 @@ export class ShopAllComponent implements OnInit {
 
   addToCart(product: Product): void {
     const cart = JSON.parse(localStorage.getItem('cart') || '[]');
-    const existingProduct = cart.find((item: Product) => item.productId === product.productId);
+    const existingProduct = cart.find((item: Product) => item.id === product.id);
     if (existingProduct) {
       existingProduct.quantity += 1;
     } else {

@@ -117,7 +117,28 @@ export class UserService {
 
     return this.http.get('http://127.0.0.1:8080/vintage_project-1.0-SNAPSHOT/webresources/ticket/getAllTickets', { headers });
   }
+  
+  deleteTicket(ticketId: number): Observable<any> {
+    const token = localStorage.getItem('token') || '';
+    const headers = new HttpHeaders({
+      'token': token
+    });
 
+    return this.http.delete(`http://127.0.0.1:8080/vintage_project-1.0-SNAPSHOT/webresources/ticket/deleteTicket/?ticketId=${ticketId}`, { headers });
+  }
+
+  createTicket(userId: number, body: string): Observable<any> {
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+    });
+    const ticket = {
+      userId: userId,
+      ticketBody: body,
+      status: 'Open',
+    };
+
+    return this.http.post('http://127.0.0.1:8080/vintage_project-1.0-SNAPSHOT/webresources/ticket/addTicket', ticket, { headers });
+  }
 
 
 }

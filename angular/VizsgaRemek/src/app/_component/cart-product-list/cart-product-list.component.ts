@@ -41,20 +41,27 @@ export class CartProductListComponent implements OnInit {
     cartItems.quantity++;
   }
 
-  decreaseQuantity(cartItems: any) {
-    if (cartItems.quantity > 1) {
-      cartItems.quantity--;
+  decreaseQuantity(item: any): void {
+    if (item.quantity > 1) {
+      item.quantity--;
+    } else {
+      this.removeProduct(item); // ha már csak 1 volt, csökkentés után törlés
+    }
+    this.saveCart(); // mindig mentsük el az új állapotot
+  }
+
+  removeProduct(product: any): void {
+    const index = this.cartItems.findIndex(p => p.productId === product.productId);
+    if (index !== -1) {
+      this.cartItems.splice(index, 1);
+      this.saveCart(); // módosítás után mindig frissítsük a localStorage-t
     }
   }
 
-  // Termék törlése
-  removeProduct(product: any) {
-    const index = this.cartItems.indexOf(product);
-    if (index !== -1) {
-      this.cartItems.splice(index, 1);
-    }
+  saveCart(): void {
+    localStorage.setItem('cart', JSON.stringify(this.cartItems));
   }
-  
+
   clearCart(): void {
     localStorage.removeItem('cart');
     this.cartItems = [];

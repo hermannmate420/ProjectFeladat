@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Title } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-admin-product-categories',
@@ -7,5 +8,7 @@ import { Component } from '@angular/core';
   styleUrl: './admin-product-categories.component.css'
 })
 export class AdminProductCategoriesComponent {
-
+  constructor(private titleService: Title) {
+    titleService.setTitle("Admin | Product Categories");
+  }
 }

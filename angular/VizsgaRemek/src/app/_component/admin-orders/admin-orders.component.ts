@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Title } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-admin-orders',
@@ -7,5 +8,7 @@ import { Component } from '@angular/core';
   styleUrl: './admin-orders.component.css'
 })
 export class AdminOrdersComponent {
-
+  constructor(private titleService: Title) {
+    titleService.setTitle("Admin | Orders");
+  }
 }

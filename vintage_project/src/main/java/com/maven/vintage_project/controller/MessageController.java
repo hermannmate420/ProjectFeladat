@@ -81,4 +81,40 @@ public class MessageController {
                 .entity(result.toString())
                 .build();
     }
+
+    // POST endpoint reply email küldéséhez
+    // JSON input példa:
+    // {
+    //   "to": "user@example.com",
+    //   "originalMessage": "Eredeti ticket szöveg",
+    //   "replyBody": "Kedves Ügyfél, itt a válasz...",
+    //   "adminName": "Admin Neve",
+    //   "ticketLink": "http://localhost:4200/ticket/123"
+    // }
+    @POST
+    @Path("/reply")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response sendReplyEmail(String bodyString) {
+        try {
+            JSONObject body = new JSONObject(bodyString);
+            String to = body.getString("to");
+            String originalMessage = body.getString("originalMessage");
+            String replyBody = body.getString("replyBody");
+            String adminName = body.getString("adminName");
+            String ticketLink = body.optString("ticketLink", "");  // Opcionális
+
+            JSONObject result = messageService.sendMessageReplyEmail(to, originalMessage, replyBody, adminName, ticketLink);
+            return Response.status(result.optInt("status", 500))
+                    .entity(result.toString())
+                    .build();
+        } catch (Exception e) {
+            e.printStackTrace();
+            JSONObject error = new JSONObject();
+            error.put("status", "BadRequest");
+            error.put("statusCode", 400);
+            error.put("error", e.getMessage());
+            return Response.status(400).entity(error.toString()).build();
+        }
+    }
 }

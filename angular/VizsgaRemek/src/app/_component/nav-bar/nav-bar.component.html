@@ -8,7 +8,16 @@
             <ul class="navbar-nav mx-auto">
                 <li class="nav-item">
                     @if (navIsAdmin) {
-                <li><a class="nav-link active text-danger" href="/admin"><strong>Admin</strong></a></li>
+                <li class="nav-item position-relative">
+                    <a class="nav-link active text-danger d-flex align-items-center" href="/admin">
+                        <strong>Admin</strong>
+                        <span *ngIf="messageCount > 0"
+                            class="position-absolute top-5 start-100 translate-middle badge rounded-pill bg-danger"
+                            style="font-size: 0.6rem;">
+                            {{ messageCount }}
+                        </span>
+                    </a>
+                </li>
                 }@else{
 
                 }

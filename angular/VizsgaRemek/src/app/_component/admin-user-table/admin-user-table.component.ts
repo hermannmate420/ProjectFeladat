@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { UserService } from '../../services/user.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Title } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-admin-user-table',
@@ -37,7 +38,9 @@ export class AdminUserTableComponent implements OnInit {
   showToast: boolean = false;
   showOverlay: boolean = true;
 
-  constructor(private userService: UserService) { }
+  constructor(private userService: UserService, private titleService: Title) {
+    titleService.setTitle("Admin | User Table");
+  }
 
   ngOnInit(): void {
     this.userService.getAllUsers().subscribe({
