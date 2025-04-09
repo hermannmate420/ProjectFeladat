@@ -1,0 +1,311 @@
+<div id="hatterek" class="container pb-5">
+    <br>
+
+    <div class="row">
+        <div class="col-10">
+            <h2>Edit user</h2>
+        </div>
+    </div>
+
+    <div *ngIf="error" class="alert alert-danger">{{ error }}</div>
+    <br>
+
+    <!-- Felhasználó kiválasztása direkt szerkesztéshez -->
+    <div class="row mb-4 align-items-end">
+        <div class="col-md-6">
+            <label for="userSelect" class="form-label">Select a user to edit directly</label>
+            <select class="form-select" id="userSelect" [(ngModel)]="selectedUserId" (change)="onSelectUser()">
+                <option value="">-- Select user --</option>
+                <option *ngFor="let u of users" [value]="u.id">{{ u.lastName }} {{ u.firstName }} ({{ u.id }})</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- Szerkesztő box -->
+    <div *ngIf="selectedUser" class="card mb-4 shadow p-4 position-relative" [class.opacity-50]="selectedUser.isDeleted">
+        <!-- Overlay csak ha törölt -->
+        <div *ngIf="selectedUser.isDeleted && showOverlay"
+            class="overlay-message position-absolute top-0 start-0 w-100 h-100 bg-white bg-opacity-75 d-flex flex-column justify-content-center align-items-center text-center p-4">
+            <span class="text-danger fs-5 fw-bold mb-3">❌ This user has been deleted!</span>
+            <button class="btn btn-outline-dark btn-sm" (click)="showOverlay = false">Close</button>
+        </div>
+
+        <h4>Edit selected user (ID: {{ selectedUser.id }})</h4>
+        <div class="row g-3">
+            <div class="col-md-4">
+                <label>Username</label>
+                <input [(ngModel)]="selectedUser.username" type="text" class="form-control"
+                    [disabled]="selectedUser.isDeleted">
+            </div>
+            <div class="col-md-4">
+                <label>Email</label>
+                <input [(ngModel)]="selectedUser.email" type="email" class="form-control"
+                    [disabled]="selectedUser.isDeleted">
+            </div>
+            <div class="col-md-4">
+                <label>First name</label>
+                <input [(ngModel)]="selectedUser.firstName" type="text" class="form-control"
+                    [disabled]="selectedUser.isDeleted">
+            </div>
+            <div class="col-md-4">
+                <label>Last name</label>
+                <input [(ngModel)]="selectedUser.lastName" type="text" class="form-control"
+                    [disabled]="selectedUser.isDeleted">
+            </div>
+            <div class="col-md-4">
+                <label>Phone</label>
+                <input [(ngModel)]="selectedUser.phoneNumber" type="tel" class="form-control"
+                    [disabled]="selectedUser.isDeleted">
+            </div>
+            <div class="col-md-4">
+                <label>Admin?</label>
+                <select [(ngModel)]="selectedUser.isAdmin" class="form-select" [disabled]="selectedUser.isDeleted">
+                    <option [ngValue]="true">✅</option>
+                    <option [ngValue]="false">❌</option>
+                </select>
+            </div>
+            <div class="text-end mt-2" *ngIf="selectedUser">
+                <button class="btn btn-danger" *ngIf="!selectedUser.isDeleted" (click)="deleteUser(selectedUser)">❌
+                    Delete</button>
+                <button class="btn btn-danger" *ngIf="selectedUser.isDeleted" (click)="reactivateUserById(selectedUser)">♻️
+                    Reactivate</button>
+            </div>
+            <div class="col-md-12 text-end">
+                <button class="btn btn-success mt-3" (click)="saveUser(selectedUser)"
+                    [disabled]="selectedUser.isDeleted">💾 Save</button>
+            </div>
+        </div>
+    </div>
+
+    <hr class="my-4">
+
+    <div class="row">
+        <div class="col-md-6">
+            <h2>List of users</h2>
+        </div>
+    </div>
+
+    <!-- Mini stats -->
+    <div class="row mb-4">
+        <div class="col-md-3" *ngIf="users.length">
+            <div class="card shadow-sm border-start border-primary border-4">
+                <div class="card-body text-center">
+                    <h6 class="text-muted">Total users</h6>
+                    <h4 class="fw-bold text-primary">{{ totalUsers }}</h4>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3" *ngIf="users.length">
+            <div class="card shadow-sm border-start border-success border-4">
+                <div class="card-body text-center">
+                    <h6 class="text-muted">Active users</h6>
+                    <h4 class="fw-bold text-success">{{ activeUsers }}</h4>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3" *ngIf="users.length">
+            <div class="card shadow-sm border-start border-danger border-4">
+                <div class="card-body text-center">
+                    <h6 class="text-muted">Deleted users</h6>
+                    <h4 class="fw-bold text-danger">{{ deletedUsers }}</h4>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3" *ngIf="users.length">
+            <div class="card shadow-sm border-start border-dark border-4">
+                <div class="card-body text-center">
+                    <h6 class="text-muted">Admins</h6>
+                    <h4 class="fw-bold text-dark">{{ adminUsers }}</h4>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Keresés -->
+    <div class="row my-3">
+        <label for="Search" class="text-muted form-label">Showing {{ filteredUsers.length }} result(s)</label>
+        <div class="col-md-6 d-flex justify-content-end gap-2">
+            <input type="text" id="Search" class="form-control" placeholder="Search by name, email, ID..."
+                [(ngModel)]="searchTerm" (ngModelChange)="currentPage = 1" />
+            <select class="form-select w-auto" [(ngModel)]="statusFilter" (change)="currentPage = 1">
+                <option value="all">📋 All</option>
+                <option value="active">✅ Active</option>
+                <option value="deleted">❌ Deleted</option>
+                <option value="admins">🛡️ Admins</option>
+            </select>
+        </div>
+        <div class="col-md-6 text-end d-flex justify-content-end gap-2">
+            <button class="btn btn-primary" (click)="editUsers()">
+                {{ isEdit ? 'Exit without save' : 'Edit users' }}
+            </button>
+        </div>
+    </div>
+
+    <!-- Table -->
+    <table *ngIf="users.length" class="table table-striped table-bordered mt-3">
+        <thead class="table-dark">
+            <tr>
+                <th>ID</th>
+                <th>Username</th>
+                <th>Email</th>
+                <th>First name</th>
+                <th>Last name</th>
+                <th>Phone number</th>
+                <th>Admin?</th>
+                <th *ngIf="!isEdit">Status</th>
+                <th *ngIf="isEdit">Delete</th>
+                <th *ngIf="isEdit">Save</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let user of paginatedUsers" [class.table-danger]="user.isDeleted"
+                [class.table-light]="!user.isDeleted" [class.disabled-row]="user.isDeleted"
+                [class.admin-row]="user.isAdmin" [ngClass]="{
+                    'table-danger': user.isDeleted,
+                    'table-warning': user.isAdmin && !user.isDeleted,
+                    'table-light': !user.isDeleted && !user.isAdmin}">
+                <ng-container *ngIf="!isEdit; else editMode">
+                    <td>{{ user.id }}</td>
+                    <td>{{ user.username }}<span *ngIf="user.isAdmin" class="admin-badge">🛡️ Admin</span></td>
+                    <td>{{ user.email }}</td>
+                    <td>{{ user.firstName }}</td>
+                    <td>{{ user.lastName }}</td>
+                    <td>{{ user.phoneNumber }}</td>
+                    <td>{{ user.isAdmin ? '✅' : '❌' }}</td>
+                    <td>
+                        <span class="badge d-inline-flex align-items-center gap-1" [ngClass]="{
+                                'bg-success text-white': !user.isDeleted,
+                                'bg-danger text-white': user.isDeleted
+                            }" [attr.title]="user.isDeleted ? 'User is soft-deleted' : 'User is active'">
+                            <i class="bi" [ngClass]="user.isDeleted ? 'bi-x-circle' : 'bi-check-circle'"></i>
+                            {{ user.isDeleted ? 'Deleted' : 'Active' }}
+                        </span>
+
+                    </td>
+
+
+                </ng-container>
+
+                <ng-template #editMode>
+                    <td>{{ user.id }}</td>
+                    <td><input [(ngModel)]="user.username" name="{username{user.id}}" type="text" class="form-control"
+                            [disabled]="user.isDeleted"></td>
+                    <td><input [(ngModel)]="user.email" name="email-{{user.id}}" type="email" class="form-control"
+                            [disabled]="user.isDeleted"></td>
+                    <td><input [(ngModel)]="user.firstName" name="firstName-{{user.id}}" type="text"
+                            class="form-control" [disabled]="user.isDeleted"></td>
+                    <td><input [(ngModel)]="user.lastName" name="lastName-{{user.id}}" type="text" class="form-control"
+                            [disabled]="user.isDeleted">
+                    </td>
+                    <td><input [(ngModel)]="user.phoneNumber" name="phoneNumber-{{user.id}}" type="tel"
+                            class="form-control" [disabled]="user.isDeleted"></td>
+                    <td>
+                        <select [(ngModel)]="user.isAdmin" name="isAdmin-{{user.id}}" class="form-select"
+                            [disabled]="user.isDeleted">
+                            <option [ngValue]="true">✅</option>
+                            <option [ngValue]="false">❌</option>
+                        </select>
+                    </td>
+                    <!-- Törlés gomb -->
+                    <td *ngIf="!user.isDeleted">
+                        <button class="btn btn-outline-danger btn-sm" (click)="deleteUser(user)">
+                            ❌ Delete
+                        </button>
+                    </td>
+                    <td *ngIf="user.isDeleted">
+                        <button class="btn btn-outline-warning btn-sm" (click)="reactivateUserById(user)">♻️
+                            Reactivate</button>
+                    </td>
+
+
+                    <td>
+                        <button class="btn btn-success btn-sm" (click)="saveUser(user)"
+                            [disabled]="user.isDeleted">Save</button>
+                    </td>
+                </ng-template>
+            </tr>
+        </tbody>
+    </table>
+
+    <nav *ngIf="totalPages > 1" class="mt-3">
+        <ul class="pagination justify-content-center">
+            <li class="page-item" [class.disabled]="currentPage === 1">
+                <button class="page-link" (click)="currentPage = currentPage - 1">Previous</button>
+            </li>
+            <li class="page-item" *ngFor="let page of [].constructor(totalPages); let i = index"
+                [class.active]="i + 1 === currentPage">
+                <button class="page-link" (click)="currentPage = i + 1">{{ i + 1 }}</button>
+            </li>
+            <li class="page-item" [class.disabled]="currentPage === totalPages">
+                <button class="page-link" (click)="currentPage = currentPage + 1">Next</button>
+            </li>
+        </ul>
+    </nav>
+
+    <div class="row mt-3">
+        <div class="col-md-6">
+            <label for="exportFilter">Export filter:</label>
+            <select id="exportFilter" class="form-select" [(ngModel)]="exportFilter">
+                <option value="all">All users</option>
+                <option value="active">Only active</option>
+                <option value="admin">Only admins</option>
+            </select>
+        </div>
+        <div class="col-md-6 text-end">
+            <label class="d-block invisible">.</label>
+            <button class="btn btn-outline-secondary" (click)="exportUsersToCSV()">📤 Export CSV</button>
+        </div>
+    </div>
+
+
+    <p *ngIf="!users.length && !error">No user.</p>
+
+    <hr class="my-4">
+    <div class="card p-4 shadow">
+        <h4 class="mb-3">➕ Register new admin</h4>
+        <div class="row g-3">
+            <div class="col-md-4">
+                <label>Username</label>
+                <input [(ngModel)]="newAdmin.username" class="form-control" placeholder="Username">
+            </div>
+            <div class="col-md-4">
+                <label>Email</label>
+                <input [(ngModel)]="newAdmin.email" class="form-control" type="email" placeholder="Email">
+            </div>
+            <div class="col-md-4">
+                <label>First name</label>
+                <input [(ngModel)]="newAdmin.firstName" class="form-control" placeholder="First name">
+            </div>
+            <div class="col-md-4">
+                <label>Last name</label>
+                <input [(ngModel)]="newAdmin.lastName" class="form-control" placeholder="Last name">
+            </div>
+            <div class="col-md-4">
+                <label>Phone number</label>
+                <input [(ngModel)]="newAdmin.phoneNumber" class="form-control" placeholder="Phone">
+            </div>
+            <div class="col-md-4">
+                <label>Password</label>
+                <input [(ngModel)]="newAdmin.password" class="form-control" type="password" placeholder="Password">
+            </div>
+            <div class="col-md-12 text-end">
+                <button class="btn btn-outline-success mt-3" (click)="registerNewAdmin()">👑 Register Admin</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 1050;" *ngIf="showToast">
+        <div class="toast align-items-center show text-white {{ toastColorClass }} border-0 shadow" role="alert">
+            <div class="d-flex">
+                <div class="toast-body">
+                    {{ toastMessage }}
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto"
+                    (click)="showToast = false"></button>
+            </div>
+        </div>
+    </div>
+
+
+</div>

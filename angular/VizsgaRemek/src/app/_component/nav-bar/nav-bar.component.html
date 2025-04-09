@@ -1,0 +1,78 @@
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container mx-auto">
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav mx-auto">
+                <li class="nav-item">
+                    @if (navIsAdmin) {
+                <li class="nav-item position-relative">
+                    <a class="nav-link active text-danger d-flex align-items-center" href="/admin">
+                        <strong>Admin</strong>
+                        <span *ngIf="messageCount > 0"
+                            class="position-absolute top-5 start-100 translate-middle badge rounded-pill bg-danger"
+                            style="font-size: 0.6rem;">
+                            {{ messageCount }}
+                        </span>
+                    </a>
+                </li>
+                }@else{
+
+                }
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                        aria-expanded="false">
+                        Profile
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="/profile">Profile</a></li>
+                        <li><a class="dropdown-item" href="/posts">My posts</a></li>
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+                        <li><a *ngIf="isAuthenticated" (click)="onLogOut()" class="dropdown-item" href="#"><strong><i
+                                        class="bi bi-box-arrow-right"></i> Logout</strong></a>
+                        </li>
+                        <li><a *ngIf="!isAuthenticated" class="dropdown-item" href="/login"><strong><i
+                                        class="bi bi-box-arrow-in-right"></i> Login</strong></a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="/shop">Shop</a>
+                </li>
+                <li class="nav-item">
+                    <a class="navbar-brand" href="/home">
+                        <img src="retro_logo.png" alt="Home" width="50" height="50">
+                    </a>
+                </li>
+                <li class="nav-item position-relative">
+                    <a class="nav-link active d-flex align-items-center" aria-current="page" href="/cart">
+                        Cart
+                        <span *ngIf="totalItems > 0"
+                            class="position-absolute top-10 start-100 translate-middle badge rounded-pill bg-danger"
+                            style="font-size: 0.50rem;">
+                            {{ totalItems }}
+                        </span>
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="/blog">Blog</a>
+                </li>
+                <form class="d-flex" role="search">
+                    <div class="input-group">
+                        <input class="form-control" type="search" placeholder="Search" aria-label="Search">
+                        <button class="btn btn-outline-dark" type="submit">Search</button>
+                    </div>
+                </form>
+            </ul>
+            <button (click)="toggleTheme()" class="btn btn-outline-secondary justify-content-md-end">
+                {{ darkModeService.isDarkMode() ? '🌞' : '🌙' }}
+            </button>
+        </div>
+    </div>
+</nav>
