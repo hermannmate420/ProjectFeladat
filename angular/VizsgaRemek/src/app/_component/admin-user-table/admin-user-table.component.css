@@ -1,0 +1,51 @@
+.disabled-row {
+    pointer-events: none;
+    opacity: 0.5;
+}
+
+tr.disabled-row button {
+    pointer-events: auto;
+    opacity: 1;
+}
+
+
+.overlay-message {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(255, 255, 255, 0.85);
+    z-index: 10;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 8px;
+}
+
+.overlay-text {
+    text-align: center;
+}
+
+.card h6 {
+    font-size: 0.9rem;
+}
+
+.card h4 {
+    margin: 0;
+}
+
+.admin-row {
+    background-color: #e8f0fe !important;
+    /* világoskék háttér */
+    font-weight: 500;
+}
+
+.admin-badge {
+    font-size: 0.9rem;
+    padding: 2px 6px;
+    background-color: #0d6efd;
+    color: white;
+    border-radius: 4px;
+    margin-left: 5px;
+}

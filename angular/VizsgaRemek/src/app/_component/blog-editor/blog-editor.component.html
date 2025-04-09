@@ -1,0 +1,45 @@
+<section class="container py-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="mb-0">📝 Blog</h2>
+        <button class="btn btn-outline-primary" (click)="toggleEditor()">
+            {{ showEditor ? '✖️ Close Editor' : '➕ Create a post' }}
+        </button>
+    </div>
+
+    <form *ngIf="showEditor" [formGroup]="blogForm" (ngSubmit)="onSubmit()" class="p-4 shadow rounded bg-white border">
+        <div class="mb-3">
+            <label class="form-label">Title *</label>
+            <input type="text" class="form-control" formControlName="title" placeholder="Post title...">
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Content *</label>
+            <textarea class="form-control" rows="5" formControlName="content"
+                placeholder="Write something..."></textarea>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Upload Image</label>
+            <input type="file" class="form-control" accept="image/*" (change)="onFileSelected($event)">
+        </div>
+
+        <div *ngIf="imagePreview" class="mb-3 text-center">
+            <p class="text-muted mb-2">Image preview:</p>
+            <img [src]="imagePreview" alt="Preview" class="img-fluid rounded shadow" style="max-height: 200px;">
+        </div>
+
+
+
+        <div class="mb-3">
+            <label class="form-label">Product ID (optional)</label>
+            <input type="number" class="form-control" formControlName="productId" placeholder="123...">
+        </div>
+
+        <div class="text-end">
+            <button class="btn btn-success" type="submit" [disabled]="blogForm.invalid">💾 Save</button>
+        </div>
+
+        <div *ngIf="successMessage" class="alert alert-success mt-3">{{ successMessage }}</div>
+        <div *ngIf="errorMessage" class="alert alert-danger mt-3">{{ errorMessage }}</div>
+    </form>
+</section>
