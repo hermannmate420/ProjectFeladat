@@ -81,8 +81,6 @@ export class AdminAnalyticsComponent implements OnInit {
         console.log('Products:', products);
         this.productCount = products.length;
         this.totalStock = products.reduce((sum, p) => sum + (p.stockQuanty || 0), 0);
-
-        // 💡 Stock statisztikák
         const available = products.filter(p => p.stockQuanty > 5).length;
         const low = products.filter(p => p.stockQuanty > 0 && p.stockQuanty <= 5).length;
         const out = products.filter(p => p.stockQuanty === 0).length;
@@ -135,7 +133,7 @@ export class AdminAnalyticsComponent implements OnInit {
     series: [
       {
         name: "Users",
-        data: new Array(12).fill(0)  // biztosan 12 elem, 0-s kezdéssel
+        data: new Array(12).fill(0)
       }
     ],
     chart: {
@@ -163,7 +161,7 @@ export class AdminAnalyticsComponent implements OnInit {
     users.forEach((user, i) => {
       const raw = user.createdAt;
       const cleaned = raw
-        .replace('CET', 'GMT') // vagy akár 'CET' -> '+0100' ha pontosabb kell
+        .replace('CET', 'GMT')
         .replace('CEST', 'GMT');
       const parsed = Date.parse(cleaned);
       if (!isNaN(parsed)) {
@@ -181,7 +179,7 @@ export class AdminAnalyticsComponent implements OnInit {
   }
 
   public salesChartOptions: Partial<ApexOptions> = {
-    series: [70, 20, 10], // Tesztadat: Paid, Pending, Refunded
+    series: [70, 20, 10],
     chart: {
       type: 'pie',
       height: 300

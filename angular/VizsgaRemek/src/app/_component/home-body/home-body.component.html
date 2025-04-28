@@ -5,13 +5,15 @@
             <section>
                 <div class="parallax-one text-center text-light text-uppercase">
                     <a id="top"></a>
-                    <div id="hgh">
+                    <div id="hgh" style="background-color: rgba(83, 80, 80, 0.5);">
                         <img class="p-2 logo" src="retro_logo.png" alt="logo" width="100" height="100">
                         <h2>Retro Vintage Shop</h2>
                         <p>
-                            Lorem ipsum dolor, sit amet consectetur adipisicing elit. Enim dolore autem cum blanditiis
-                            tempore delectus quisquam nemo vitae, fuga debitis explicabo omnis quis quaerat magni iste
-                            assumenda facilis eos recusandae?
+                            <strong>Hungary's Best Retro & Vintage Marketplace</strong><br>
+                            Discover unique vintage treasures, timeless retro pieces, and join a passionate community of
+                            collectors and enthusiasts. <br>
+                            Explore our curated blog for style inspiration, and connect with fellow vintage lovers
+                            through our vibrant community!
                         </p>
                     </div>
                 </div>
@@ -50,13 +52,10 @@
             <section>
                 <div class="parallax-two">
                     <div class="hhg">
-                        <h2 class="featurette-heading">Lorem ipsum dolor, sit amet consectetur adipisicing elit.
-                            <span class="text-muted">Enim dolore autem cum.</span>
-                        </h2>
-                        <p class="lead"><strong><strong>Lorem ipsum dolor sit amet consectetur adipisicing elit. Eos,
-                                    qui quisquam. Accusantium deserunt impedit dolorem fuga velit laborum neque dolorum
-                                    repellat dignissimos voluptates aspernatur ad aut error, nam, consequatur
-                                    eius.</strong></strong></p>
+                        <h2 class="featurette-heading">Vintage is not just fashion. <span class="text-muted">It's a
+                                lifestyle.</span></h2>
+                        <p class="lead"><strong>Discover timeless treasures and join a community where every item has a
+                                story. Shop with passion. Collect with purpose.</strong></p>
                     </div>
                 </div>
             </section>
@@ -64,21 +63,26 @@
 
         <hr class="featurette-divider">
 
-        <div class="row featurette pt-5">
+        <div class="row featurette pt-5" *ngIf="latestBlogPost">
             <section>
-                <div class="parallax-three order-md-2">
+                <div class="order-md-2 text-center">
+
                     <div class="hhgh">
-                        <h2 class="featurette-heading">Lorem ipsum dolor, sit amet consectetur adipisicing elit.
-                            <span class="text-muted">Enim dolore autem cum.</span>
+                        <h4>Latest Blog post</h4>
+                        <h2 class="featurette-heading">
+                            {{ latestBlogPost.title }}
+                            <span class="text-muted">by {{ latestBlogPost.author }}</span>
                         </h2>
-                        <p class="lead"><strong><strong>Lorem ipsum dolor sit amet consectetur adipisicing elit. Eos,
-                                    qui quisquam. Accusantium deserunt impedit dolorem fuga velit laborum neque dolorum
-                                    repellat dignissimos voluptates aspernatur ad aut error, nam, consequatur
-                                    eius.</strong></strong></p>
+                        <p class="lead"><strong>{{ latestBlogPost.content | slice:0:200 }}...</strong></p>
+
+                        <a [routerLink]="['/blog']" class="btn btn-outline-light mt-3">
+                            📖 Read More
+                        </a>
                     </div>
                 </div>
             </section>
         </div>
+
 
         <hr class="featurette-divider">
 
@@ -90,7 +94,8 @@
                         <div class="row justify-content-center">
                             <div class="col-md-4" *ngFor="let product of chunk">
                                 <div class="card h-100 shadow-sm">
-                                    <img src="retro_logo.png" class="card-img-top" alt="{{ product.name }}">
+                                    <img [src]="product.imageUrl" (error)="product.imageUrl = defaultImage"
+                                        class="card-img-top" alt="{{ product.name }}">
                                     <div class="card-body">
                                         <h5 class="card-title">{{ product.name }}</h5>
                                         <p class="card-text">{{ product.description }}</p>
@@ -98,7 +103,8 @@
                                     <div class="card-footer text-end fw-bold">
                                         {{ product.price | currency:'HUF' }}
                                     </div>
-                                    <a [routerLink]="['/shop/all']" [queryParams]="{ category: product.category.name }"
+                                    <a [routerLink]="['/shop/all']"
+                                        [queryParams]="{ category: product.category.categoryName }"
                                         class="btn btn-sm btn-outline-primary m-2 float-end">Megnézem</a>
                                 </div>
                             </div>

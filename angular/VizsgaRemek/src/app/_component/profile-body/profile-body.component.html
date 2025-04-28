@@ -80,7 +80,7 @@
                                                 <p>Loading user data...</p>
                                         </div>
                                         }
-                                        
+
                                         <hr class="my-4">
                                         <h5 class="text-center">Change Password</h5>
                                         <div class="row mt-3">
@@ -107,60 +107,90 @@
                         </div>
                         <div class="col-md-4">
                                 <div class="p-3 py-5">
-                                        @if (isEditeAddress) {
                                         <div class="d-flex justify-content-between align-items-center experience">
                                                 <h5>Shipping address</h5>
                                                 <a (click)="editAddress()">
                                                         <span class="border px-3 p-1 add-experience">
-                                                                Edit address
+                                                                {{ isEditeAddress ? 'Cancel' : 'Edit address' }}
                                                         </span>
                                                 </a>
                                         </div><br>
-                                        <!-- <p>Address Line 1: {{userData.result.addressLine}}</p>
-                                        <p>Address Line 2: {{userData.result.addressLine}}</p>
-                                        <p>Country: {{userData.result.country}}</p>
-                                        <p>State/Region: {{userData.result.stateRegion}}</p> -->
-                                        }@else {
-                                        <div class="d-flex justify-content-between align-items-center experience">
-                                                <h5>Shipping address</h5>
-                                                <a (click)="editAddress()">
-                                                        <span class="border px-3 p-1 add-experience">
-                                                                Edit address
-                                                        </span>
-                                                </a>
-                                        </div><br>
-                                        <div class="col-md-12">
-                                                <label class="labels">
-                                                        Address Line 1
-                                                </label>
-                                                <input type="text" class="form-control" placeholder="Address Line 1"
-                                                        value="">
+
+                                        <div *ngIf="isEditeAddress; else addressForm">
+                                                <p><strong>Recipient:</strong> {{ shippingAddress.recipientName || '-'
+                                                        }}</p>
+                                                <p><strong>Address Line 1:</strong> {{ shippingAddress.addressLine1 ||
+                                                        '-' }}</p>
+                                                <p><strong>Address Line 2:</strong> {{ shippingAddress.addressLine2 ||
+                                                        '-' }}</p>
+                                                <p><strong>City:</strong> {{ shippingAddress.city || '-' }}</p>
+                                                <p><strong>State:</strong> {{ shippingAddress.state || '-' }}</p>
+                                                <p><strong>Postal Code:</strong> {{ shippingAddress.postalCode || '-'
+                                                        }}</p>
+                                                <p><strong>Country:</strong> {{ shippingAddress.country || '-' }}</p>
+                                                <p><strong>Phone:</strong> {{ shippingAddress.phone || '-' }}</p>
                                         </div>
-                                        <div class="col-md-12">
-                                                <label class="labels">
-                                                        Address Line 2
-                                                </label>
-                                                <input type="text" class="form-control" placeholder="Address Line 2"
-                                                        value="">
-                                        </div>
-                                        <div class="row mt-3">
-                                                <div class="col-md-6"><label class="labels">
-                                                                Country
-                                                        </label>
-                                                        <input type="text" class="form-control" placeholder="country"
-                                                                value="">
+
+                                        <ng-template #addressForm>
+                                                <div class="col-md-12">
+                                                        <label class="labels">Recipient Name</label>
+                                                        <input type="text" class="form-control"
+                                                                [(ngModel)]="shippingAddress.recipientName"
+                                                                placeholder="Full name" />
                                                 </div>
-                                                <div class="col-md-6">
-                                                        <label class="labels">
-                                                                State/Region
-                                                        </label>
-                                                        <input type="text" class="form-control" value=""
-                                                                placeholder="state">
+                                                <div class="col-md-12 mt-2">
+                                                        <label class="labels">Address Line 1</label>
+                                                        <input type="text" class="form-control"
+                                                                [(ngModel)]="shippingAddress.addressLine1"
+                                                                placeholder="Address Line 1" />
                                                 </div>
-                                        </div>
-                                        <div class="mt-5 text-center"><button class="btn btn-primary profile-button"
-                                                        type="button">Save</button></div>
-                                        }
+                                                <div class="col-md-12 mt-2">
+                                                        <label class="labels">Address Line 2</label>
+                                                        <input type="text" class="form-control"
+                                                                [(ngModel)]="shippingAddress.addressLine2"
+                                                                placeholder="Address Line 2" />
+                                                </div>
+                                                <div class="row mt-3">
+                                                        <div class="col-md-6">
+                                                                <label class="labels">City</label>
+                                                                <input type="text" class="form-control"
+                                                                        [(ngModel)]="shippingAddress.city"
+                                                                        placeholder="City" />
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                                <label class="labels">State</label>
+                                                                <input type="text" class="form-control"
+                                                                        [(ngModel)]="shippingAddress.state"
+                                                                        placeholder="State" />
+                                                        </div>
+                                                </div>
+                                                <div class="row mt-3">
+                                                        <div class="col-md-6">
+                                                                <label class="labels">Postal Code</label>
+                                                                <input type="text" class="form-control"
+                                                                        [(ngModel)]="shippingAddress.postalCode"
+                                                                        placeholder="Postal Code" />
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                                <label class="labels">Country</label>
+                                                                <input type="text" class="form-control"
+                                                                        [(ngModel)]="shippingAddress.country"
+                                                                        placeholder="Country" />
+                                                        </div>
+                                                </div>
+                                                <div class="col-md-12 mt-2">
+                                                        <label class="labels">Phone</label>
+                                                        <input type="text" class="form-control"
+                                                                [(ngModel)]="shippingAddress.phone"
+                                                                placeholder="Phone number" />
+                                                </div>
+
+                                                <div class="mt-4 text-center">
+                                                        <button class="btn btn-success"
+                                                                (click)="saveShippingAddress()">💾 Save Shipping
+                                                                Address</button>
+                                                </div>
+                                        </ng-template>
                                 </div>
                         </div>
                 </div>

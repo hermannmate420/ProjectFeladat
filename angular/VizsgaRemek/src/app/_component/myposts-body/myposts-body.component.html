@@ -1,1 +1,49 @@
-<p>myposts-body works!</p>
+<div class="container py-4">
+    <h3 class="mb-4">📚 My Blog Posts</h3>
+
+    <div class="toolbar pb-5">
+        <label for="filter">Filter my posts</label>
+        <select id="filter" [(ngModel)]="sortOrder" class="sort-select">
+            <option value="latest">Latest front</option>
+            <option value="oldest">Oldest in front</option>
+        </select>
+    </div>
+
+    <div class="row row-cols-1 row-cols-md-3 g-4 pb-5">
+        <div class="col" *ngFor="let post of filteredAndSortedPosts">
+            <div class="card h-100 shadow-sm" (click)="openOverlay(post)" style="cursor: pointer;">
+                <div class="card-body">
+                    <h5 class="card-title">{{ post.title }}</h5>
+                    <p class="card-text text-truncate" style="max-height: 4rem;">{{ post.content }}</p>
+                </div>
+                <div class="card-footer text-muted small">
+                    {{ post.createdAt | date:'short' }}
+                </div>
+            </div>
+        </div>
+    </div>
+    <div *ngIf="selectedPost" class="overlay-backdrop" (click)="closeOverlay()">
+        <div class="overlay-content card p-4 shadow-lg" (click)="$event.stopPropagation()">
+            <div class="d-flex justify-content-between">
+                <h4 *ngIf="!editing">{{ selectedPost.title }}</h4>
+                <input *ngIf="editing" [(ngModel)]="editedPost.title" class="form-control form-control-sm" />
+                <button class="btn-close" (click)="closeOverlay()"></button>
+            </div>
+
+            <p class="text-muted">{{ selectedPost.createdAt | date: 'medium' }}</p>
+            <hr />
+
+            <p *ngIf="!editing">{{ selectedPost.content }}</p>
+            <textarea *ngIf="editing" [(ngModel)]="editedPost.content" rows="5" class="form-control mb-3"></textarea>
+
+            <img [src]="editedPost.imagesUrl" alt="postImage" style="width: 50%; border-radius: 25px;">
+
+            <div class="text-end mt-3">
+                <button *ngIf="!editing" class="btn btn-outline-primary" (click)="enableEdit()">✏️ Edit</button>
+                <button *ngIf="editing" class="btn btn-success me-2" (click)="saveEdit()">💾 Save</button>
+                <button *ngIf="editing" class="btn btn-secondary" (click)="editing = false">✖ Cancel</button>
+            </div>
+        </div>
+    </div>
+
+</div>

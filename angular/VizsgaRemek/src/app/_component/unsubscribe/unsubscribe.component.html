@@ -1,0 +1,33 @@
+<div class="container py-5 d-flex justify-content-center align-items-center">
+    <div class="card shadow-lg p-4 w-100" style="max-width: 500px;">
+        <h3 class="mb-3 text-center text-danger">
+            🔕 Unsubscribe from the newsletter
+        </h3>
+
+        <p class="text-muted text-center mb-4">
+            We're sorry to see you go 😢 - but of course you can always sign up again!
+        </p>
+
+        <form (ngSubmit)="unsubscribe()" novalidate>
+            <div class="mb-3">
+                <label for="email" class="form-label fw-semibold">Email</label>
+                <input id="email" type="email" class="form-control" [(ngModel)]="email" name="email"
+                    placeholder="pl. email@pelda.hu" required />
+            </div>
+
+            <div class="d-grid">
+                <button class="btn btn-outline-danger" type="submit">Unsubscribe</button>
+            </div>
+        </form>
+
+        <div *ngIf="message" class="alert mt-3" [ngClass]="isError ? 'alert-danger' : 'alert-success'">
+            {{ message }}
+        </div>
+
+        <div class="text-center mt-4">
+            <a routerLink="/home" class="text-decoration-none">
+                ⬅️ back to home
+            </a>
+        </div>
+    </div>
+</div>

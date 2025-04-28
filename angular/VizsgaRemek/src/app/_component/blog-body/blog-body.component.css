@@ -1,4 +1,4 @@
-/* 🌞 Világos mód */
+
 body {
     background-color: #f9f9f9;
     color: #111;
@@ -23,7 +23,6 @@ input[type="text"] {
     resize: vertical;
 }
 
-/* Törés biztosítás minden szövegre */
 .post-content,
 .comment,
 .reply,
@@ -40,20 +39,7 @@ input[type="text"] {
     font-family: Arial, sans-serif;
 }
 
-.toolbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 1rem;
-    margin-bottom: 1rem;
-}
 
-.search-input,
-.sort-select {
-    padding: 0.5rem;
-    font-size: 1rem;
-    border-radius: 6px;
-}
 
 .new-post-card {
     padding: 1rem;
@@ -209,7 +195,6 @@ button {
     color: red;
 }
 
-/* 🌙 Dark mód */
 @media (prefers-color-scheme: dark) {
     body {
         background-color: #121212;

@@ -4,7 +4,6 @@
     <br>
     <div class="row mt-4">
         <h5>📝 Feedback's</h5>
-        <!-- Üzenetlista -->
         <div class="col-md-4">
             <div class="list-group pb-4">
                 <button *ngFor="let msg of filteredMessages" class="list-group-item list-group-item-action"
@@ -23,10 +22,8 @@
                 </button>
             </div>
         </div>
-        <!-- Részletek -->
         <div class="col-md-8" *ngIf="selectedMessage">
             <div class="card p-4 shadow">
-                <!-- Close gomb -->
                 <button type="button" class="btn-close position-absolute" style="top: 10px; right: 10px;"
                     aria-label="Close" (click)="closeMessage()"></button>
                 <h5 class="mb-3">
@@ -88,7 +85,6 @@
         </div>
         <div class="row mt-4">
             <div class="col-md-4">
-                <!-- Üzenetlista Ticket -->
                 <div class="list-group pb-4">
                     <button *ngFor="let tck of filteredTickets" class="list-group-item list-group-item-action"
                         [class.active]="selectedTicket?.id === tck.id" (click)="viewTicket(tck, tck.status)">
@@ -107,10 +103,8 @@
                     </button>
                 </div>
             </div>
-            <!-- Részletek -->
             <div class="col-md-8" *ngIf="selectedTicket">
                 <div class="card p-4 shadow">
-                    <!-- Close gomb -->
                     <button type="button" class="btn-close position-absolute" style="top: 10px; right: 10px;"
                         aria-label="Close" (click)="closeTicket()"></button>
                     <h5 class="mb-3">
@@ -142,8 +136,6 @@
                     </button>
                 </div>
                 <div class="col-12">
-
-                    <!-- ➕ Új ticket input -->
                     <div *ngIf="isCreatingTicket" class="card mb-4 p-3 border border-primary bg-light">
                         <h5 class="mb-2">➕ New Ticket</h5>
                         <textarea [(ngModel)]="newTicketText" rows="4" class="form-control mb-2"

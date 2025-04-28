@@ -1,5 +1,4 @@
 <main class="d-flex min-vh-100">
-    <!-- Sidebar -->
     <nav class="admin-sidebar bg-light border-end p-2" [class.closed]="!sidebarOpen">
         <ul class="nav flex-column">
             <li>
@@ -10,7 +9,6 @@
                 </a>
                 <a routerLinkActive="active" class="nav-link d-flex align-items-center gap-2">
                     <span class="label">
-                        <h4 class="mb-4 mt-5 text-dark" *ngIf="sidebarOpen">Admin Panel</h4>
                     </span>
                 </a>
 
@@ -33,8 +31,6 @@
         </ul>
     </nav>
 
-
-    <!-- Main content -->
     <section class="flex-grow-1 position-relative">
         <app-nav-bar></app-nav-bar>
 

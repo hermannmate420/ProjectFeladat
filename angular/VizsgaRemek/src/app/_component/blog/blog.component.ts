@@ -3,6 +3,7 @@ import { NavBarComponent } from '../nav-bar/nav-bar.component';
 import { FooterComponent } from '../footer/footer.component';
 import { FormsModule } from '@angular/forms';
 import { BlogBodyComponent } from '../blog-body/blog-body.component';
+import { Title } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-blog',
@@ -12,4 +13,7 @@ import { BlogBodyComponent } from '../blog-body/blog-body.component';
 })
 export class BlogComponent {
 
+  constructor (private titleService: Title) {
+    titleService.setTitle('Blog');
+  }
 }

@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { LoginService } from '../../services/login.service';
 import { CommonModule } from '@angular/common';
 import { UserService } from '../../services/user.service';
 import { FormsModule } from '@angular/forms';
@@ -19,19 +18,72 @@ export class ProfileBodyComponent implements OnInit {
   selectedFile: File | null = null;
   newPassword: string = '';
   confirmPassword: string = '';
+  shippingAddress: any = {
+    recipient_name: '',
+    address_line1: '',
+    address_line2: '',
+    city: '',
+    state: '',
+    postal_code: '',
+    country: '',
+    phone: ''
+  };
+
 
 
   constructor(private userService: UserService, private http: HttpClient) {
 
   }
   ngOnInit(): void {
-    const userId = localStorage.getItem('id');
+    const userId = sessionStorage.getItem('id');
     if (userId) {
-      this.getUserData(Number(userId)); // Példa userId
+      this.getUserData(Number(userId));
     } else {
-      console.error('User ID not found in localStorage');
+      console.error('User ID not found in sessionStorage');
     }
+    this.getShippingAddress(Number(userId));
+
   }
+
+  getShippingAddress(userId: number): void {
+    this.userService.getShippingAddress(userId).subscribe({
+      next: (data) => {
+        if (data && data) {
+          this.shippingAddress = data;
+          console.log('📦 Cím betöltve:', this.shippingAddress);
+        }
+      },
+      error: (err) => {
+        console.error('❌ Hiba a cím betöltésekor:', err);
+      }
+    });
+  }
+
+  saveShippingAddress(): void {
+    const userId = Number(sessionStorage.getItem('id'));
+    if (!userId) {
+      alert('User ID missing!');
+      return;
+    }
+
+    const request = this.shippingAddress.shippingAddressId
+      ? this.userService.updateShippingAddress(this.shippingAddress)
+      : this.userService.addShippingAddress(this.shippingAddress);
+
+    request.subscribe({
+      next: () => {
+        alert(this.shippingAddress.shippingAddressId ? '📦 Cím frissítve!' : '📦 Cím elmentve!');
+        this.isEditeAddress = true;
+        this.getShippingAddress(userId);
+      },
+      error: (err) => {
+        console.error('❌ Cím mentési hiba:', err);
+        alert('Hiba történt a cím mentése közben!');
+      }
+    });
+  }
+
+
 
   editAddress(): void {
     if (this.isEditeAddress) {
@@ -54,7 +106,7 @@ export class ProfileBodyComponent implements OnInit {
       next: (data) => {
         if (data?.result?.profile_picture) {
           const rawPath: string = data.result.profile_picture;
-          const fileName = rawPath.split('\\').pop(); // csak a fájlnév kell
+          const fileName = rawPath.split('\\').pop(); 
           data.result.profile_picture = `http://localhost:8080/vintage_project-1.0-SNAPSHOT/webresources/user/uploads/${fileName}`;
         }
         this.userData = data;
@@ -81,7 +133,7 @@ export class ProfileBodyComponent implements OnInit {
       return;
     }
 
-    const userId = localStorage.getItem('id');
+    const userId = sessionStorage.getItem('id');
     if (!userId) {
       alert('Hiányzó user ID!');
       return;
@@ -95,7 +147,7 @@ export class ProfileBodyComponent implements OnInit {
     this.http.post(uploadUrl, formData).subscribe({
       next: () => {
         alert('Kép feltöltve!');
-        this.getUserData(Number(userId)); // újra lekérjük, frissül a kép
+        this.getUserData(Number(userId));
       },
       error: (err: any) => {
         console.error('Hiba a feltöltésnél:', err);
@@ -105,7 +157,7 @@ export class ProfileBodyComponent implements OnInit {
   }
 
   saveProfile(): void {
-    const userId = Number(localStorage.getItem('id'));
+    const userId = Number(sessionStorage.getItem('id'));
     if (isNaN(userId)) {
       alert('Hibás vagy hiányzó user ID!');
       return;
@@ -117,7 +169,7 @@ export class ProfileBodyComponent implements OnInit {
       lastName: this.userData.result.lastName,
       email: this.userData.result.email,
       phoneNumber: this.userData.result.phone,
-      isAdmin: this.userData.result.isAdmin || false // csak ha kell
+      isAdmin: this.userData.result.isAdmin || false
     };
 
     console.log('Mentésre küldött adat:', userToUpdate);
@@ -126,7 +178,7 @@ export class ProfileBodyComponent implements OnInit {
       next: () => {
         alert('Profil sikeresen frissítve!');
         this.isEditeProfile = false;
-        this.getUserData(userId); // újratöltjük az adatokat
+        this.getUserData(userId);
       },
       error: (err) => {
         console.error('Profil mentési hiba:', err);
@@ -136,8 +188,8 @@ export class ProfileBodyComponent implements OnInit {
   }
 
   changePassword(): void {
-    const userId = Number(localStorage.getItem('id'));
-    const token = localStorage.getItem('token');
+    const userId = Number(sessionStorage.getItem('id'));
+    const token = sessionStorage.getItem('token');
     if (isNaN(userId)) {
       alert('User ID not found!');
       return;
@@ -177,18 +229,16 @@ export class ProfileBodyComponent implements OnInit {
       payload,
       { headers }
     ).subscribe({
-        next: () => {
-          alert('Password successfully changed!');
-          this.newPassword = '';
-          this.confirmPassword = '';
-        },
-        error: (err) => {
-          console.error('Password change error:', err);
-          alert('Failed to change password.');
-        }
-      });
+      next: () => {
+        alert('Password successfully changed!');
+        this.newPassword = '';
+        this.confirmPassword = '';
+      },
+      error: (err) => {
+        console.error('Password change error:', err);
+        alert('Failed to change password.');
+      }
+    });
   }
-
-
 
 }

@@ -4,6 +4,7 @@
  */
 package com.maven.vintage_project.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -25,6 +26,7 @@ import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
@@ -36,6 +38,7 @@ import javax.persistence.Id;
 import javax.persistence.Lob;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.ParameterMode;
 import javax.persistence.Persistence;
 import javax.persistence.PersistenceUnit;
@@ -47,6 +50,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
@@ -69,6 +73,9 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "User.findByDeletedAt", query = "SELECT u FROM User u WHERE u.deletedAt = :deletedAt")})
 
 public class User implements Serializable {
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "userId")
+    private Collection<Cart> cartCollection;
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -453,6 +460,7 @@ public class User implements Serializable {
     }
 
     //Megkapjuk az összes felhasználót
+    @JsonIgnore
     public List<User> getAllUser() {
         EntityManager em = getEntityManager();
 
@@ -751,6 +759,15 @@ public class User implements Serializable {
                 em.close();
             }
         }
+    }
+
+    @XmlTransient
+    public Collection<Cart> getCartCollection() {
+        return cartCollection;
+    }
+
+    public void setCartCollection(Collection<Cart> cartCollection) {
+        this.cartCollection = cartCollection;
     }
 
 }

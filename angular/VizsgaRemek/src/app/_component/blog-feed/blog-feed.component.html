@@ -1,86 +1,89 @@
 <section class="container py-5">
-
+    <div class="blog-container">
+        <br>
+        <div class="toolbar">
+            <input type="text" placeholder="Search between posts..." [(ngModel)]="searchTerm" class="search-input" />
+            <select [(ngModel)]="sortOrder" class="sort-select">
+                <option value="latest">Latest in front</option>
+                <option value="oldest">Oldest in the front</option>
+                <option value="mostComments">Most commented</option>
+            </select>
+        </div>
+    </div>
     <div class="row g-4">
-        <div class="col-12" *ngFor="let post of posts">
+        <div class="col-12" *ngFor="let post of filteredAndSortedPosts">
             <div class="card shadow-sm border-0">
                 <div class="card-body">
-
-                    <!-- FEJLÉC -->
                     <div class="d-flex justify-content-between align-items-center mb-2">
                         <div>
                             <strong>{{ post.author }}</strong>
-                            <small class="text-muted ms-2">{{ post.createdAt | date:'medium' }}</small>
+                            <small class="text-muted ms-2">{{ post.createdAt | date: 'medium' }}</small>
                         </div>
-                        <div>
-                            <button class="btn btn-sm btn-outline-danger" (click)="deletePost(post.id)">🗑️</button>
-                        </div>
+                        <button *ngIf="post.authorId === currentUserId" class="btn btn-sm btn-outline-danger"
+                            (click)="deletpost(post.blogId)">🗑️</button>
+
                     </div>
 
-                    <!-- TARTALOM -->
-                    <h5 class="card-title">{{ post.title }}</h5>
+                    <div *ngIf="post.comments?.length === 0" class="text-muted">No comments yet.</div>
+                    <h5 class="card-title" *ngIf="!post.editing">{{ post.title }}</h5>
+                    <h5 class="card-title" *ngIf="post.editing"><input type="text" [(ngModel)]="post.title"
+                            class="form-control" /></h5>
                     <p class="card-text" *ngIf="!post.editing">{{ post.content }}</p>
                     <textarea *ngIf="post.editing" [(ngModel)]="post.content" class="form-control mb-2"></textarea>
-
-                    <!-- KÉP -->
-                    <img *ngIf="post.image" [src]="post.image" alt="Post image" class="img-fluid rounded mb-3">
-
-                    <!-- MŰVELETEK -->
+                    <img *ngIf="post.imageUrl" [src]="post.imagesUrl" alt="Post image" class="img-fluid rounded mb-3" />
+                    <label *ngIf="post.editing" class="form-label">Kép</label>
+                    <input *ngIf="post.editing" type="file" (change)="onFileSelected($event, post)" class="form-control mb-2">
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
-                            <button class="btn btn-sm btn-outline-primary me-2" (click)="likePost(post.id)">👍 {{
-                                post.likes || 0 }}</button>
-                            <button class="btn btn-sm btn-outline-secondary" (click)="toggleEditPost(post)">
+                            <button class="btn btn-sm btn-outline-primary me-2" (click)="likePost(post.blogId)">
+                                👍 {{ post.likesCount || 0 }}
+                            </button>
+                            <button *ngIf="post.authorId === currentUserId" class="btn btn-sm btn-outline-secondary"
+                                (click)="post.editing ? saveEdit(post) : toggleEditPost(post)">
                                 {{ post.editing ? '💾 Save' : '✏️ Edit' }}
                             </button>
+
+
                         </div>
                     </div>
-
-                    <!-- KOMMENT SZOFT INPUT -->
                     <div class="mt-4">
-                        <textarea #commentInput placeholder="💬 Write a comment..."
+                        <textarea [(ngModel)]="commentInputs[post.blogId]" placeholder="💬 Write a comment..."
                             class="form-control mb-2"></textarea>
-                        <button class="btn btn-sm btn-dark"
-                            (click)="addComment(post.id, commentInput.value); commentInput.value=''">Send</button>
+                        <button class="btn btn-sm btn-dark" (click)="addComment(post.blogId)">Send</button>
                     </div>
-
-                    <!-- KOMMENTEK -->
                     <div *ngFor="let comment of post.comments" class="mt-3 p-3 bg-light rounded">
                         <div class="d-flex justify-content-between">
                             <div>
-                                <strong>{{ comment.author }}</strong>:
-                                <span *ngIf="!comment.editing">{{ comment.content }}</span>
-                                <textarea *ngIf="comment.editing" [(ngModel)]="comment.content"
+                                <strong>{{ comment.commenter }}</strong>:
+                                <span *ngIf="!isEdit">{{ comment.commentText }}</span>
+                                <textarea *ngIf="isEdit" [(ngModel)]="comment.commentText"
                                     class="form-control"></textarea>
                             </div>
                             <div class="text-end">
-                                <button class="btn btn-sm btn-outline-primary me-1"
-                                    (click)="likeComment(post.id, comment.id)">👍 {{ comment.likes || 0 }}</button>
-                                <button class="btn btn-sm btn-outline-warning me-1"
-                                    (click)="toggleEditComment(comment)">✏️</button>
+                                <button class="btn btn-sm btn-outline-warning me-1" (click)="toggleEditComment(comment)"
+                                    *ngIf="post.authorId === currentUserId">✏️</button>
                                 <button class="btn btn-sm btn-outline-danger"
-                                    (click)="deleteComment(post.id, comment.id)">🗑️</button>
+                                    (click)="deleteComment(post.blogId, comment.commentId)"
+                                    *ngIf="post.authorId === currentUserId">
+                                    🗑️
+                                </button>
                             </div>
                         </div>
-
-                        <!-- VÁLASZOK -->
-                        <div *ngIf="replyInputVisible[comment.id]" class="mt-2">
-                            <textarea #replyInput placeholder="↪️ Reply..." class="form-control mb-2"></textarea>
-                            <button class="btn btn-sm btn-secondary"
-                                (click)="addReply(post.id, comment.id, replyInput.value); replyInput.value=''">Reply</button>
-                        </div>
-
-                        <button class="btn btn-link btn-sm text-decoration-none mt-2"
-                            (click)="toggleReplyInput(comment.id)">💬 Reply</button>
-
-                        <div *ngFor="let reply of comment.replies" class="ps-4 pt-2 text-muted">
-                            <small><strong>{{ reply.author }}</strong>: {{ reply.content }}</small>
-                            <button class="btn btn-sm btn-outline-primary btn-sm ms-2"
-                                (click)="likeComment(post.id, reply.id)">👍 {{ reply.likes || 0 }}</button>
-                        </div>
                     </div>
-
                 </div>
             </div>
         </div>
     </div>
+    <div *ngIf="showToast" class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index: 1055;">
+        <div class="toast show text-white {{ toastColorClass }} border-0 shadow">
+            <div class="d-flex">
+                <div class="toast-body">
+                    {{ toastMessage }}
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto"
+                    (click)="showToast = false"></button>
+            </div>
+        </div>
+    </div>
+
 </section>

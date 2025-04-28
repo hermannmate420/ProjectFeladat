@@ -18,7 +18,7 @@
 .hhg {
     padding-inline: 50px;
     padding-inline-end: 150px;
-    background-color: rgba(255, 255, 255, 0.30);
+    background-color: rgba(153, 148, 148, 0.3);
     border-radius: 25px 25px 25px 25px;
     padding-top: 50px;
     padding-bottom: 300px;
@@ -26,7 +26,6 @@
 
 .hhgh {
     padding-inline: 150px;
-    padding-inline-end: 50px;
     background-color: rgba(255, 255, 255, 0.30);
     border-radius: 25px 25px 25px 25px;
     padding-top: 50px;
@@ -92,13 +91,9 @@ a.qwe {
 
 .hovimg img {
     --s: 250px;
-    /* the size of the image */
     --b: 8px;
-    /* the border thickness*/
     --g: 14px;
-    /* the gap */
     --c: #F5AA5F;
-    /* the color */
 
     width: var(--s);
     aspect-ratio: 1;

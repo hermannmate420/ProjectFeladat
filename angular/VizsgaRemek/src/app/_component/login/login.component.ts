@@ -75,7 +75,6 @@ export class LoginComponent implements OnInit {
       .then(res => res.json())
       .then(data => {
         if (data.reactivatable) {
-          // ✅ Igen, reaktiválható => küldjünk emailt
           return fetch(reactivateRequestUrl, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },

@@ -3,12 +3,13 @@ import { ProductService } from '../../services/product.service';
 import { Product } from '../../models/product.model';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, RouterModule } from '@angular/router';
+import { CartService } from '../../services/cart.service';
 
 
 @Component({
   selector: 'app-shop-all',
-  imports: [CommonModule, FormsModule,],
+  imports: [CommonModule, FormsModule, RouterModule],
   templateUrl: './shop-all.component.html',
   styleUrl: './shop-all.component.css'
 })
@@ -24,10 +25,12 @@ export class ShopAllComponent implements OnInit {
   categories: string[] = [];
   currentPage = 1;
   productPerPage = 10;
+  productPerPageinList = 20;
   totalProducts = 0;
+  defaultImage = 'http://localhost:8080/vintage_project-1.0-SNAPSHOT/webresources/product/uploads/products/placeholderForProduct.jpg'
 
 
-  constructor(private productService: ProductService, private route: ActivatedRoute,) { }
+  constructor(private productService: ProductService, private route: ActivatedRoute, private cartService: CartService) { }
 
 
   ngOnInit(): void {
@@ -44,7 +47,14 @@ export class ShopAllComponent implements OnInit {
 
     this.productService.getProducts().subscribe({
       next: (res) => {
-        this.products = res;
+        this.products = res.map(product => {
+          if (product.slug) {
+            const rawPath: string = product.slug;
+            const fileName = rawPath;
+            product.imageUrl = `http://localhost:8080/vintage_project-1.0-SNAPSHOT/webresources/product/uploads/products/${fileName}.png`;
+          }
+          return product;
+        });
         this.extractCategories();
         this.loading = false;
       },
@@ -55,7 +65,7 @@ export class ShopAllComponent implements OnInit {
       }
     });
   }
-  
+
 
   get paginatedProducts() {
     const start = (this.currentPage - 1) * this.productPerPage;
@@ -63,8 +73,26 @@ export class ShopAllComponent implements OnInit {
     return this.sortedProducts.slice(start, end);
   }
 
+  get paginatedProductsInList() {
+    const start = (this.currentPage - 1) * this.productPerPageinList;
+    const end = start + this.productPerPageinList;
+    return this.sortedProductsinList.slice(start, end);
+  }
+
   get totalPages(): number {
     return Math.ceil(this.sortedProducts.length / this.productPerPage);
+  }
+
+  get totalPagesInList(): number {
+    return Math.ceil(this.sortedProductsinList.length / this.productPerPageinList);
+  }
+
+  get fullPrice(): number {
+    return this.products.reduce((total, product) => {
+      const price = product.price || 0;
+      const discountPrice = product.discountPrice || 0;
+      return total + Math.ceil(price - discountPrice);
+    }, 0);
   }
 
   toggle(): void {
@@ -73,19 +101,6 @@ export class ShopAllComponent implements OnInit {
     } else {
       this.toggleState = true;
     }
-  }
-
-  addToCart(product: Product): void {
-    const cart = JSON.parse(localStorage.getItem('cart') || '[]');
-    const existingProduct = cart.find((item: Product) => item.id === product.id);
-    if (existingProduct) {
-      existingProduct.quantity += 1;
-    } else {
-      product.stockQuanty = 1;
-      cart.push(product);
-    }
-    localStorage.setItem('cart', JSON.stringify(cart));
-    console.log('Kosár:', cart);
   }
 
   get filteredProducts(): Product[] {
@@ -99,7 +114,7 @@ export class ShopAllComponent implements OnInit {
 
     if (this.selectedCategory) {
       filtered = filtered.filter(p =>
-        p.category.name?.toLowerCase() === this.selectedCategory.toLowerCase()
+        p.category.categoryName?.toLowerCase() === this.selectedCategory.toLowerCase()
       );
     }
 
@@ -107,6 +122,16 @@ export class ShopAllComponent implements OnInit {
   }
 
   get sortedProducts(): Product[] {
+    return [...this.filteredProducts].sort((a, b) => {
+      const valA = (a[this.sortField] ?? '').toString().toLowerCase();
+      const valB = (b[this.sortField] ?? '').toString().toLowerCase();
+
+      if (this.sortDirection === 'asc') return valA > valB ? 1 : -1;
+      else return valA < valB ? 1 : -1;
+    });
+  }
+
+  get sortedProductsinList(): Product[] {
     return [...this.filteredProducts].sort((a, b) => {
       const valA = (a[this.sortField] ?? '').toString().toLowerCase();
       const valB = (b[this.sortField] ?? '').toString().toLowerCase();
@@ -128,10 +153,22 @@ export class ShopAllComponent implements OnInit {
   extractCategories(): void {
     const categorySet = new Set<string>();
     for (const product of this.products) {
-      const name = product.category?.name?.trim();
+      const name = product.category?.categoryName?.trim();
       if (name) categorySet.add(name);
     }
-    this.categories = Array.from(categorySet).sort(); // ábécé sorrend
+    this.categories = Array.from(categorySet).sort();
+  }
+  addToCart(product: Product): void {
+    const quantity = 1;
+    this.cartService.addToCart(product.id, quantity).subscribe({
+      next: () => {
+        alert('✅ Product added to cart successfully!');
+      },
+      error: (err) => {
+        console.error('❌ Hiba kosárhoz adáskor:', err);
+        alert('❌ Failed to add product to cart.');
+      }
+    });
   }
 
 }

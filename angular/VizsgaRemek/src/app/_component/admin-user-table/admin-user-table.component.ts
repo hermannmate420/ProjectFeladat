@@ -45,7 +45,7 @@ export class AdminUserTableComponent implements OnInit {
   ngOnInit(): void {
     this.userService.getAllUsers().subscribe({
       next: (data) => {
-        this.users = data.result || data; // attól függ, hogy csomagolva jön-e
+        this.users = data.result || data;
         console.log('Felhasználók:', this.users);
 
         this.totalUsers = this.users.length;
@@ -68,7 +68,7 @@ export class AdminUserTableComponent implements OnInit {
   }
 
   saveUser(user: any): void {
-    const editorId = Number(localStorage.getItem('id'));
+    const editorId = Number(sessionStorage.getItem('id'));
     if (isNaN(editorId)) {
       console.error('Invalid editor ID');
       return;
@@ -156,7 +156,7 @@ export class AdminUserTableComponent implements OnInit {
 
 
   registerNewAdmin(): void {
-    const token = localStorage.getItem('token');
+    const token = sessionStorage.getItem('token');
     if (!token) {
       alert('Token is missing – please login.');
       return;
@@ -187,7 +187,7 @@ export class AdminUserTableComponent implements OnInit {
         this.newAdmin = {
           username: '', email: '', firstName: '', lastName: '', phoneNumber: '', password: ''
         };
-        this.ngOnInit(); // újratölti a felhasználókat
+        this.ngOnInit();
       },
       error: (err) => {
         console.error('Admin reg error:', err);
@@ -197,7 +197,7 @@ export class AdminUserTableComponent implements OnInit {
   }
 
   toggleUserStatus(user: any): void {
-    const editorId = Number(localStorage.getItem('id'));
+    const editorId = Number(sessionStorage.getItem('id'));
     if (isNaN(editorId)) return;
 
     const updatedStatus = !user.isDeleted;
@@ -206,7 +206,7 @@ export class AdminUserTableComponent implements OnInit {
     this.userService.updateUser(editorId, user.id, payload).subscribe({
       next: () => {
         alert(updatedStatus ? 'User deleted ❌' : 'User reactivated ✅');
-        this.ngOnInit(); // újra betöltés
+        this.ngOnInit();
       },
       error: err => {
         console.error('Hiba a státusz váltás közben:', err);
@@ -221,11 +221,11 @@ export class AdminUserTableComponent implements OnInit {
     this.showToast = true;
     setTimeout(() => {
       this.showToast = false;
-    }, 2000); // 2 másodperc után eltűnik
+    }, 2000);
   }
 
   deleteUser(user: any): void {
-    const token = localStorage.getItem('token');
+    const token = sessionStorage.getItem('token');
     if (!token) {
       alert('Token not found – please log in again.');
       return;
@@ -248,7 +248,7 @@ export class AdminUserTableComponent implements OnInit {
   }
 
   reactivateUserById(user: any): void {
-    const token = localStorage.getItem('token');
+    const token = sessionStorage.getItem('token');
     if (!token) {
       alert('Token not found – please log in again.');
       return;
@@ -257,7 +257,7 @@ export class AdminUserTableComponent implements OnInit {
     this.userService.reactivateUserById(user.id).subscribe({
       next: () => {
         this.showSaveToast(`♻️ User "${user.username}" reactivated.`, 'bg-success');
-        this.ngOnInit(); // újratöltés
+        this.ngOnInit();
       },
       error: (err) => {
         console.error('Reactivation error:', err);

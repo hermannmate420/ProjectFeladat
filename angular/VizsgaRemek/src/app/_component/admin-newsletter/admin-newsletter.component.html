@@ -1,1 +1,120 @@
-<p>admin-newsletter works!</p>
+<div class="container py-4">
+    <h2>📬 Newsletter Subscribers</h2>
+
+    <div *ngIf="error" class="alert alert-danger">{{ error }}</div>
+
+    <div class="card shadow-sm mb-5">
+        <div class="card-header bg-primary text-white">
+            ✉️ Create Newsletter
+        </div>
+        <div class="card-body">
+            <div class="row mb-4">
+                <div class="col-md-6">
+                    <label for="subject" class="form-label">Subject</label>
+                    <input id="subject" class="form-control" [(ngModel)]="previewSubject"
+                        placeholder="Newsletter - news">
+                </div>
+                <div class="col-md-6">
+                    <label for="homelink" class="form-label">Home Link</label>
+                    <input id="homelink" class="form-control" [(ngModel)]="newsletterLink"
+                        placeholder="http://localhost:4200/home">
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Main Content</label>
+                <textarea class="form-control" rows="2" [(ngModel)]="newsletterMainContent"></textarea>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Content (HTML or text, for example picture + discount)</label>
+                <textarea class="form-control" rows="5" [(ngModel)]="newsletterContent"
+                    placeholder="You can also write HTML here, e.g. with a picture, description..."></textarea>
+            </div>
+
+
+            <div class="mb-3">
+                <label class="form-label">Other Content</label>
+                <textarea class="form-control" rows="2" [(ngModel)]="newsletterOtherContent"></textarea>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">💡 Chose a prewrite text:</label>
+                <div class="btn-group" role="group">
+                    <button class="btn btn-outline-primary btn-sm" (click)="insertPromoTemplate()">🛍️ Discount
+                        Product</button>
+                    <button class="btn btn-outline-secondary btn-sm" (click)="insertSimpleText()">📝 Simple
+                        text</button>
+                    <button class="btn btn-outline-info btn-sm" (click)="insertImageOnly()">🖼️ picture Only</button>
+                </div>
+            </div>
+
+
+            <div class="text-end">
+                <button class="btn btn-outline-secondary me-2" (click)="openPreview()">👁️ Preview</button>
+                <button class="btn btn-success" (click)="sendNewsletter()">📤 Send Now</button>
+            </div>
+        </div>
+    </div>
+    <div class="text-end mb-3">
+        <button class="btn btn-outline-secondary me-2" (click)="openPreview()">👁️ Preview</button>
+    </div>
+    <div class="modal fade" id="previewModal" tabindex="-1">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content bg-primary">
+                <div class="modal-header">
+                    <h5 class="modal-title">📄 Preview Newsletter</h5>
+                    <button class="btn-close" data-bs-dismiss="modal" (click)="closePreview()"></button>
+                </div>
+                <div class="modal-body bg-secondary">
+                    <p><strong>Subject:</strong> {{ previewSubject }}</p>
+                    <p><strong>To:</strong> {{ getSelectedEmails().join(', ') }}</p>
+                    <hr>
+                    <p><strong>Main Content:</strong></p>
+                    <p [innerHTML]="formatContent(newsletterMainContent)"></p>
+                    <p><strong>Content:</strong></p>
+                    <p [innerHTML]="formatContent(newsletterContent)"></p>
+                    <p><strong>Other Content:</strong></p>
+                    <p [innerHTML]="formatContent(newsletterOtherContent)"></p>
+                    <p class="mt-3"><strong>Home Link:</strong> {{ newsletterLink }}</p>
+                    <button class="btn btn-primary mt-3" (click)="sendNewsletter(); closePreview()"
+                        data-bs-dismiss="modal">📤 Send</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <table class="table table-bordered table-striped" *ngIf="paginatedSubscribers.length">
+        <thead class="table-dark">
+            <tr>
+                <th><input type="checkbox" [(ngModel)]="selectAll" (change)="toggleSelectAll()" /></th>
+                <th>#</th>
+                <th>Email</th>
+                <th>Full Name</th>
+                <th>Subscribed At</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let sub of paginatedSubscribers; index as i">
+                <td><input type="checkbox" [(ngModel)]="sub.selected" /></td>
+                <td>{{ (currentPage - 1) * itemsPerPage + i + 1 }}</td>
+                <td>{{ sub.email }}</td>
+                <td>{{ sub.fullName }}</td>
+                <td>{{ sub.createdAt }}</td>
+            </tr>
+        </tbody>
+    </table>
+    <nav *ngIf="totalPages > 1">
+        <ul class="pagination justify-content-center mt-3">
+            <li class="page-item" [class.disabled]="currentPage === 1">
+                <a class="page-link" (click)="goToPage(currentPage - 1)">Previous</a>
+            </li>
+            <li class="page-item" *ngFor="let page of [].constructor(totalPages); let i = index"
+                [class.active]="currentPage === i + 1">
+                <a class="page-link" (click)="goToPage(i + 1)">{{ i + 1 }}</a>
+            </li>
+            <li class="page-item" [class.disabled]="currentPage === totalPages">
+                <a class="page-link" (click)="goToPage(currentPage + 1)">Next</a>
+            </li>
+        </ul>
+    </nav>
+</div>

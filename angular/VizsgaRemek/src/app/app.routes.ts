@@ -12,10 +12,7 @@ import { AdminGuard } from './guards/admin.guard';
 import { AdminUserTableComponent } from './_component/admin-user-table/admin-user-table.component';
 import { AdminHomeComponent } from './_component/admin-home/admin-home.component';
 import { AdminProductTableComponent } from './_component/admin-product-table/admin-product-table.component';
-import { AdminProductDiscountComponent } from './_component/admin-product-discount/admin-product-discount.component';
-import { AdminProductCategoriesComponent } from './_component/admin-product-categories/admin-product-categories.component';
 import { AdminOrdersComponent } from './_component/admin-orders/admin-orders.component';
-import { AdminOrdersStockComponent } from './_component/admin-orders-stock/admin-orders-stock.component';
 import { AdminNewsletterComponent } from './_component/admin-newsletter/admin-newsletter.component';
 import { AdminAnalyticsComponent } from './_component/admin-analytics/admin-analytics.component';
 import { AdminMessagesComponent } from './_component/admin-messages/admin-messages.component';
@@ -27,9 +24,10 @@ import { authGuard } from './guards/auth.guard';
 import { GeneralTermsComponent } from './_component/general-terms/general-terms.component';
 import { PrivacySecurityComponent } from './_component/privacy-security/privacy-security.component';
 import { OrdersRefundsComponent } from './_component/orders-refunds/orders-refunds.component';
-import { BlogListComponent } from './_component/blog-list/blog-list.component';
 import { BlogEditorComponent } from './_component/blog-editor/blog-editor.component';
 import { ShopAllComponent } from './_component/shop-all/shop-all.component';
+import { UnsubscribeComponent } from './_component/unsubscribe/unsubscribe.component';
+import { ShopDetailComponent } from './_component/shop-detail/shop-detail.component';
 
 export const routes: Routes = [
     { path: '', redirectTo: '/home', pathMatch: 'full' },
@@ -41,12 +39,13 @@ export const routes: Routes = [
     { path: 'reset-password', component: ForgotResetPasswordComponent },
     { path: 'blog', component: BlogComponent },
     { path: 'reactivate', component: ReactivateAccountComponent },
+    { path: 'unsubscribe', component: UnsubscribeComponent },
     { path: 'general-terms-and-conditions', component: GeneralTermsComponent },
     { path: 'privacy-and-security', component: PrivacySecurityComponent },
     { path: 'orders-refunds', component: OrdersRefundsComponent },
     { path: 'contact-us', component: ContactUsComponent },
-    // { path: 'blog', component: BlogListComponent },
     { path: 'blog-editor', component: BlogEditorComponent },
+    { path: 'shop-detail', component: ShopDetailComponent },
     {
         path: 'shop',
         component: ShopLayoutComponent,
@@ -55,8 +54,6 @@ export const routes: Routes = [
             { path: '', redirectTo: 'all', pathMatch: 'full' },
         ]
     },
-
-
     { path: 'posts', component: MypostsComponent, canActivate: [authGuard] },
     { path: 'cart', component: CartComponent },
     {
@@ -64,10 +61,7 @@ export const routes: Routes = [
             { path: 'homeAdmin', component: AdminHomeComponent },
             { path: 'users', component: AdminUserTableComponent },
             { path: 'products', component: AdminProductTableComponent },
-            { path: 'discount', component: AdminProductDiscountComponent },
-            { path: 'categories', component: AdminProductCategoriesComponent },
             { path: 'orders', component: AdminOrdersComponent },
-            { path: 'stock', component: AdminOrdersStockComponent },
             { path: 'newsletter', component: AdminNewsletterComponent },
             { path: 'analytics', component: AdminAnalyticsComponent },
             { path: 'messages', component: AdminMessagesComponent },

@@ -7,7 +7,15 @@
         <class>com.maven.vintage_project.model.Category</class>
         <class>com.maven.vintage_project.model.User</class>
         <class>com.maven.vintage_project.model.Ticket</class>
+        <class>com.maven.vintage_project.model.Blog</class>
         <class>com.maven.vintage_project.model.Message</class>
+        <class>com.maven.vintage_project.model.Comment</class>
+        <class>com.maven.vintage_project.model.NewsletterSubscriber</class>
+        <class>com.maven.vintage_project.model.ShippingAddress</class>
+        <class>com.maven.vintage_project.model.Cart</class>
+        <class>com.maven.vintage_project.model.CartItems</class>
+        <class>com.maven.vintage_project.model.Orders</class>
+        <class>com.maven.vintage_project.model.OrderItems</class>
         <exclude-unlisted-classes>false</exclude-unlisted-classes>
         <properties>
             <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/vintage_db?zeroDateTimeBehavior=CONVERT_TO_NULL"/>

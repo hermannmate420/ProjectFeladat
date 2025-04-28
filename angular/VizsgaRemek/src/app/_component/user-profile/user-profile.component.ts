@@ -33,7 +33,6 @@ export class UserProfileComponent implements OnInit {
 
   ngOnInit(): void {
     this.fetchMessagesAndTickets();
-    // this.messageCount = 10;
   }
 
   fetchMessagesAndTickets(): void {

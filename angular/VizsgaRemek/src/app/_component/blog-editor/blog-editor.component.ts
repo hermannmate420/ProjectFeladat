@@ -1,12 +1,18 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators
+} from '@angular/forms';
+import { BlogService } from '../../services/blog.service';
+import { BlogPost } from '../../models/blog.model';
+import { UserService } from '../../services/user.service';
 
 @Component({
   selector: 'app-blog-editor',
+  standalone: true,
   imports: [CommonModule, ReactiveFormsModule, FormsModule],
   templateUrl: './blog-editor.component.html',
-  styleUrl: './blog-editor.component.css'
+  styleUrls: ['./blog-editor.component.css']
 })
 export class BlogEditorComponent implements OnInit {
   blogForm!: FormGroup;
@@ -15,17 +21,38 @@ export class BlogEditorComponent implements OnInit {
   errorMessage = '';
   selectedImageFile: File | null = null;
   imagePreview: string | ArrayBuffer | null = null;
-  http: any;
+  currentUserName = '';
+  currentUserId: number = Number(sessionStorage.getItem('id'));
+  isEdit = false;
+  loggedInStatus = false;
 
-  constructor(private fb: FormBuilder) { }
+  constructor(
+    private fb: FormBuilder,
+    private blogService: BlogService,
+    private userService: UserService
+  ) { }
 
   ngOnInit(): void {
     this.blogForm = this.fb.group({
       title: ['', Validators.required],
       content: ['', Validators.required],
-      image: [''],
-      productId: ['']
+      productId: [''],
+      image: [null],
     });
+
+    this.userService.getUserById(this.currentUserId).subscribe({
+      next: (res) => {
+        this.currentUserName = res?.result?.username || 'Unknown';
+      },
+      error: (err) => {
+        console.error('❌ Nem sikerült lekérni a felhasználót:', err);
+      }
+    });
+    this.checkLoggedIn();
+  }
+
+  checkLoggedIn(): void {
+    this.loggedInStatus = !!this.currentUserId;
   }
 
   toggleEditor(): void {
@@ -34,50 +61,59 @@ export class BlogEditorComponent implements OnInit {
 
   onSubmit(): void {
     if (this.blogForm.valid) {
-      const formData = new FormData();
-      formData.append('title', this.blogForm.value.title);
-      formData.append('content', this.blogForm.value.content);
-      if (this.blogForm.value.productId) {
-        formData.append('productId', this.blogForm.value.productId);
-      }
-      if (this.selectedImageFile) {
-        formData.append('image', this.selectedImageFile);
-      }
+      const newPost: Partial<BlogPost> = {
+        title: this.blogForm.value.title,
+        content: this.blogForm.value.content,
+        author: this.currentUserName,
+        authorId: this.currentUserId,
+        image: this.blogForm.value.image,
+        likesCount: 0,
+        postCommentId: 0,
+        ...(this.blogForm.value.productId && { productId: Number(this.blogForm.value.productId) })
+      };
 
-      // ✅ Backend POST (mock URL-t használtam, cseréld a sajátodra)
-      this.http.post('http://127.0.0.1:8080/api/blog', formData).subscribe({
-        next: (res: any) => {
-          this.successMessage = '✅ Blog post sikeresen elmentve!';
-          this.errorMessage = '';
-          this.blogForm.reset();
-          this.selectedImageFile = null;
-          this.imagePreview = null;
-          this.showEditor = false;
-        },
-        error: (err: any) => {
-          console.error('❌ Hiba:', err);
-          this.successMessage = '';
-          this.errorMessage = 'Hiba a mentés közben.';
-        }
-      });
+      this.createBlog(newPost);
     } else {
       this.successMessage = '';
       this.errorMessage = '❌ Kérlek tölts ki minden kötelező mezőt!';
     }
   }
 
-
-  onFileSelected(event: Event): void {
-    const input = event.target as HTMLInputElement;
-    if (input.files && input.files.length > 0) {
-      this.selectedImageFile = input.files[0];
-
-      // 🖼️ Előnézet generálása
+  onFileSelected(event: any): void {
+    const file: File = event.target.files[0];
+    if (file && file.type.startsWith('image/')) {
+      this.selectedImageFile = file;
       const reader = new FileReader();
-      reader.onload = () => {
-        this.imagePreview = reader.result;
+      reader.onload = (e) => {
+        this.imagePreview = e.target?.result ?? null;
       };
-      reader.readAsDataURL(this.selectedImageFile);
+      reader.readAsDataURL(file);
+    } else {
+      alert('❌ Csak kép fájl tölthető fel.');
     }
   }
+
+  createBlog(post: Partial<BlogPost>): void {
+    if (this.selectedImageFile) {
+      post.image = this.selectedImageFile;
+    }
+
+    this.blogService.createPost(post).subscribe({
+      next: () => {
+        this.successMessage = '✅ Blog post sikeresen elmentve!';
+        this.errorMessage = '';
+        this.blogForm.reset();
+        this.imagePreview = null;
+        this.selectedImageFile = null;
+        this.showEditor = false;
+      },
+      error: (err) => {
+        console.error('❌ Hiba mentés közben:', err);
+        this.successMessage = '';
+        this.errorMessage = '❌ Hiba történt a mentés során.';
+      }
+    });
+  }
+
+
 }

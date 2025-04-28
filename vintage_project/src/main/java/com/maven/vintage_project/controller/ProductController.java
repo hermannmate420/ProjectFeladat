@@ -8,6 +8,8 @@ import com.maven.vintage_project.config.JWT;
 import com.maven.vintage_project.model.Category;
 import com.maven.vintage_project.model.Products;
 import com.maven.vintage_project.service.ProductService;
+import com.maven.vintage_project.service.UserService;
+import java.io.File;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
@@ -22,6 +24,7 @@ import org.json.JSONObject;
 public class ProductController {
 
     private final ProductService productService = new ProductService();
+    private ProductService layer = new ProductService();
 
     @GET
     @Path("getProductById")
@@ -160,6 +163,27 @@ public class ProductController {
         return Response.status(response.getBoolean("success") ? 200 : 400)
                 .entity(response.toString())
                 .type(MediaType.APPLICATION_JSON)
+                .build();
+    }
+    
+    @GET
+    @Path("/uploads/products/{fileName}")
+    public Response getProductPicture(@PathParam("fileName") String fileName) {
+        File file = layer.getProductPicture(fileName);
+
+        if (file == null || !file.exists()) {
+            return Response.status(Response.Status.NOT_FOUND).entity("File not found").build();
+        }
+
+        String mimeType = null;
+        try {
+            mimeType = java.nio.file.Files.probeContentType(file.toPath());
+        } catch (Exception e) {
+            mimeType = "application/octet-stream"; // Fallback
+        }
+
+        return Response.ok(file, mimeType)
+                .header("Content-Disposition", "inline; filename=\"" + file.getName() + "\"")
                 .build();
     }
 

@@ -1,6 +1,6 @@
 export interface Category {
     id: number;
-    name: string;
+    categoryName: string;
 }
 
 export interface Product {
@@ -10,9 +10,9 @@ export interface Product {
     slug?: string;
     metaTitle?: string;
     price: number;
+    fullPrice: number;
     discountPrice?: number;
     stockQuanty: number;
-    categoryId: number;
     status: 'active' | 'inactive';
     createdAt: string;
     category: Category;

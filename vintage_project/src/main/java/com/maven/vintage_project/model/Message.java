@@ -17,7 +17,7 @@ public class Message implements Serializable {
     private String fullName;
 
     // 'message' oszlopra figyelni kell, hogy ne ütközzön a Java 'message' szóval
-    @Column(name = "message", nullable = false, length = 255)
+    @Column(name = "message", nullable = false, length = 1000)
     private String messageText;
 
     @Column(name = "created_at")

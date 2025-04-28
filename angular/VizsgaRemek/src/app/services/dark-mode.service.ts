@@ -1,4 +1,3 @@
-// dark-mode.service.ts
 import { Injectable } from '@angular/core';
 
 @Injectable({
@@ -8,7 +7,7 @@ export class DarkModeService {
   private isDark = false;
 
   constructor() {
-    const saved = localStorage.getItem('darkMode');
+    const saved = sessionStorage.getItem('darkMode');
     if (saved === 'true') {
       this.enableDarkMode();
     }
@@ -33,10 +32,10 @@ export class DarkModeService {
     const body = document.body;
     if (this.isDark) {
       body.classList.add('dark-mode');
-      localStorage.setItem('darkMode', 'true');
+      sessionStorage.setItem('darkMode', 'true');
     } else {
       body.classList.remove('dark-mode');
-      localStorage.setItem('darkMode', 'false');
+      sessionStorage.setItem('darkMode', 'false');
     }
   }
 

@@ -22,7 +22,7 @@ export class AdminMessagesComponent implements OnInit {
   selectedMessage: Message | null = null;
   ticketFilterStatus: string = 'all';
   showOnlyOwnTickets: boolean = false;
-  currentUserId: number = Number(localStorage.getItem('id'));
+  currentUserId: number = Number(sessionStorage.getItem('id'));
   newTicketText: string = '';
   isCreatingTicket: boolean = false;
   isReplying = false;
@@ -50,7 +50,7 @@ export class AdminMessagesComponent implements OnInit {
           subject: m.subject,
           message: m.messageText,
           createdAt: m.createdAt,
-          isRead: false, // Default value for isRead
+          isRead: false,
           type: 'feedback'
         }));
         this.messages = [...this.messages, ...feedbackMessages];
@@ -136,16 +136,15 @@ export class AdminMessagesComponent implements OnInit {
 
   closeTicket(): void {
     this.selectedTicket = null;
-    // window.location.reload();
   }
 
   get filteredMessages(): Message[] {
     return this.messages
-      .slice() // új tömb, az eredetit nem módosítjuk
+      .slice()
       .sort((a, b) => {
         const dateA = new Date(a.createdAt).getTime();
         const dateB = new Date(b.createdAt).getTime();
-        return dateB - dateA; // legfrissebb előre
+        return dateB - dateA;
       });
   }
 
@@ -161,7 +160,7 @@ export class AdminMessagesComponent implements OnInit {
       .sort((a, b) => {
         const dateA = new Date(a.createdAt).getTime();
         const dateB = new Date(b.createdAt).getTime();
-        return dateB - dateA; // legfrissebb előre
+        return dateB - dateA;
       });
   }
 
@@ -182,7 +181,7 @@ export class AdminMessagesComponent implements OnInit {
           id: createdTicket.ticketId,
           name: '',
           email: '',
-          subject: `'`,
+          subject: '',
           message: body,
           createdAt: '',
           status: 'Open',

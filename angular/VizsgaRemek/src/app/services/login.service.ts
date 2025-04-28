@@ -14,7 +14,7 @@ export class LoginService {
 
   constructor(@Inject(PLATFORM_ID) private platformId: object, private http: HttpClient) {
     const isBrowser = isPlatformBrowser(this.platformId);
-    this.authenticatedSubject = new BehaviorSubject<boolean>(isBrowser ? !!localStorage.getItem('token') : false);
+    this.authenticatedSubject = new BehaviorSubject<boolean>(isBrowser ? !!sessionStorage.getItem('token') : false);
     this.authenticated$ = this.authenticatedSubject.asObservable();
   }
 
@@ -35,8 +35,8 @@ export class LoginService {
       if (isPlatformBrowser(this.platformId)) {
         console.log('A függvény böngészőben fut');
       const data = await response.json();
-      localStorage.setItem('token', data.result.jwt);
-      localStorage.setItem('id', data.result.id);
+      sessionStorage.setItem('token', data.result.jwt);
+      sessionStorage.setItem('id', data.result.id);
       this.authenticatedSubject.next(true);
       return data;
       }
@@ -69,8 +69,8 @@ export class LoginService {
       console.log('User data with JWT token: ', data);
       
       if (isPlatformBrowser(this.platformId)) {
-        localStorage.setItem('token', data.result.jwt);
-        localStorage.setItem('id', data.result.id);
+        sessionStorage.setItem('token', data.result.jwt);
+        sessionStorage.setItem('id', data.result.id);
         this.authenticatedSubject.next(true);
       }
       return data;
@@ -80,10 +80,12 @@ export class LoginService {
     }
   }
 
+  
+
   logOut(): void {
     if (isPlatformBrowser(this.platformId)) {
-      localStorage.removeItem('token');
-      localStorage.removeItem('id');
+      sessionStorage.removeItem('token');
+      sessionStorage.removeItem('id');
 
       this.authenticatedSubject.next(false);
     }
@@ -100,7 +102,7 @@ export class LoginService {
 
   getUserId(): number | null {
     if (!isPlatformBrowser(this.platformId)) return null;
-    const token = localStorage.getItem('token');
+    const token = sessionStorage.getItem('token');
     if (!token) {
       console.error('No token found!');
       return null;
@@ -109,10 +111,8 @@ export class LoginService {
     const JWTToken = this.tokenDecoder(token);
     return JWTToken?.id ? parseInt(JWTToken.id, 10) : null;
   }
-
-  // Lekéri a felhasználó adatait az ID alapján
   getUserById(userId: number): Observable<any> {
-    const token = localStorage.getItem('token');
+    const token = sessionStorage.getItem('token');
     if (!token) {
       console.error('No token found!');
       return throwError(() => new Error('Unauthorized: No token found'));
@@ -132,7 +132,7 @@ export class LoginService {
 
   getIsAdmin(): boolean {
     if (!isPlatformBrowser(this.platformId)) return false;
-    const token = localStorage.getItem('token');
+    const token = sessionStorage.getItem('token');
     if (!token) return false;
     
     const JWTToken = this.tokenDecoder(token);

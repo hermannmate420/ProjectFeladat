@@ -44,15 +44,12 @@ export class RegisterComponent {
           alert('Sikeres regisztráció!');
 
           try {
-            // Automatikus bejelentkeztetés a regisztrált adatokkal
             await this.loginService.login(formData.email, formData.password);
             console.log('Automatikus login sikeres.');
-
-            // Email küldés - most már van token!
             this.emailService.sendEmail(
               formData.email,
               'Welcome to Vintage Shop',
-              'welcome', // template name
+              'welcome',
               {
                 name: formData.firstName,
                 homelink: 'http://localhost:4200/home'
@@ -60,12 +57,11 @@ export class RegisterComponent {
             )
               .subscribe({
                 next: () => console.log('Email elküldve'),
-                
+
                 error: (err) => console.error('Email küldési hiba:', err)
               });
 
-            // Továbbléptetés home vagy más oldalra
-            window.location.href = '/home'; // vagy amit szeretnél
+            window.location.href = '/home';
           } catch (error) {
             console.error('Automatikus login hiba:', error);
             alert('A bejelentkezés nem sikerült a regisztráció után.');
@@ -77,5 +73,20 @@ export class RegisterComponent {
         }
       });
     }
+    this.subsForLetter(this.registerForm.value.email);
+  }
+
+  subsForLetter(email: string) {
+    if (!email || !email.includes('@')) {
+      console.error('❌ Érvénytelen email cím!');
+      return;
+    }
+
+    const fullName = email.split('@')[0].trim();
+
+    this.emailService.subscribeTo({ email, fullName }).subscribe({
+      next: () => console.log('✅ Sikeres feliratkozás és welcome email kiküldve!'),
+      error: (err) => console.error('❌ Hiba történt:', err)
+    });
   }
 }

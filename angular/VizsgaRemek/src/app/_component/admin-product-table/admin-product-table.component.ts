@@ -24,10 +24,14 @@ export class AdminProductTableComponent implements OnInit {
   isEdit = false;
   totalProducts = 0;
   activeProducts = 0;
+  inactiveProducts = 0;
   deletedProducts = 0;
   showToast: boolean = false;
   showOverlay: boolean = true;
   newProduct: any = [];
+  categories: { id: number, name: string }[] = [];
+
+
 
   constructor(private productService: ProductService, private titleService: Title) {
     titleService.setTitle("Admin | Product Table");
@@ -35,13 +39,16 @@ export class AdminProductTableComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadProducts();
+    this.loadCategories();
+
   }
 
   onSelectProduct(): void {
-    const found = this.products.find(p => p.productId === +this.selectedProductId);
+    const found = this.products.find(p => p.id === +this.selectedProductId);
     this.selectedProduct = found ? { ...found } : null;
     this.showOverlay = true;
   }
+
 
   get filteredProduct() {
     return this.products.filter(p => {
@@ -52,7 +59,8 @@ export class AdminProductTableComponent implements OnInit {
       const statusMatch =
         this.statusFilter === 'all' ||
         (this.statusFilter === 'active' && !p.isDeleted) ||
-        (this.statusFilter === 'deleted' && p.isDeleted);
+        (this.statusFilter === 'inactive' && p.isDeleted) ||
+        (this.statusFilter === 'archived' && p.isDeleted);
 
       return searchMatch && statusMatch;
     });
@@ -61,12 +69,13 @@ export class AdminProductTableComponent implements OnInit {
   loadProducts(): void {
     this.productService.getProducts().subscribe({
       next: (res) => {
-        const data = res || res;
-        this.products = data;
+        this.products = res;
         this.filteredProducts = [...this.products];
         this.totalProducts = this.products.length;
-        this.activeProducts = this.products.filter(p => !p.isDeleted).length;
-        this.deletedProducts = this.products.filter(p => p.isDeleted).length;
+        this.activeProducts = this.products.filter(p => p.status === 'active').length;
+        this.inactiveProducts = this.products.filter(p => p.status === 'inactive').length;
+        this.deletedProducts = this.products.filter(p => p.status === 'archived').length;
+        console.log("products: ", this.products)
       },
       error: (err) => {
         console.error('Error loading products:', err);
@@ -75,13 +84,16 @@ export class AdminProductTableComponent implements OnInit {
     });
   }
 
+
   exportProductsToCSV(): void {
     let productsToExport = [...this.filteredProducts];
 
     if (this.statusFilter === 'active') {
       productsToExport = productsToExport.filter(p => p.status === 'active');
-    } else if (this.statusFilter === 'deleted') {
+    } else if (this.statusFilter === 'inactive') {
       productsToExport = productsToExport.filter(p => p.status === 'inactive' || p.isDeleted);
+    } else if (this.statusFilter === 'archived') {
+      productsToExport = productsToExport.filter(p => p.status === 'archived' || p.isDeleted);
     }
 
     const headers = ['ID', 'Name', 'Price', 'Discount Price', 'Status', 'Stock', 'Category'];
@@ -127,17 +139,38 @@ export class AdminProductTableComponent implements OnInit {
   onSearchChange(): void {
     const term = this.searchTerm.toLowerCase();
     this.filteredProducts = this.products.filter(product =>
-      `${product.name} ${product.description} ${product.category?.name}`.toLowerCase().includes(term)
+      `${product.name} ${product.description} ${product.category?.categoryName}`.toLowerCase().includes(term)
     );
     this.currentPage = 1;
   }
 
   updateProduct(product: any): void {
-    this.productService.updateProduct(product.productId, product).subscribe({
-      next: () => alert(`Product "${product.name}" updated successfully.`),
-      error: err => alert('Failed to update product.')
+    if (!product.category?.id && product.category?.categoryName) {
+      const matched = this.categories.find(c => c.name === product.category.categoryName);
+      if (matched) {
+        product.category = { id: matched.name || matched.id };
+      }
+    }
+
+    if (!product.category?.id) {
+      alert("❗ Nincs érvényes kategória kiválasztva!");
+      return;
+    }
+
+    this.productService.updateProduct(product).subscribe({
+      next: () => {
+        alert(`✅ Product "${product.name}" updated successfully.`);
+        this.loadProducts();
+      },
+      error: err => {
+        console.error("❌ Hiba a frissítés közben:", err);
+        alert('❌ Failed to update product.');
+      }
     });
   }
+
+
+
 
   toggleStatus(product: any): void {
     product.status = product.status === 'active' ? 'inactive' : 'active';
@@ -145,50 +178,105 @@ export class AdminProductTableComponent implements OnInit {
   }
 
   saveProduct(product: any): void {
-    if (this.selectedProduct) {
-      this.productService.updateProduct(this.selectedProduct.productId, this.selectedProduct).subscribe({
-        next: () => {
-          alert(`Product "${this.selectedProduct.name}" updated successfully.`);
-          this.loadProducts();
-        },
-        error: err => alert('Failed to update product.')
-      });
-    }
-  }
+    const payload = {
+      productId: product.id,
+      name: product.name,
+      description: product.description,
+      price: product.price,
+      discountPrice: product.discountPrice ?? 0, // ha undefined, akkor 0 lesz
+      stockQuanty: product.stockQuanty,
+      status: product.status,
+      imageUrl: product.imageUrl || '',
+      category: {
+        id: product.category?.id || product.category?.categoryId
+      }
+    };
 
-  deleteProduct(product: any): void {
-    this.productService.deleteProduct(product.productId).subscribe({
+    console.log("✅ Küldendő payload:", payload);
+
+    this.productService.updateProduct(payload).subscribe({
       next: () => {
-        this.products = this.products.filter(p => p.productId !== product.productId);
-        this.filteredProducts = this.filteredProducts.filter(p => p.productId !== product.productId);
-        alert(`Product "${product.name}" deleted successfully.`);
+        alert(`✅ Product "${product.name}" updated successfully.`);
+        this.loadProducts();
       },
-      error: err => alert('Failed to delete product.')
+      error: err => {
+        console.error('❌ Failed to update product:', err);
+        alert('❌ Hiba történt a frissítéskor!');
+      }
     });
   }
 
-  createNewProduct(): void {
-    const asd = this.newProduct
-    this.productService.createProduct(this.newProduct).subscribe({
-      next: (createdProduct) => {
-        alert(`✅ Product "${createdProduct.name}" successfully created.`);
+
+  deleteProduct(product: any): void {
+    if (product.category?.id) {
+      product.categoryId = product.category.id;
+    }
+
+    this.productService.updateProduct(product).subscribe({
+      next: () => {
+        alert(`Product "${product.name}" now inactive.`),
+          product = {
+            status: product.stats
+          }
+      },
+      error: err => alert('Failed to update product.')
+    });
+  }
+
+  activateProduct(product: any): void {
+    if (product.category?.id) {
+      product.categoryId = product.category.id;
+    }
+
+    this.productService.activetaProduct(product).subscribe({
+      next: () => {
+        alert(`Product "${product.name}" now inactive.`),
+          product = {
+            status: product.stats
+          }
+        this.loadProducts();
+      },
+      error: err => alert('Failed to update product.')
+    });
+  }
+
+  createNewProduct(newProduct: any): void {
+    this.productService.createProduct(newProduct).subscribe({
+      next: () => {
+        alert(`✅ Termék sikeresen létrehozva: ${newProduct.name}`);
+        this.loadProducts();
+
+        // Form reset
         this.newProduct = {
-          productId: 0, // Default or placeholder value
           name: '',
           description: '',
           price: 0,
           discount_price: 0,
           stockQuanty: 0,
-          categoryId: 0,
-          productPicture: '', // Default or placeholder value
-          status: 'active'
+          categoryId: null,
+          image_url: '',
+          status: 'active',
         };
-        this.loadProducts(); // újratöltés
       },
-      error: (err) => {
-        console.error(err);
-        alert('❌ Failed to create product.');
+      error: err => {
+        console.error('❌ Termék létrehozása sikertelen:', err);
+        alert('❌ Hiba történt a termék létrehozásakor!');
       }
     });
   }
+
+
+  loadCategories(): void {
+    this.productService.getAllCategories().subscribe({
+      next: (cats) => {
+        this.categories = cats;
+        console.log("✅ Kategóriák betöltve:", this.categories);
+      },
+      error: (err) => {
+        console.error('❌ Kategóriák betöltése sikertelen:', err);
+      }
+    });
+  }
+
+
 }

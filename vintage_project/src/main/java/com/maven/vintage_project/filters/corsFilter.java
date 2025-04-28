@@ -28,6 +28,8 @@ public class corsFilter implements Filter {
         httpResponse.setHeader("Access-Control-Allow-Origin", "*");
         httpResponse.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
         httpResponse.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization, X-Requested-With, token");
+        httpResponse.setHeader("Access-Control-Allow-Origin", "http://localhost:4200");
+        httpResponse.setHeader("Access-Control-Allow-Credentials", "true");
 
         // Ha OPTIONS kérés érkezik, válaszoljunk 200 OK státusszal és térjünk vissza
         if ("OPTIONS".equalsIgnoreCase(httpRequest.getMethod())) {

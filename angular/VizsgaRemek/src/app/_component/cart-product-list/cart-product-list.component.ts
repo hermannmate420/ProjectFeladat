@@ -1,9 +1,11 @@
-import { Component, Input, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { CartService } from '../../services/cart.service';
 
 @Component({
   selector: 'app-cart-product-list',
+  standalone: true,
   imports: [FormsModule, CommonModule],
   templateUrl: './cart-product-list.component.html',
   styleUrl: './cart-product-list.component.css'
@@ -11,63 +13,86 @@ import { CommonModule } from '@angular/common';
 export class CartProductListComponent implements OnInit {
   cartItems: any[] = [];
   shippingFee: number = 1000;
+  @Output() checkoutRequested = new EventEmitter<void>();
+
+  // ÚJ ÁLLAPOT: hogy épp a kosár rész vagy a kifizetés rész látszik
+  currentStep: 'cart' | 'payout' = 'cart';
+
+  constructor(private cartService: CartService) { }
 
   ngOnInit(): void {
     this.loadCart();
   }
 
   loadCart(): void {
-    const items = localStorage.getItem('cart');
-    this.cartItems = items ? JSON.parse(items) : [];
+    const userId = Number(sessionStorage.getItem('id'));
+    if (!userId) {
+      console.error("❌ User ID not found in sessionStorage!");
+      return;
+    }
+    this.cartService.getCartByUserId(userId).subscribe({
+      next: (cart) => {
+        this.cartItems = cart.cartItemsCollection || [];
+        console.log('✅ Cart loaded successfully:', this.cartItems);
+      },
+      error: (err) => {
+        console.error('❌ Failed to load cart:', err);
+      }
+    });
   }
 
-  // Nettó összeg számítása
   get netTotal(): number {
-    return this.cartItems.reduce((total, product) => total + (product.price * product.quantity), 0);
+    return this.cartItems.reduce((total, item) => {
+      const price = item.productId.price || 0;
+      const discount = item.productId.discountPrice || 0;
+      return total + ((price - discount) * item.quantity);
+    }, 0);
   }
 
-  // Áfa 27% és bruttó összeg számítása
   get grossTotal(): number {
     return this.netTotal * 1.27;
   }
 
-  // Teljes összeg
   get totalAmount(): number {
     return this.grossTotal + this.shippingFee;
-  }
-
-  // Termékek mennyiségének módosítása
-  increaseQuantity(cartItems: any) {
-    cartItems.quantity++;
   }
 
   decreaseQuantity(item: any): void {
     if (item.quantity > 1) {
       item.quantity--;
-    } else {
-      this.removeProduct(item); // ha már csak 1 volt, csökkentés után törlés
-    }
-    this.saveCart(); // mindig mentsük el az új állapotot
-  }
-
-  removeProduct(product: any): void {
-    const index = this.cartItems.findIndex(p => p.productId === product.productId);
-    if (index !== -1) {
-      this.cartItems.splice(index, 1);
-      this.saveCart(); // módosítás után mindig frissítsük a localStorage-t
     }
   }
 
-  saveCart(): void {
-    localStorage.setItem('cart', JSON.stringify(this.cartItems));
+  increaseQuantity(item: any): void {
+    item.quantity++;
+  }
+
+  removeProduct(item: any): void {
+    // implementáld a törlést itt (pl. service-ből hívva a backend DELETE-et)
+    console.log('Remove product:', item);
   }
 
   clearCart(): void {
-    localStorage.removeItem('cart');
     this.cartItems = [];
   }
 
-  checkout(): void {
-    alert('💳 Fizetési folyamat még nincs implementálva.');
+  continueToCheckout(): void {
+    this.currentStep = 'payout'; // Átváltunk a kifizetés részre
+  }
+
+  goBackToCart(): void {
+    this.currentStep = 'cart'; // Vissza a kosár nézetre
+  }
+
+  submitOrder(): void {
+    this.cartService.chackoutCart().subscribe({
+      next: (response) => {
+        console.log('✅ Order submitted successfully:', response);
+        this.checkoutRequested.emit();
+      },
+      error: (error) => {
+        console.error('❌ Failed to submit order:', error);
+      }
+    });
   }
 }

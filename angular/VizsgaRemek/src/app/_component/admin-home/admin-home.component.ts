@@ -6,6 +6,8 @@ import { NgApexchartsModule, ApexChart, ApexXAxis, ApexOptions, ApexDataLabels, 
 import { ProductService } from '../../services/product.service';
 import { Product } from '../../models/product.model';
 import { Title } from '@angular/platform-browser';
+import { BlogService } from '../../services/blog.service';
+import { CartService } from '../../services/cart.service';
 
 
 @Component({
@@ -24,10 +26,12 @@ export class AdminHomeComponent implements OnInit {
   productCount = 0;
   totalStock = 0;
   ticketCount = 0;
+  postsCount = 0;
+  ordersCount = 0;
 
 
 
-  constructor(private userService: UserService, private productService: ProductService, private titleService: Title) { 
+  constructor(private userService: UserService, private productService: ProductService, private titleService: Title, private blogService: BlogService, private cartService: CartService) { 
     titleService.setTitle("Admin | home");
   }
 
@@ -39,8 +43,6 @@ export class AdminHomeComponent implements OnInit {
         this.activeCount = users.filter((u: any) => !u.isDeleted).length;
         this.deletedCount = users.filter((u: any) => u.isDeleted).length;
         this.adminCount = users.filter((u: any) => u.isAdmin).length;
-
-        // 📊 Dinamikus chart adat generálás:
         const monthlyCounts = this.getUserRegistrationsPerMonth(users);
         const currentMonthIndex = new Date().getMonth();
         this.monthlySignupCount = monthlyCounts[currentMonthIndex];
@@ -51,6 +53,14 @@ export class AdminHomeComponent implements OnInit {
         };
       },
       error: err => console.error(err)
+    });
+    this.cartService.getAllOrders().subscribe({
+      next: (res) => {
+        const orders = res.result || res;
+        this.ordersCount = orders.length;
+        console.log('Orders:', orders);
+      },
+      error: err => console.error('❌ Rendelések betöltése sikertelen', err)
     });
     this.productService.getProducts().subscribe({
       next: (res) => {
@@ -70,6 +80,13 @@ export class AdminHomeComponent implements OnInit {
         console.error('Ticket hiba:', error);
       }
     });
+    this.blogService.getAllPosts().subscribe({
+      next: (post) => {
+        const postData = post || post;
+        this.postsCount = post.length;
+        console.log('posts: ', post);
+      }
+    })
   }
 
   get statCards() {
@@ -78,14 +95,14 @@ export class AdminHomeComponent implements OnInit {
       { label: 'Active Users', value: this.activeCount, icon: '✅', bg: 'bg-success text-light' },
       { label: 'Deleted Users', value: this.deletedCount, icon: '❌', bg: 'bg-danger text-light' },
       { label: 'Admins', value: this.adminCount, icon: '🛡️', bg: 'bg-dark text-light' },
+      { label: 'Monthly Signups', value: this.monthlySignupCount, icon: '📈', bg: 'bg-info text-light' },
 
       { label: 'Products in Store', value: this.productCount, icon: '📦', bg: 'bg-secondary text-light' },
       { label: 'Total Stock', value: this.totalStock, icon: '🏷️', bg: 'bg-warning text-dark' },
+      { label: 'Pending Orders', value: this.ordersCount, icon: '🛒', bg: 'bg-warning text-light' },
 
-      // ⬇ Új placeholder kártyák (még nincs backend)
-      { label: 'Monthly Signups', value: this.monthlySignupCount, icon: '📈', bg: 'bg-info text-light' },
-      { label: 'Pending Orders', value: 0, icon: '🛒', bg: 'bg-warning text-light' },
-      { label: 'Support Tickets', value: this.ticketCount, icon: '🎫', bg: 'bg-light text-dark' }
+      { label: 'Support Tickets', value: this.ticketCount, icon: '🎫', bg: 'bg-light text-dark' },
+      { label: 'Blog posts', value: this.postsCount, icon: '✏️', bg: 'bg-success text-dark' }
     ];
   }
 
@@ -95,7 +112,7 @@ export class AdminHomeComponent implements OnInit {
     series: [
       {
         name: "Users",
-        data: new Array(12).fill(0)  // biztosan 12 elem, 0-s kezdéssel
+        data: new Array(12).fill(0)
       }
     ],
     chart: {

@@ -31,7 +31,7 @@ export class NavBarComponent implements OnInit {
       this.isAuthenticated = auth;
 
       if (this.loginService.getIsAdmin()) {
-        this.fetchMessagesAndTickets(); // csak adminnál
+        this.fetchMessagesAndTickets();
       }
     });
   }
@@ -58,7 +58,7 @@ export class NavBarComponent implements OnInit {
   }
 
   getCartItems(): any[] {
-    const cartItems = localStorage.getItem('cart');
+    const cartItems = sessionStorage.getItem('cart');
     return cartItems ? JSON.parse(cartItems) : [];
   }
 

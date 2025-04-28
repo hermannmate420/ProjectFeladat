@@ -1,33 +1,57 @@
-<div *ngIf="cartItems.length > 0" class="product-list-container">
-    <h3 class="product-list-header">🛍️ Kiválasztott termékek</h3>
+<!-- CART nézet -->
+<div *ngIf="currentStep === 'cart'">
+    <div *ngIf="cartItems.length > 0" class="product-list-container">
+        <h3 class="product-list-header">🛍️ Selected products</h3>
 
-    <div *ngFor="let item of cartItems"
-        class="product-item d-flex justify-content-between align-items-center my-2 border-bottom pb-2">
-        <div>
-            <strong>{{ item.name }}</strong><br />
-            {{ item.price | number:'1.0-0' }} Ft x {{ item.quantity }}
+        <div *ngFor="let item of cartItems"
+            class="product-item d-flex justify-content-between align-items-center my-2 border-bottom pb-2">
+            <div>
+                <strong>{{ item.productId.name }}</strong><br />
+                {{ (item.productId.price) - (item.productId.discountPrice ?? 0) | number:'1.0-0' }} Ft x {{
+                item.quantity }}
+            </div>
+
+            <div class="btn-group">
+                <button class="btn btn-sm btn-outline-secondary" (click)="decreaseQuantity(item)">-</button>
+                <button class="btn btn-sm btn-outline-secondary" (click)="increaseQuantity(item)">+</button>
+                <button class="btn btn-sm btn-outline-danger" (click)="removeProduct(item)">🗑️</button>
+            </div>
         </div>
 
-        <div class="btn-group">
-            <button class="btn btn-sm btn-outline-secondary" (click)="decreaseQuantity(item)">-</button>
-            <button class="btn btn-sm btn-outline-secondary" (click)="increaseQuantity(item)">+</button>
-            <button class="btn btn-sm btn-outline-danger" (click)="removeProduct(item)">🗑️</button>
+        <div class="mt-4">
+            <p><strong>Nettó összeg:</strong> {{ netTotal | number:'1.0-0' }} Ft</p>
+            <p><strong>Bruttó (27% ÁFA):</strong> {{ grossTotal | number:'1.0-0' }} Ft</p>
+            <p><strong>Delivery fee:</strong> {{ shippingFee | number:'1.0-0' }} Ft</p>
+            <hr />
+            <p class="fs-5"><strong>💰 Total amount:</strong> {{ totalAmount | number:'1.0-0' }} Ft</p>
+        </div>
+
+        <div class="mt-4 d-flex gap-3">
+            <button class="btn btn-danger" (click)="clearCart()">Clear cart</button>
+            <button class="btn btn-primary" (click)="continueToCheckout()">➡️ Go to payment</button>
         </div>
     </div>
 
-    <div class="mt-4">
-        <p><strong>Nettó összeg:</strong> {{ netTotal | number:'1.0-0' }} Ft</p>
-        <p><strong>Bruttó (27% ÁFA):</strong> {{ grossTotal | number:'1.0-0' }} Ft</p>
-        <p><strong>Szállítási díj:</strong> {{ shippingFee | number:'1.0-0' }} Ft</p>
+    <div *ngIf="cartItems.length === 0" class="alert alert-warning mt-3">
+        Cart is empty. Please add some products to your cart.
+    </div>
+</div>
+
+<!-- PAYOUT nézet -->
+<div *ngIf="currentStep === 'payout'">
+    <h3 class="product-list-header">💳 Payment details</h3>
+
+    <div class="payout-summary">
+        <p><strong>Products:</strong> {{ cartItems.length }}</p>
+        <p><strong>Net total:</strong> {{ netTotal | number:'1.0-0' }} Ft</p>
+        <p><strong>Gross total (27% VAT):</strong> {{ grossTotal | number:'1.0-0' }} Ft</p>
+        <p><strong>Delivery:</strong> {{ shippingFee | number:'1.0-0' }} Ft</p>
         <hr />
-        <p class="fs-5"><strong>💰 Végösszeg:</strong> {{ totalAmount | number:'1.0-0' }} Ft</p>
+        <p class="fs-5"><strong>Total to pay:</strong> {{ totalAmount | number:'1.0-0' }} Ft</p>
     </div>
-</div>
-<div class="mt-4 d-flex gap-3" *ngIf="cartItems.length > 0">
-    <button class="btn btn-danger" (click)="clearCart()">Kosár ürítése</button>
-    <button class="btn btn-success" (click)="checkout()">Tovább a fizetéshez</button>
-</div>
 
-<div *ngIf="cartItems.length === 0" class="alert alert-warning mt-3">
-    A kosár üres.
+    <div class="mt-4 d-flex gap-3">
+        <button class="btn btn-outline-secondary" (click)="goBackToCart()">⬅️ Back to cart</button>
+        <button class="btn btn-success" (click)="submitOrder()">✅ Checkout</button>
+    </div>
 </div>

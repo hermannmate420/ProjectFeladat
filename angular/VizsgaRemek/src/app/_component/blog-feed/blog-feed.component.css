@@ -1,0 +1,18 @@
+.toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.search-input,
+.sort-select {
+    padding: 0.5rem;
+    font-size: 1rem;
+    border-radius: 6px;
+}
+
+.toast-container {
+    z-index: 1055;
+}

@@ -3,7 +3,7 @@ body {
     padding: 0;
 }
 
-/* Alap világos mód */
+
 body {
     background-color: #BFA082 !important;
     color: #212529 !important;
@@ -21,13 +21,13 @@ body {
 }
 
 
-/* Sötét mód */
+
 body.dark-mode {
     background-color: #452C13 !important;
     color: #F5F5DC !important;
 }
 
-/* Példa sötét mód stílus komponensekre */
+
 body.dark-mode .table {
     background-color: #332312 !important;
     color: #F5F5DC !important;

@@ -1,0 +1,39 @@
+<app-nav-bar></app-nav-bar>
+<div class="container py-5">
+    <div *ngIf="product" class="row g-4">
+        <div class="col-md-6 text-center">
+            <img [src]="product.imageUrl" (error)="product.imageUrl = defaultImage" class="img-fluid rounded shadow"
+                style="max-height: 400px;" />
+        </div>
+        <div class="col-md-6">
+            <h3>{{ product.name }}</h3>
+            <p>{{ product.description }}</p>
+            <h4>{{ (product.price - (product.discountPrice ?? 0)) | currency:'HUF ':'symbol':'1.0-0' }}</h4>
+
+            <div class="d-flex align-items-center my-3">
+                <label class="me-2">Quantity:</label>
+                <input type="number" [(ngModel)]="quantity" min="1" class="form-control w-25" />
+            </div>
+
+            <button class="btn btn-primary" (click)="addToCart(product)">🛒 Add to Cart</button>
+        </div>
+    </div>
+
+    <div class="mt-5">
+        <h4>📦 Related Products ({{ product.category.categoryName }})</h4>
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4 mt-3">
+            <div class="col" *ngFor="let rp of relatedProducts">
+                <div class="card h-100">
+                    <img [src]="rp.imageUrl" (error)="rp.imageUrl = defaultImage" class="card-img-top" alt="{{ rp.name }}" style="width: 305px; height: 100%;" />
+                    <div class="card-body">
+                        <h6>{{ rp.name }}</h6>
+                        <p>{{ (rp.price - (rp.discountPrice ?? 0)) | currency:'HUF ':'symbol':'1.0-0' }}</p>
+                        <a [routerLink]="['/shop-detail']" [queryParams]="{ id: rp.id }"
+                            class="btn btn-sm btn-outline-primary w-100">➡️ View</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<app-footer></app-footer>

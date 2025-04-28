@@ -1,8 +1,59 @@
 <div class="container form-container">
-    <h2>Megrendelés adatai</h2>
-        <form class="cart">
-            <div class="col-12">
-                
+    <h2>Order Details</h2>
+    <form class="cart">
+        <div class="form-check mb-3">
+            <input class="form-check-input" type="checkbox" [(ngModel)]="useProfileAddress" name="useProfileAddress"
+                (change)="prefillAddress()" id="fillAddress">
+            <label class="form-check-label" for="fillAddress">
+                Fill with my profile information
+            </label>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label class="form-label">Name</label>
+                <input type="text" class="form-control" [(ngModel)]="shippingAddress.recipientName"
+                    name="recipient_name" placeholder="Full name">
             </div>
-        </form>
+            <div class="col-md-6 mb-3">
+                <label class="form-label">Phone Number</label>
+                <input type="text" class="form-control" [(ngModel)]="shippingAddress.phone" name="phone"
+                    placeholder="+36 30 123 4567">
+            </div>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Address Line 1</label>
+            <input type="text" class="form-control" [(ngModel)]="shippingAddress.addressLine1" name="address_line1"
+                placeholder="Street, house number">
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Address Line 2</label>
+            <input type="text" class="form-control" [(ngModel)]="shippingAddress.addressLine2" name="address_line2"
+                placeholder="Floor, door (optional)">
+        </div>
+
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label class="form-label">Postal Code</label>
+                <input type="text" class="form-control" [(ngModel)]="shippingAddress.postalCode" name="postal_code">
+            </div>
+            <div class="col-md-6 mb-3">
+                <label class="form-label">City</label>
+                <input type="text" class="form-control" [(ngModel)]="shippingAddress.city" name="city">
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label class="form-label">State / Region</label>
+                <input type="text" class="form-control" [(ngModel)]="shippingAddress.state" name="state">
+            </div>
+            <div class="col-md-6 mb-3">
+                <label class="form-label">Country</label>
+                <input type="text" class="form-control" [(ngModel)]="shippingAddress.country" name="country">
+            </div>
+        </div>
+    </form>
 </div>

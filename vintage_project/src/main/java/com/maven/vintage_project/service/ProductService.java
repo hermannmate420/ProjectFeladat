@@ -149,8 +149,13 @@ public class ProductService {
                 productJson.put("imageUrl", p.getImageUrl());
                 productJson.put("createdAt", formatDate(p.getCreatedAt()));
                 productJson.put("updatedAt", formatDate(p.getUpdatedAt()));
-                productJson.put("categoryId", p.getCategory() != null ? p.getCategory().getId() : null);
-
+                if(p.getCategory() != null) {
+                    JSONObject categoryObj = new JSONObject();
+                    categoryObj.put("categoryId", p.getCategory().getId());
+                    categoryObj.put("categoryName", p.getCategory().getName());
+                    productJson.put("category", categoryObj);
+                }
+                
                 productsArray.put(productJson);
             }
 
@@ -244,6 +249,11 @@ public class ProductService {
             return response.put("success", false)
                     .put("message", "Hiba frissítés közben: " + e.getMessage());
         }
+    }
+    
+    public File getProductPicture(String fileName) {
+        File file = new File(UPLOAD_DIR + fileName);
+        return file.exists() ? file : null;
     }
 
 }

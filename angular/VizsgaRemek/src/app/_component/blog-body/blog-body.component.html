@@ -1,22 +1,4 @@
 <div class="blog-container">
-
-    <!-- Új poszt -->
     <app-blog-editor></app-blog-editor>
-
-    <hr class="my-4">
-
-    <h2 class="mb-4">📰 Recent Posts</h2>
-    <!-- Kereső + rendezés -->
-    <br>
-    <div class="toolbar">
-        <input type="text" placeholder="Keresés posztok között..." [(ngModel)]="searchTerm" class="search-input" />
-        <select [(ngModel)]="sortOrder" class="sort-select">
-            <option value="latest">Legújabb elöl</option>
-            <option value="oldest">Legrégebbi elöl</option>
-            <option value="mostComments">Legtöbb komment</option>
-        </select>
-    </div>
-
-    <!-- Posztok listája -->
     <app-blog-feed></app-blog-feed>
 </div>

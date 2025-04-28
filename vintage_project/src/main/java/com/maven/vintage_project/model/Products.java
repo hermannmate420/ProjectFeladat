@@ -4,6 +4,8 @@
  */
 package com.maven.vintage_project.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
@@ -27,9 +29,14 @@ import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import javax.persistence.CascadeType;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.OneToMany;
 import javax.persistence.ParameterMode;
 import javax.persistence.Persistence;
 import javax.persistence.PersistenceUnit;
@@ -61,6 +68,14 @@ import org.json.JSONObject;
 
 })
 public class Products implements Serializable {
+
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "category_id")
+    private int categoryId;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "productId")
+    @JsonIgnore
+    private Collection<CartItems> cartItemsCollection;
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -132,7 +147,7 @@ public class Products implements Serializable {
     }
 
     public Products() {
-        
+
     }
 
     public Products(Integer productId) {
@@ -185,7 +200,7 @@ public class Products implements Serializable {
         }
     }
 
-    public Products(Integer productId, String name, String description, BigDecimal price, int stockQuanty, String status, int categoryId, String imageUrl) {
+    public Products(Integer productId, String name, String description, BigDecimal price, int stockQuanty, String status, int categoryId, String categoryName, String imageUrl) {
         this.productId = productId;
         this.name = name;
         this.description = description;
@@ -194,6 +209,7 @@ public class Products implements Serializable {
         this.status = status;
         Category category = new Category();
         category.setId(categoryId);
+        category.setName(categoryName);
         this.category = category;
         this.imageUrl = imageUrl;
     }
@@ -334,6 +350,15 @@ public class Products implements Serializable {
 
     public void setDeletedAt(Date deletedAt) {
         this.deletedAt = deletedAt;
+    }
+    
+    @JsonIgnore
+    public Collection<CartItems> getCartItemsCollection() {
+        return cartItemsCollection;
+    }
+    
+    public void setCartItemsCollection(Collection<CartItems> cartItemsCollection) {
+        this.cartItemsCollection = cartItemsCollection;
     }
 
     @Override
@@ -484,6 +509,7 @@ public class Products implements Serializable {
         }
     }
 
+    @JsonIgnore
     public List<Products> getAllProducts() {
         EntityManager em = getEntityManager();
 
@@ -508,13 +534,15 @@ public class Products implements Serializable {
 
                 // category_id-ból Category objektum
                 int categoryId = Integer.parseInt(record[9].toString());
+                String categoryName = (String) record[10];
                 Category category = new Category();
                 category.setId(categoryId);
+                category.setName(categoryName);
 
-                Date createdAt = record[10] != null ? formatter.parse(record[10].toString()) : null;
-                Date updatedAt = record[11] != null ? formatter.parse(record[11].toString()) : null;
-                String imageUrl = record[12] != null ? record[12].toString() : null;
-                Date deletedAt = record[13] != null ? formatter.parse(record[13].toString()) : null;
+                Date createdAt = record[11] != null ? formatter.parse(record[11].toString()) : null;
+                Date updatedAt = record[12] != null ? formatter.parse(record[12].toString()) : null;
+                String imageUrl = record[13] != null ? record[13].toString() : null;
+                Date deletedAt = record[14] != null ? formatter.parse(record[14].toString()) : null;
 
                 Products p = new Products(id, name, slug, metaTitle, description, price,
                         discountPrice, stockQuanty, status, category, createdAt, updatedAt, imageUrl, deletedAt);
